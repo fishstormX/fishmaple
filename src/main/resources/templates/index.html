@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>鱼鱼枫叶的后花园</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/bg.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/wave.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+</head>
+<body>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=66022501" charset="UTF-8"></script>
+<div id="king" class="king-blue">
+    <div id="header" >
+        <top-component></top-component>
+    </div>
+    <div id="bgt" class="bg" @mouseenter='mouseIn' @mousemove='updateCursor'
+         @mouseleave='getOut' v-bind:style="{left:left}">
+        <img class="bg-main" src="/pics/ibg/top.png">
+        <!--这世间的寂寞，无非是守得到波澜成冰，盼不来相思成海。-->
+    </div>
+    <div id="bg" class="bg" v-bind:style="{left:left}">
+        <img v-bind:style="{transform: 'perspective(500px) rotateX('+tX+'deg) rotateY('+tY+'deg)',
+        transition: 'transform '+time+ 's'}" class="bg-main bg-block" src="/pics/ibg/000.png">
+    </div>
+    <div id="bg2"  class="bg" v-bind:style="{left:left , transform: 'matrix(1,0,0,1,'+mX+','+mY+')',
+        transition: 'transform '+time+ 's'}">
+        <img class="bg-blocktop b1 bg-block" src="/pics/ibg/111.png">
+        <img class="bg-blocktop b2 bg-block" src="/pics/ibg/111.png">
+        <img class="bg-blocktop b3 bg-block" src="/pics/ibg/111.png">
+    </div>
+
+        <div class="waveWrapper waveAnimation">
+        <div class="waveWrapperInner bgTop">
+            <div class="wave waveTop" style="background-image: url('/img/wave-top.png')"></div>
+        </div>
+        <div class="waveWrapperInner bgMiddle">
+            <div class="wave waveMiddle" style="background-image: url('/img/wave-mid.png')"></div>
+        </div>
+        <div class="waveWrapperInner bgBottom">
+            <div class="wave waveBottom" style="background-image: url('/img/wave-bot.png')"></div>
+        </div>
+    </div>
+
+</div>
+<div id="footer" class="foot-abo">
+    <foot-component></foot-component>
+    <copyright></copyright>
+</div>
+<script>
+    var head = new Vue({
+        el: '#header'
+    })
+    var foot = new Vue({
+        el: '#footer'
+    })
+    var height=window.innerHeight;
+    var width=window.innerWidth;
+    var h=442+20;
+    var w=1024+100
+    var bgt = new Vue({
+        el: '#bgt',
+        data: {
+            cursorX:0,
+            cursorY:0,
+            tX:0,
+            tY:0,
+            left:((width-w)/2)+"px",
+            time:0,
+            boolean:false,
+            timer:null
+        },
+        methods: {
+            updateCursor: function (event) {
+                if(this.boolean){
+                    this.cursorX = event.offsetX;
+                    this.cursorY = event.offsetY;
+                    bg.time=0;
+                    bg2.time=0;
+                }
+            },
+            getOut:function(event){
+                this.boolean=false;
+                bg.time=0.3;
+                bg2.time=0.3;
+                this.cursorX = w/2;
+                this.cursorY = h/2 ;
+                console.log("out");
+                this.timer = setTimeout( () => {
+                    bgt.boolean=true;
+                }, 300)
+            },
+            mouseIn:function(event){
+                this.boolean=false;
+                bg.time=0.3;
+                bg2.time=0.3;
+                this.cursorX = event.offsetX;
+                this.cursorY = event.offsetY;
+                this.timer = setTimeout( () => {
+                    bgt.boolean=true;
+                }, 300)
+            }
+        },
+        watch: {
+            cursorX: function (newQuestion, oldQuestion) {
+                bg.tX = (this.cursorY - h/2) / 100;
+                bg.tY = (w/2 - this.cursorX) / 200;
+                bg2.mY = (h/2 - this.cursorY)/ 50;
+                bg2.mX = (w/2 - this.cursorX) / 100;
+            },
+            cursorY: function (newQuestion, oldQuestion) {
+                bg.tX = (this.cursorY - h/2) / 100;
+                bg.tY = (w/2 - this.cursorX) / 200;
+                bg2.mY = (h/2 - this.cursorY)/ 50;
+                bg2.mX = (w/2 - this.cursorX) / 100;
+            }
+        }
+    })
+
+    var bg = new Vue({
+        el: '#bg',
+        data: {
+            tX:0,
+            tY:0,
+            left:((width-w)/2)+"px",
+            time:0
+        }
+    })
+
+    var bg2 = new Vue({
+        el: '#bg2',
+        data: {
+            mX:0,
+            mY:0,
+            left:((width-w)/2)+"px",
+            time:0
+        }
+    })
+</script>
+</body>
+</html>

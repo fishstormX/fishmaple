@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>罐头 —— 一个匿名留言版</title>
+    <link type="text/css" rel="stylesheet" href="/css/can.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/m/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/font/iconfont.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <meta name="x5-fullscreen" content="true">
+    <meta name="browsermode" content="application">
+    <meta name="x5-page-mode" content="app">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.1, maximum-scale=1, user-scalable=no,minimal-ui">
+
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="/font/iconfontAdapter.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
+</head>
+<body>
+<div id="can_m_page" style="min-width:400px">
+    <img id="header">
+    <img src="/pics/m/beam_logo.png">
+
+
+<img src="/api/can/qr?bid=2345643456765">
+    <div id="foot_nav" class="m-foot" style="display:-webkit-inline-box">
+        <div class="m-foot-block ncp">
+            <i style="color:green" class="iconfont  m-foot-ico icon-chongwuguantou"></i>　
+        </div>
+        <div class="m-foot-block ncp">
+            <i class="iconfont  m-foot-ico icon-qiyegongchangjianzhu"></i>　
+        </div>
+        <div class="m-foot-block ncp">
+            <i class="iconfont  m-foot-ico icon-news"></i>　
+        </div>
+        <div class="m-foot-block">
+            <i class="iconfont  m-foot-ico icon-yonghu"></i>　
+        </div>
+    </div>
+</div>
+<script>
+
+
+    let head = new Vue({
+        el: '#header',
+        data: {
+            tagtap: false,
+            screen: "",
+            user:{}
+        },
+        methods:{
+            getUser(){
+                this.$http.get('/api/who').then(function (res) {
+                this.user=JSON.parse(res.bodyText)
+                }, function () {
+                console.log('获取回话失败')
+                });
+            }
+        },
+        mounted(){
+            this.getUser()
+        }
+    })
+</script>
+</body>
+</html>

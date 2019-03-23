@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="一些开发中遇到的小问题" />
+    <title th:text="'Issue-'+${issue.title}"></title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/issue.css"/>
+    <link type="text/css" rel="stylesheet" href="/font/iconfont.css"/>
+
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.2/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor-issueR.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/lang/zh-cn/zh-cn.js"></script>
+    </head>
+<body>
+
+    <div id="header">
+        <top-component :user="user"></top-component>
+    </div>
+
+    <div id="issue" class="issue_main">
+
+        <h2 class="issue_title">{{issue.title}}<span>&nbsp;#{{issue.num}}</span></h2>
+        <el-card shadow="hover" class="issue_block_m">
+            <span class="issue_author">{{issue.author}}</span> 提出于
+            <span class="issue_time">{{issue.timeline}}</span>
+            <div class="issue_content" v-html="issue.content">
+            </div>
+            <i @click="replied(0)" style="cursor:pointer;float:right;color:grey" class="iconfont icon-news"></i>
+        </el-card>
+        <el-card shadow="hover" class="issue_block" v-for="reply in replies">
+            <div class="reply_rContent" v-if="reply.rContent!=''" >
+                <div v-html="reply.rContent"></div>
+            </div>
+            <div class="reply_content" v-html="reply.content">{{reply.content}}</div>
+            <div class="reply_block_bottom"><span class="reply_author">{{reply.author}}</span>
+                <span class="reply_time">{{reply.timeline}}</span>
+                <i @click="replied(reply)" style="margin-top: 20px;cursor:pointer;float:right;color:grey" class="iconfont icon-news"></i>
+            </div>
+
+        </el-card>
+        <el-card id="reply_input" shadow="hover">
+            <div style="height:30px" v-html="rContent">{{rContent}}</div>
+            <script id="reply_editor" type="text/plain"></script>
+            <el-checkbox v-if="login" v-model="anon">匿名</el-checkbox>
+            <el-button size="mini" style="float:right;margin-bottom:10px" @click="commit" type="primary">回复</el-button>
+        </el-card>
+
+    </div>
+
+    <div id="contact-com">
+        <contact-component ></contact-component>
+    </div>
+
+    <div id="footer">
+        <foot-component></foot-component>
+        <copyright></copyright>
+    </div>
+
+<script th:inline="javascript">
+    let bid=0;
+    var ue = UE.getEditor('reply_editor');
+    let contact = new Vue({
+        el: '#contact-com',
+        data: {
+        },
+        methods: {
+        }
+    })
+
+    var foot = new Vue({
+        el: '#footer'
+    })
+
+    var issue = new Vue({
+        el:'#issue',
+        data:{
+            issue:[[${issue}]],
+            replies:[],
+            rContent:"",
+            author:"未登录用户",
+            rid:'',
+            anon:false,
+            login:true
+        },
+        methods:{
+            getContent() {
+                return UE.getEditor('reply_editor').getContent()=="<p>编辑回复</p>"?"":UE.getEditor('reply_editor').getContent();
+            },
+            getSimpleText(html){
+                var re1 = new RegExp("<.+?>","g");//匹配html标签的正则表达式，"g"是搜索匹配多个符合的内容
+                var msg = html.replace(re1,'');//执行替换成空字符
+                return msg;
+            },
+           init(){
+               this.$http.get('/api/issue/'+this.issue.id+'/reply').then(function (res) {
+                   this.replies=JSON.parse(res.bodyText)
+               }, function () {
+                   console.log('获取回话失败')
+               });
+           },
+            replied(value){
+                if(value==0){
+                    this.rContent=""
+                    this.rid=""
+                }else{
+                    let content=this.getSimpleText(value.content)
+                    if(content.length>25){
+                        content=content.substring(0,23)+"..."
+                    }
+                    this.rContent="回复  <span style='color:#00a0e9;margin:10px;'>"+value.author+"</span>&gt"
+                        +this.getSimpleText(content)
+                    this.rid=value.id
+                }
+                location.href="#reply_editor";
+                ue.focus()
+            },
+            commit(){
+                this.$http.post('/api/issue/reply', {
+                    author: this.anon?"匿名用户":this.author,
+                    content: this.getContent(),
+                    issueId: this.issue.id,
+                    replyId: this.rid,
+                }).then(function (res) {
+                    if(JSON.parse(res.bodyText).message=="success"){
+                        location.reload()
+                    }else{
+                        this.$message.error(JSON.parse(res.bodyText).message);
+                    }
+                }, function () {
+                    console.log('请求失败');
+                });
+            }
+        },
+        mounted(){
+            this.init();
+        }
+    });
+
+    var head = new Vue({
+        el: '#header',
+        data:{
+            user:{}
+        },
+        methods:{
+            getUser(){
+                this.$http.get('/api/who').then(function (res) {
+                    this.user=JSON.parse(res.bodyText)
+                    issue.author=this.user.name==""?"未登录用户":this.user.name
+                    issue.login=(this.user.name!="")
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            }
+        },
+        mounted(){
+            this.getUser()
+        }
+    })
+
+
+</script>
+</body>
+</html>

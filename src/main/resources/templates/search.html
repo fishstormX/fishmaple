@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <title>鱼鱼的后花园-检索</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/search.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.8/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+
+</head>
+<body>
+    <div id="main"  @keyup.enter="doMSearch">
+        <div class="search-logo">
+            <el-row class="top_bar">
+                <el-col class="head-nav" :span="5">
+                    <a href="/"><img src="/pics/logo_m.png"></a>
+                </el-col>
+                <el-col class="head-nav" :span="7">
+                    <el-input class="main-search top100" v-model="searchvalue"
+                   placeholder="请输入内容" >
+
+
+                        <el-button  @click="doMSearch" id="search_btn" type="primary" slot="append">
+                           <svg class="icon" aria-hidden="true">
+                                    <use xlink:href="#icon-sousuo-m"></use>
+                           </svg>　站内搜索
+
+
+                        </el-button>
+
+
+                    </el-input>
+                </el-col>
+                          <a href="/uc" class="nav_link"><svg class="icon icon-login" v-bind:style="{color : login}" aria-hidden="true">
+                                <use xlink:href="#icon-gerenzhongxin-denglu"></use>
+                          </svg><span style="margin:42px 10px 0 0;float:right;">{{user.name}}</span></a>
+            </el-row>
+        </div>
+
+        <div v-if="isFinished">
+            <div  class="search-result">
+                <p v-if="isNull">关键词为空！</p><br>
+                <p>{{type}}</p><p v-if="isBlur">通过关键词
+        <span class="keyword" v-for="key in result.keys">
+            {{key}}&nbsp;
+        </span>
+            </p>共检索到{{count}}条相关内容，
+        {{result.totalB}}篇博客，{{result.totalT}}种工具
+        用时{{result.time}}秒 按相关度排序
+                <el-popover
+                        placement="top-start"
+                        title="精确查询"
+                        width="200"
+                        trigger="hover"
+                        content="查询片段100%一致结果集">
+                    <el-button @click="doHighSearch()" style="padding-left:15px" type="text" slot="reference">精确查询</el-button>
+                </el-popover>
+
+                <el-popover
+                        placement="top-start"
+                        title="模糊查询"
+                        width="200"
+                        trigger="hover"
+                        content="最常用的查询">
+                    <el-button @click="doMSearch()" style="padding-left:15px" type="text" slot="reference">模糊查询</el-button>
+                </el-popover>
+
+                <el-popover
+                        placement="top-start"
+                        title="很模糊的模糊查询"
+                        width="200"
+                        trigger="hover"
+                        content="查询所有符合要求的关键字">
+                    <el-button @click="dosearch()" style="padding-left:15px" type="text" slot="reference">泛-模糊查询</el-button>
+                </el-popover>
+
+
+
+
+            </div>
+            <div  class="search-block"  v-for="item in result.items">
+            <h2 class="searchblock-title" @click="window.open(item.url)" v-html="item.title"></h2>
+            <div class="searchblock-content"  v-html="item.content">
+            </div>
+            <span class="blue">{{item.type}}</span>
+            <span class="searchblock-time">{{item.timeline}}</span>
+        </div>
+        </div>
+        <div class="search-result" v-else><img src="/img/load1.gif"></div>
+        <div id="footer" v-bind:class="{ 'foot-abo': isActive }">
+            <foot-component></foot-component>
+            <copyright></copyright>
+        </div>
+    </div>
+    <div id="contact-com">
+        <contact-component></contact-component>
+    </div>
+    <script>
+        let contact = new Vue({
+            el: '#contact-com',
+            data: {
+
+            },
+            methods: {
+
+            }
+        })
+
+        let vm = new Vue({
+            el: '#main',
+            data: {
+                    user:{},
+                    searchvalue:"",
+                    result:{},
+                    times:[],
+                    count:"",
+                    isBlur:true,
+                    isFinished:false,
+                    type:"模糊查询",
+                    isActive:true,
+                    isNull:false,
+                    login:"#c3c3c3"
+            },
+            methods:{
+                getUser(){
+                    this.$http.get('/api/who').then(function (res) {
+                        this.user=JSON.parse(res.bodyText)
+                        if(this.user.id!=null){
+                            this.login="#000"
+                        }else{
+                            this.login="#c3c3c3"
+                        }
+                    }, function () {
+                        console.log('获取回话失败')
+                    });
+                },
+                onLoad(){
+                    let url = window.location.search;
+                    if (url.indexOf("=") != -1)
+                        this.searchvalue = decodeURI(url.substring(url.indexOf("=") + 1))
+                    this.doMSearch()
+                    //this.getHeight()
+                },
+                dosearch(){
+                    this.isFinished=false;
+                    this.$http.get('/api/dosearch?content='+this.searchvalue).then(function(res){
+                        this.type="很模糊的模糊查询"
+                        this.result = JSON.parse(res.bodyText)
+                        if(this.result.time==null){
+                            let target=document.getElementsByClassName("search-result")[0].innerHTML=""
+                            console.log(target);
+                            this.result={}
+                            this.isFinished=true
+                            this.isBlur=true
+                            this.isNull=true
+                            return
+                        }
+                        this.result.time=this.result.time/1000;
+                        this.count=this.result.totalT+this.result.totalB;
+                        for(let i=0;i<this.result.items.length;i++) {
+                            let date = new Date(this.result.items[i].timeline * 1000);
+                            this.result.items[i].timeline = date.getFullYear() + "／" + (date.getMonth() + 1) + "／" +
+                                date.getDate()
+                        }
+                        this.isFinished=true;
+                        this.isBlur=true
+                        this.isNull=false
+                        this.$nextTick(()=>{
+                            this.getHeight()
+                        })
+                    },function(){
+                        console.log('请求失败');
+                    });
+                },
+                doMSearch(){
+                    this.isFinished=false;
+                    this.$http.get('/api/doNormalSearch?content='+this.searchvalue).then(function(res){
+                        this.type="模糊查询"
+                        this.result = JSON.parse(res.bodyText)
+                        if(this.result.time==null){
+                            let target=document.getElementsByClassName("search-result")[0].innerHTML=""
+                            console.log(target);
+                            this.result={}
+                            this.isFinished=true
+                            this.isBlur=true
+                            this.isNull=true
+                            return
+                        }
+                        this.result.time=this.result.time/1000;
+                        this.count=this.result.totalT+this.result.totalB;
+                        for(let i=0;i<this.result.items.length;i++) {
+                            let date = new Date(this.result.items[i].timeline * 1000);
+                            this.result.items[i].timeline = date.getFullYear() + "／" + (date.getMonth() + 1) + "／" +
+                                date.getDate()
+                        }
+                        this.isFinished=true
+                        this.isBlur=true
+                        this.isNull=false
+                        this.$nextTick(()=>{
+                            this.getHeight()
+                        })
+
+                    },function(){
+                        console.log('请求失败')
+                    });
+                },
+                doHighSearch(){
+                    this.isFinished=false;
+                    this.$http.get('/api/doHighSearch?content='+this.searchvalue).then(function(res){
+                        this.type="精确查询"
+                        this.result = JSON.parse(res.bodyText)
+                        if(this.result.time==null){
+                            let target=document.getElementsByClassName("search-result")[0].innerHTML=""
+                            console.log(target);
+                            this.result={}
+                            this.isFinished=true
+                            this.isBlur=true
+                            this.isNull=true
+                            return
+                        }
+                        this.result.time=this.result.time/1000;
+                        this.count=this.result.totalT+this.result.totalB
+                        for(let i=0;i<this.result.items.length;i++) {
+                            let date = new Date(this.result.items[i].timeline * 1000);
+                            this.result.items[i].timeline = date.getFullYear() + "／" + (date.getMonth() + 1) + "／" +
+                                date.getDate()
+                           }
+                        this.isFinished=true
+                        this.isBlur=false
+                        this.isNull=false
+
+                        this.$nextTick(()=>{
+                            this.getHeight()
+
+                        })
+                    },function(){
+                        console.log('请求失败')
+                    });
+                },
+                getHeight(){
+                    let bh=document.getElementById("main").clientHeight
+
+                    let ch=document.documentElement.clientHeight
+                    if(bh<ch){
+                        this.isActive=true
+                    }else{
+                        this.isActive=false
+                    }
+                }
+
+            },
+            mounted(){
+                this.getUser()
+                this.onLoad()
+            }
+        })
+    </script>
+</body>
+
+</html>

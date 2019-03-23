@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="自己闹着玩的爬虫实验" />
+    <title>鱼鱼の实验室-爬虫实验（1星实验）</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/lab/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/lab/lab.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <style>
+        .user_block{
+            position:absolute;
+        }
+    </style>
+</head>
+<body>
+<div id="king" class="king-blue">
+    <div id="header">
+            <top-component  :user="user"></top-component>
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item><a class="nav_link" href="/">首页</a></el-breadcrumb-item>
+            <el-breadcrumb-item><a class="nav_link" href="/lab">实验室</a></el-breadcrumb-item>
+            <el-breadcrumb-item>一级单线程爬虫实验</el-breadcrumb-item>
+        </el-breadcrumb>
+    </div>
+    <div id="main">
+        爬虫实验<br>
+        开启：{{opened}}
+        <el-button @click="wormHandle">{{openButton}}</el-button>
+        当前进度：<span style="color:#0000cc">{{blUser.mid}}</span>
+        <br>失败记录：{{fails}}<br>
+        <span class="user_block" style="left:0">id：<span style="color:blue">{{blUser.mid}}</span></span>
+        <span class="user_block" style="left:150px">姓名:<span style="color:blue">{{blUser.name}}</span></span>
+        <span class="user_block" style="left:350px">粉丝数： <span style="color:blue">{{blUser.fans}}</span></span>
+        <span class="user_block" style="left:500px">性别：<span style="color:blue">{{blUser.sex}}</span></span>
+        <br>已存库
+
+    </div>
+    <div id="footer" class="foot-abo">
+        <foot-component></foot-component>
+        <copyright></copyright>
+    </div>
+</div>
+<script>
+    let main=new Vue({
+        el:'#main',
+        data:{
+            opened:"",
+            fails:"",
+            blUser:{},
+            openButton:"开启爬虫"
+        },
+        methods:{
+            wormHandle(){
+                if(this.openButton=="关闭爬虫"){
+                    this.$http.get('/api/closeWorm').then(function () {
+                        }, function () {
+                        console.log('请求失败');
+                    });
+                }else{
+                    this.$http.get('/api/openWorm').then(function () {
+                    }, function () {
+                        console.log('请求失败');
+                    });
+                }
+            },
+            getCount(){
+                this.$http.get('/api/getIsBlWormOpen').then(function (res) {
+                    if(res.bodyText=="true"){
+                        this.opened="已开启"
+                        this.openButton="关闭爬虫"
+                    }else{
+                        this.opened="关闭"
+                        this.openButton="开启爬虫"
+                    }
+                }, function () {
+                    console.log('请求失败');
+                });
+                this.$http.get('/api/nowaBlUser').then(function (res) {
+                    this.blUser=JSON.parse(res.bodyText);
+                }, function () {
+                    console.log('请求失败');
+                });
+            },
+            getFail(){
+                this.$http.get('/api/getBlWebWormFail').then(function (res) {
+                    this.fails=res.bodyText;
+                }, function () {
+                    console.log('请求失败');
+                });
+            }
+        },
+        mounted(){
+            setInterval(this.getCount,500)
+            setInterval(this.getFail,5000)
+        }
+    })
+
+    let foot = new Vue({
+            el: '#footer',
+            data: {
+                user:""
+            },
+            methods:{
+            }
+        })
+
+
+
+        let head = new Vue({
+        el: '#header',
+        data: {
+            user:""
+        },
+        methods:{
+            getUser(){
+                this.$http.get('/api/who').then(function (res) {
+                    this.user=JSON.parse(res.bodyText)
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            }
+        }
+    })
+</script>
+</body>
+</html>

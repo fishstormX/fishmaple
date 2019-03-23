@@ -1,0 +1,56 @@
+.el-header {
+    background-color: #f8f8f8;
+    color: #333;
+    line-height:30px;
+    padding-left:100px;
+}
+.el-footer{
+    color: #333;
+}
+.el-aside {
+    color: #333;
+    text-align: center;
+    line-height: 360px;
+}
+
+.el-main {
+    background-color: #f8f8f8;
+    margin: 0 0 0 0;
+    color: #333;
+    text-align: center;
+    height:360px;
+}
+
+
+#chat_head{
+    font-size: 16px;
+    font-family: "PingFang SC";
+}
+#chat_head li{
+    display: inline-block;
+    padding: 0 10px 0 15px;
+    cursor:pointer;
+    color:grey;
+}
+#chat_head li:hover{
+    color:#000;
+}
+#chat_text textarea{
+    font-size: 13px;
+    height:100px;
+}
+#foot{
+    padding:0;
+}
+.shade{
+    position: absolute;
+    z-index:100;
+    height:460px;
+    width:300px;
+    text-align: center;
+    font-size:20px;
+    font-weight: bold;
+}
+.el-menu-vertical-demo{
+    height:460px;
+}

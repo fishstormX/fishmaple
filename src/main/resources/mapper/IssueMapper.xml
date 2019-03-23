@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--客户映射 指定到dao接口 -->
+<mapper namespace="fishmaple.DAO.IssueMapper">
+    <!-- 用于演示的古典版一对多查询 考虑到使用对象惹 怕不是会变慢 -->
+    <resultMap type="fishmaple.DTO.IssueTest" id="getManyIssue">
+        <id column="id" property="id"/>
+        <result column="author" property="author"/>
+        <result column="title" property="title"/>
+        <result column="state" property="state"/>
+        <result column="ta" property="tag"/>
+
+        <collection property="solves" ofType="fishmaple.DTO.IssueReply"
+                     select="findIssueSById" column="id">
+        </collection>
+    </resultMap>
+    <select id="findAllIssueTest" resultMap="getManyIssue">
+        SELECT i.id,i.author,title,state,tag,i.timeline
+        FROM `issue` i
+    </select>
+    <select id="findAllIssueTest1" resultType="fishmaple.DTO.Issue">
+        SELECT i.id,i.author,i.title,i.state,i.tag,i.timeline, iis.*
+        FROM `issue` i LEFT JOIN `issue_solve` iis ON i.id=iis.issue_id
+    </select>
+    <select id="findIssueSById" resultType="fishmaple.DTO.IssueReply">
+        SELECT * FROM `issue_solve` WHERE issue_id = #{id}
+    </select>
+
+
+    <!--id与dao接口的方法名一直，指定结果类型，和参数类型 -->
+    <select id="getByLimit" resultType="fishmaple.DTO.Issue">
+        SELECT i.id,i.author,title,state,tag,i.timeline,num,count(i_s.id) AS replyCount
+        FROM `issue` i  LEFT JOIN  `issue_solve` i_s ON i.id = i_s.issue_id GROUP BY i.id
+         ORDER BY num LIMIT #{start},#{size}
+    </select>
+
+    <select id="getReplyList" resultType="fishmaple.DTO.IssueReply">
+        SELECT * FROM `issue_solve` WHERE issue_id = #{id} ORDER BY timeline
+    </select>
+
+    <select id="getReplyDetail" resultType="fishmaple.DTO.IssueReply">
+        SELECT * FROM `issue_solve` WHERE id = #{rid}
+    </select>
+
+    <insert id="addReply" parameterType="fishmaple.DTO.IssueReply">
+         INSERT into issue_solve(`id`,`issue_id`,`content`,author,timeline,reply_id)
+          VALUES (#{id},#{issueId},#{content},#{author},#{timeline},#{replyId})
+    </insert>
+
+    <select id="getByLimitAndState" resultType="fishmaple.DTO.Issue">
+        SELECT i.id,i.author,title,state,tag,i.timeline,num,count(i_s.id) AS replyCount
+        FROM `issue` i  LEFT JOIN  `issue_solve` i_s ON i.id = i_s.issue_id
+        <if test="state!='' and search!=''">
+         ${state} AND title LIKE CONCAT('%',#{search},'%')
+        </if>
+        <if test="state!='' and search == ''">
+         ${state}
+        </if>
+        <if test="state=='' and search!=''">
+            WHERE title LIKE CONCAT('%',#{search},'%')
+        </if>
+         GROUP BY i.id ${order} LIMIT #{start},#{size}
+    </select>
+
+    <select id="getById" resultType="fishmaple.DTO.Issue">
+        SELECT * FROM `issue` WHERE `id` = #{id}
+    </select>
+
+    <select id="getBiggestNum" resultType="Long">
+        SELECT num FROM `issue` ORDER BY num DESC LIMIT 1;
+    </select>
+
+    <select id="getCount" resultType="Integer">
+        SELECT count(id) FROM `issue`
+        <if test="state!='' and search!=''">
+        ${state} AND title LIKE CONCAT('%',#{search},'%')
+        </if>
+        <if test="state!='' and search == ''">
+            ${state}
+        </if>
+        <if test="state=='' and search!=''">
+            WHERE title LIKE CONCAT('%',#{search},'%')
+        </if>;
+    </select>
+
+    <insert id="addIssue" parameterType="fishmaple.DTO.Issue">
+        INSERT into issue(`id`,`title`,`content`,author,timeline,tag,state,num)
+          VALUES (#{id},#{title},#{content},#{author},#{timeline},#{tag},#{state},#{num})
+    </insert>
+</mapper>

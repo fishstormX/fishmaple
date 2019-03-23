@@ -1,0 +1,245 @@
+*{
+    margin:0;
+    padding:0;
+    font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+}
+#nav {
+    list-style-type: none;
+    text-align: center;
+    font-size:16px;
+    height: 74px;
+}
+#nav li{
+    z-index:100;
+    display: inline-block;
+    position: relative;
+    line-height: 40px;
+    padding:20px 4px 0 4px;
+}
+#nav li a:hover{
+    color:#007cff;;
+    transition: color 0.5s ease-in-out;
+}
+#nav li a{
+    transition: color 0.5s ease-in-out;
+}
+.nav_link{
+    font-weight: bold;
+    color:#312f34;
+    text-decoration: none;
+    cursor: pointer;
+    z-index:100;
+}
+
+
+.nav_link_tool{
+    color:#312f34;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.nav_link:hover,
+.nav_link_tool:hover
+{
+    color:#000;
+    text-decoration: none;
+}
+#king{
+    position: absolute;
+    width:100%;
+    height:100%;
+}
+.king{
+    position: absolute;
+    width:100%;
+    height:100%;
+}
+.king-blue{
+    background:linear-gradient(to top,#f0f8ff,#fff);
+}
+.king-green{
+    background:linear-gradient(to top,#fbfffb,#fff);
+}
+.king-orange{
+    background: linear-gradient(to top,#fffefc,#fff);
+}
+.middle_pic{
+    float:left;
+    width:380px;
+    margin-top:12px;
+}
+.middle_fish{
+    float: left;
+    height: 45px;
+    width: 52px;
+    margin: 12px -30px 10px -23px;
+    left: 380px;
+}
+.search{
+    padding:20px 0 0 0;
+}
+
+#search_btn{
+    background:#fff;
+ }
+#search_btn:hover{
+    background:#f5f7fa;
+}
+
+.icon {
+    width: 1em; height: 1em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+
+}
+.icon-login {
+    font-size: 33px;
+    color: #c3c3c3;
+    float: right;
+    margin-right: 12px;
+    margin-top: 20px;
+    cursor:pointer;
+}
+.top100{
+    z-index:100;
+}
+.blur {
+    filter: blur(6px);
+    -webkit-filter: blur(6px); /* chrome, opera */
+    -ms-filter: blur(6px);
+    -moz-filter: blur(6px);
+}
+
+#tempIdentity{
+    text-align: center;
+    width:65px;
+    height:65px;
+}
+.foot_nav {
+    list-style-type: none;
+    text-align: center;
+    font-size: 16px;
+}
+.foot_nav li{
+    z-index:200;
+    display: inline-block;
+    position: relative;
+    line-height: 25px;
+    padding:3px 6px 10px 6px;
+}
+.foot_nav a{
+    color:#312f34;
+    text-decoration: none;
+}
+.foot_nav a:hover
+{
+    color:#000;
+    text-decoration: none;
+}
+.icons{
+    position:relative;
+    top:3px;
+}
+#footer{
+    bottom:0;
+    width:100%;
+    margin-top:20px;
+}
+#copyright{
+    font-size:13px;
+}
+
+#fixed{
+    position:fixed;
+    right:50px;
+    bottom:100px;
+    height:20px;
+    width:40px;
+    box-shadow: 0 0 6px rgba(0,0,0,.12);
+
+    border-radius: 40px;
+    text-align: center;
+    cursor:pointer;
+}
+
+#left-fixed{
+    position:fixed;
+    left:30px;
+    top:200px;
+    text-align: center;
+}
+#left-fixed button{
+    margin:20px 0;
+}
+
+#left-fixed i{
+    font-size:18px;
+}#left-fixed svg{
+     font-size:18px;
+ }
+ .my-btn.is-circle{
+     border-radius: 50%;
+     padding: 12px;
+ }
+ .my-btn{
+
+     display: inline-block;
+     line-height: 1;
+     white-space: nowrap;
+     cursor: pointer;
+     background: #fff;
+     border: 1px solid #dcdfe6;
+     color: #606266;
+     -webkit-appearance: none;
+     text-align: center;
+     -webkit-box-sizing: border-box;
+     box-sizing: border-box;
+     outline: 0;
+     margin: 0;
+     -webkit-transition: .1s;
+     transition: .1s;
+     font-weight: 500;
+     padding: 12px 20px;
+     font-size: 14px;
+     border-radius: 4px;
+ }
+
+.my-btns .my-btn-orange:hover,.my-btns .my-btn-orange-cl{
+
+    color: #ffc929;
+    border-color: #ffd451;
+    background-color: #fff8e9;
+}
+.el-breadcrumb{
+    margin: 30px 0 35px 70px;
+}
+#blog_main .el-breadcrumb{
+    margin: 91px 0 35px 70px;
+}
+.foot-abo{
+    position:absolute;
+}
+#contact{
+    position:fixed;
+    right: 49px;
+    bottom: 128px;
+}
+
+.contact-s{
+    width:42px;
+    margin:10px 0;
+    height:35px;
+}
+.background{
+    background: url(https://wx3.sinaimg.cn/mw690/9b4d057bly1fwvue6q2mgj20va11v3zt.jpg) no-repeat;
+    background-position-x: 90%;
+    background-position-y: bottom;
+}
+.dic-on{
+    cursor:pointer;
+    border-bottom: 1.5px blue dotted;
+}
+
+
+

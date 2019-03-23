@@ -1,0 +1,66 @@
+.el-card__body {
+    padding:0 20px !important;
+}
+.issue_title{
+    margin-top:20px;
+    text-align:center;
+}
+.issue_title span{
+    color:grey;
+}
+.issue_author{
+    margin:10px;
+    color: #00a0e9;
+}
+.issue_time{
+    font-weight: 600;
+}
+.issue_block{
+    margin:25px;
+    padding: 10px 10px 0 10px;;
+}
+.issue_block_m{
+    margin:25px;
+    padding:25px 15px;
+}
+.issue_main{
+    margin:0 25%;
+}
+.issue_content{
+    font-size:14px;
+    margin:10px 20px;
+
+}
+.reply_author{
+    color:grey;
+    margin:0 10px;
+}
+.reply_time{
+    font-weight: 600;
+}
+.reply_rContent span{
+    line-height: 30px;
+    margin-left: 10px;
+}
+.reply_rContent{
+    width: 100%;
+    border-left: 5px solid #edecec;
+    font-size: 13px;
+    margin-bottom: 30px;
+    margin-left: -10px;
+}
+.reply_rauthor{
+    color:blue;
+}
+.reply_block_bottom{
+    border-top: 1px solid #d1d5da;;
+    padding: 10px 30px;
+    width: 100%;
+    margin: 0 -30px;
+    background-color: #f6f8fa;
+    min-height:40px;
+}
+.reply_content{
+    font-size:14px;
+    margin:20px;
+}

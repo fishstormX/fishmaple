@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="提供一些文件的下载服务，用户可在此上传和下载文件-web灵魂开发工程师鱼鱼的后花园" />
+    <title>鱼鱼的工具箱</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/tool.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="/js/mark.js"></script>
+    <script src="/js/text.js"></script>
+   </head>
+<body>
+
+    <div id="header">
+        <top-component  :tool="'tool'"  :user="user"></top-component>
+    </div>
+    <div th:utext="${content}" id="fish-bind">
+    </div>
+    <div>
+        <el-row id="toolList">
+            <el-col :span="4" class="left_bar">
+                <ul class="nav_tool">
+                    <li v-for="tool in tools">
+                        <a @Click="setTool(tool)" class="nav_link_tool">{{tool.name}}</a>
+                    </li>
+                </ul>
+            </el-col>
+            <el-col class="right_bar" :span="14">
+                <div v-if="seen">{{author}}上传于<span style="color:cornflowerblue">{{date}}</span></div>
+                <div v-html="describe"></div><br>
+                <span v-if="seen">下载链接：</span>
+                <div v-for="resource in resources">
+                    <a class="link_download" :href="resource.url" :download="resource.name">{{resource.name}}</a>
+                </div>
+            </el-col>
+        </el-row>
+    </div>
+
+    <div id="contact-com">
+        <contact-component ></contact-component>
+    </div>
+
+
+    <div id="uploadDialog">
+        <el-dialog
+            title="新工具上传 (。＿ 。）"
+            :visible.sync="dialogVisible"
+            width="30%"
+            :before-close="handleClose">
+        <span>
+            <el-upload
+                class="upload-demo"
+                action="/api/tool/upload"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove"
+                :before-remove="beforeRemove"
+                multiple
+                :limit="3"
+                :on-exceed="handleExceed"
+                :on-success="handleSuccessed"
+                :file-list="fileList">
+            <el-button size="small" type="primary">点击上传</el-button>
+         <div slot="tip" class="el-upload__tip">同时只能上传三个文件
+         暂时没有提供编辑器(后面会使用富文本编辑器)请使用html代码进行编辑<br>
+             文件名称：<el-input v-model="toolName" placeholder="请输入内容"></el-input><br>
+             文件描述：<text-component id="upload_text" v-model="text"></text-component>
+         </div>
+            </el-upload>
+        </span>
+        <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="createTool">确 定</el-button>
+        </span>
+    </el-dialog>
+    </div>
+
+    <div id="footer" class="foot-abo">
+        <foot-component></foot-component>
+        <copyright></copyright>
+        </div>
+
+<script>
+    let contact = new Vue({
+        el: '#contact-com',
+        data: {
+
+        },
+        methods: {
+
+        }
+    })
+
+    var foot = new Vue({
+        el: '#footer'
+    })
+
+    var uploadDialog = new Vue({
+        el:'#uploadDialog',
+        data:{
+            dialogVisible: false,
+            text:"上传了一个文件",
+            toolName:"",
+            toolfileList:[],
+            fileList:[],
+        },
+        methods:{
+            deleteFile:function(id){
+                this.$http.delete('/api/upload',{id:id}).then(function(res){
+                    if(res.bodyText==='success') {
+                    }
+                },function(){
+                    console.log('请求失败');
+                });
+            },
+            handleSuccessed(response,file, fileList) {
+                this.toolfileList.push(response);
+            },
+            handleRemove(file, fileList) {
+                console.log(file, fileList);
+            },
+            handlePreview(file) {
+                console.log(file);
+            },
+            handleExceed(files, fileList) {
+                this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+            },
+            beforeRemove(file, fileList) {
+                this.$confirm(`移除 ${ file.name }？`)
+                   .then(_ => {
+                       var index = fileList.indexOf(file);
+                       this.toolfileList.splice(index,1);
+                       fileList.splice(index,1);
+                       this.deleteFile(toolfileList[index].id);
+                       return false;
+                   })
+                   .catch(_ => {
+                   });
+                return false;
+               },
+            createTool(){
+                this.$http.post('/api/tool',{
+                    name:this.toolName,
+                    describe:this.text,
+                    resourceIds:this.toolfileList
+                    }).then(function(res){
+                    if(res.bodyText==='getupload') {
+                        uploadDialog.dialogVisible = res.bodyText;
+                    }
+                },function(){
+                    console.log('请求失败');
+                });
+                Vue.http.get('/api/tools').then(function (res) {
+                    vm.tools = JSON.parse(res.bodyText);
+                }, function () {
+                    console.log('请求失败');
+                });
+                this.dialogVisible = false;
+            },
+            handleClose(done) {
+                this.$confirm('你还没有上传完，要关掉我嘛？')
+                    .then(_ => {
+                        //TODO
+                        this.dialogVisible = false;
+            })
+            .catch(_ => {});
+                }
+
+        }
+    });
+
+    var vm = new Vue({
+        el:'#toolList',
+        data:{
+            tools: [
+            ],
+            describe:"匿名工具上传，请在本页面搜索框输入\"Heyfish\"并搜索，开放匿名上传，请不要恶意上传文件建议登陆后进行上传，以防文件被误清掉",
+            path:"/tool",
+            resources:[],
+            seen:false,
+            author:"",
+            date:""
+        },
+        methods:{
+            setTool:function(tool){
+                this.describe=tool.describe
+                this.author=tool.author
+                let timeline = new Date(tool.createDate * 1000)
+                this.date = timeline.getFullYear() + "年" + (timeline.getMonth() + 1) + "月" +
+                    timeline.getDate() + "日"
+                this.$http.get('/api/tool/'+tool.id+'/resource').then(function(res){
+                    for(index in this.resources)
+                        this.resources.pop()
+                    var s=JSON.parse(res.bodyText);
+                    this.resources=[]
+                    for(index in s)
+                    Vue.set(this.resources,index,s[index])
+                    this.seen=true
+                },function(){
+                    console.log('请求失败');
+                });
+            },
+            onLoad(){
+                //隐藏
+                document.getElementById("fish-bind").style.display="none"
+                let url = window.location.search;
+                let tid
+                if (url.indexOf("=") != -1) {
+                     tid = url.substring(url.indexOf("=") + 1);
+                }
+                Vue.http.get('/api/tools').then(function (res) {
+                    vm.tools = JSON.parse(res.bodyText);
+                    for (let i = 0; i < vm.tools.length; i++) {
+                        if(vm.tools[i].id==tid){
+                            vm.setTool(vm.tools[i])
+                        }
+                    }
+                }, function () {
+                    console.log('请求失败');
+                });
+
+            }
+        },
+        mounted(){
+            this.onLoad();
+        }
+    });
+
+    var head = new Vue({
+        el: '#header',
+        data:{
+            user:{}
+        },
+        methods:{
+            getUser(){
+                this.$http.get('/api/who').then(function (res) {
+                    this.user=JSON.parse(res.bodyText)
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            }
+        },
+        mounted(){
+            this.getUser()
+        }
+    })
+
+
+</script>
+</body>
+</html>

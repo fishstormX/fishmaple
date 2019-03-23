@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>版本介绍-日迹-鱼鱼的博客</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
+
+    <style>
+        .left>div{
+            margin:20px;
+            padding:20px;
+            border-bottom:1px darkgrey solid;
+        }
+        div>li{
+            margin-right:30px;
+            line-height:30px;
+        }
+        div>span{
+            color:cornflowerblue;
+            font-family: Microsoft JhengHei;
+        }
+        .right{
+            margin:20px;
+            padding:20px;
+        }
+        .finished{
+            text-decoration:line-through;
+        }
+    </style>
+</head>
+<body>
+<div id="main" class="header">
+    <div>
+        <top-component :user="user" ></top-component>
+    </div>
+    <el-row>
+        <el-col :span="16" class="left">
+            <div class="left">
+                一份个人博客,主要如下：<br>
+                <div>
+                    <span>2018年12月3日</span>
+                    <li>好久没写了 (╥╯^╰╥)</li>
+                    <li>应用了Druid数据源，并且启用监视器，登陆地址为/druid</li>
+                    <li>为博客正文添加了词典渲染</li>
+                    <li>添加了两种博客标识：原创和TODO</li>
+                    <li>添加登陆的拦截器，实现修正session的TimeOut(但是Shiro层面的Session超时貌似修改失败了)</li>
+                </div>
+                <div>
+                    <span>2018年11月15日</span>
+                    <li>更改了首页博客博文概要的限制长度</li>
+
+                </div>
+                <div>
+                    <span>2018年11月13日</span>
+                    <li>将1og的处理改为5分钟定时任务，加快了读取</li>
+                    <li>新增二维码生成实验</li>
+                    <li>探究上下文的应用和job</li>
+
+                </div>
+                <div>
+                    <span>2018年11月13日</span>
+                    <li>修复了一些blog封面和更新的逻辑bug</li>
+                    <li>做了线程爬虫demo和多线程任务demo</li>
+                    <li>为用户系统和实验室爬虫提供了redis缓存服务</li>
+                    <li>探究∞的任务</li>
+                </div>
+                <div>
+                    <span>2018年11月1日</span>
+                    <li>修改了部分样式</li>
+                    <li>添加了log查看</li>
+                    <li>新增用户注册和登录（有一套极其复杂的加密方式）适配了博客 工具和字典</li>
+                    <li>精简了组件（搜索 上传tool逻辑在组件中实现）</li>
+                    <li>为博客添加图片</li>
+                </div>
+                <div>
+                    <span>2018年10月27日</span>
+                    <li>词典可以换行和显示空格，并且添加了百度百科的关键词联想</li>
+                </div>
+                <div>
+                    <span>2018年10月24日</span>
+                    <li>词典(米wiki)雏形造好，需要改进一下页面</li>
+                    <li>博客添加词典功能(需待上面完工才能体现效果)</li>
+                    <li>博客中去掉涂鸦 地图 iframe(为了安全性和布局兼容性) 原生背景功能不可用 探究一下</li>
+                </div>
+                <div>
+                    <span>2018年10月19日</span>
+                    <li>博客编辑不再添加一行空行</li>
+                    <li>添加博客置顶（手动），修改博客分类tag样式，添加新增博客入口</li>
+                    <li>解决搜索结果无tag会NPE的bug</li>
+                    <li>添加某些后台缺省设置</li>
+                </div>
+                <div>
+                    <span>2018年10月18日</span>
+                    <li>为博客页左部超长的导航添加滚动条(再考虑是原生的还是隐藏的)</li>
+                    <li>博客适配左侧导航栏在正文中占据100%高度</li>
+                    <li>博客导航栏跟随准度调整(包括适配代码高亮后的跟随)</li>
+                    <li>将logo和github图标修正为小图，节省加载时间</li>
+                </div>
+                <div>
+                    <span>2018年10月16日</span>
+                    <li>新logo！<img width="200px" src="/pics/logo-fish.png"></li>
+                    <li>博客里面的游鱼在鼠标点击和键盘按键事件下会有变化，应该是调试用，去掉了</li>
+                    <li>调整了底边foot的位置适配浏览器窗口和页面body元素的高度，借助了
+                        nextTick()回调</li>
+                </div>
+                <div>
+                    <span>2018年10月15日</span>
+                    <li>新增模糊搜索，匹配规则：任意两组相邻有语义词汇组合或相邻无语义词汇组合为关键字，
+                            （保证能查到所有有语义关键字的前提下）</li>
+                    <li>改变部分查询规则：标题关键字高亮，代码部分结果显示</li>
+                    <li>改变搜索页面和博客block元素样式，（发现字体“Microsoft JhengHei”,“monospace”）</li>
+
+                </div>
+                <div>
+                    <span>2018年10月14日</span>
+                    <li>为站点画了一个小logo！</li>
+
+                </div>
+                <div>
+                    <span>2018年10月13日</span>
+                <li>编写简单的搜索，分别为全文匹配的精确检索和彻底分解句式保留有语义词汇的模糊搜索</li>
+
+                </div>
+                <div>
+                    <span>2018年10月12日</span>
+                <li>将百度nlp(自然语言处理)融入站内搜索中，主要调用依存句法分析接口</li>
+                </div>
+                基础版本：
+
+            </div>
+        </el-col>
+        <el-col class="right" :span="6">
+            <div class="right">
+                <span style="color:green;font-weight: bolder">//TODO</span>
+                <ul>
+                    <li class="finished">完成基本的站内搜索功能</li>
+                    <li class="finished">为网站设计一个logo</li>
+                    <li>完成网站的闭环</li>
+                    <li>看一看MQ的知识</li>
+                    <li>redis理解迫在眉睫</li>
+                </ul>
+            </div>
+            <div class="right">
+                <span style="color:lightskyblue;font-weight: bolder">愿望清单</span>
+                <ul>
+                    <li>吃一顿随便什么的创意菜</li>
+                    <li>想去日本旅行</li>
+                    <li>去猫咖撸次猫</li>
+                    <li>找个女朋友或者</li>
+                </ul>
+            </div>
+        </el-col>
+    </el-row>
+
+
+
+
+</div>
+<script>
+    let main = new Vue({
+    el: '#main',
+    data: {
+        searchvalue:"",
+        user:{}
+    },methods:{
+            getUser(){
+                this.$http.get('/api/who').then(function (res) {
+                    this.user=JSON.parse(res.bodyText)
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            },
+            dosearch() {
+                window.location.href = '/search?content=' + this.searchvalue
+            }
+        },
+        mounted(){
+                this.getUser()
+        }
+})</script>
+
+</body>
+</html>

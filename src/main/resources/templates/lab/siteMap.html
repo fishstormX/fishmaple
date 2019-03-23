@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="description" content="根据提供的网站站点爬虫爬取网站地图
+    SEO优化 目前免费使用 支持http/https" />
+    <meta charset="UTF-8">
+    <title>网站地图生成实验——鱼鱼の实验室（三星实验）</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/lab/lab.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/lab/sitemap.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+</head>
+<body>
+<div id="king" class="king-orange">
+    <div id="header">
+        <top-component  :user="user"></top-component>
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item><a class="nav_link" href="/">首页</a></el-breadcrumb-item>
+            <el-breadcrumb-item><a class="nav_link" href="/lab">实验室</a></el-breadcrumb-item>
+            <el-breadcrumb-item>sitemap生成</el-breadcrumb-item>
+        </el-breadcrumb>
+    </div>
+    <div id="main">
+
+
+        <div class="sm-block">
+                <el-input
+                        style="font-size:23px;width:400px"
+                        type="text"
+                        placeholder="请输入网站"
+                        v-model="value"
+                        @keyup.enter.native="getSiteMap"
+                        spellcheck ="false"
+                >
+                </el-input>
+            <el-button style="float: right;height: 50px;font-size: 18px;" el-button type="success" plain @click="getSiteMap">生成站点地图</el-button>
+        </div>
+        <div class="sm-block">
+                <el-radio v-model="protocol" label="http">http</el-radio>
+                <el-radio v-model="protocol" label="https">https</el-radio>
+        </div>
+        <div>声明</div>
+
+    </div>
+    <div id="footer" class="foot-abo">
+        <foot-component></foot-component>
+        <copyright></copyright>
+    </div>
+</div>
+<script>
+    let main=new Vue({
+        el:'#main',
+        data:{
+            value:'',
+            protocol:"http"
+        },
+        methods:{
+            onLoad(){
+
+            },
+            getSiteMap(){
+                alert("敬请期待");
+            }
+        },
+        mounted(){
+            this.onLoad()
+        }
+    })
+
+    let foot = new Vue({
+        el: '#footer',
+        data: {
+            user:""
+        },
+        methods:{
+        }
+    })
+
+
+    let head = new Vue({
+        el: '#header',
+        data: {
+            user:""
+        },
+        methods:{
+            getUser(){
+                this.$http.get('/api/who').then(function (res) {
+                    this.user=JSON.parse(res.bodyText)
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            }
+        }
+    })
+</script>
+</body>
+</html>

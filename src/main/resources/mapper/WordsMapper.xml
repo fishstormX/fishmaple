@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--客户映射 指定到dao接口 -->
+<mapper namespace="fishmaple.DAO.WordsMapper">
+    <!--id与dao接口的方法名一直，指定结果类型，和参数类型 -->
+    <select id="getRandOne" resultType="fishmaple.DTO.Words">
+        SELECT * FROM `words`  WHERE `id` >= (
+            SELECT (SELECT MAX(`id`) FROM `words` ) * RAND() ) LIMIT 1
+    </select>
+</mapper>

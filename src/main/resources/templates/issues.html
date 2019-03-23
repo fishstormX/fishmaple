@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="一些开发中遇到的小问题" />
+    <title>鱼鱼的issues</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.2/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <link type="text/css" rel="stylesheet" href="/font/iconfont.css"/>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="/js/mark.js"></script>
+    <script src="/js/text.js"></script>
+   <style>
+       .el-table .warning-row {
+           background: oldlace;
+       }
+
+       .el-table .success-row {
+           background: #f1fceb;
+       }
+       </style>
+    </head>
+<body>
+
+    <div id="header">
+        <top-component :user="user"></top-component>
+    </div>
+
+    <div id="issues" style="margin-top:20px;">
+        <div>
+            <el-button style="left:20px;margin:10px;position:absolute;z-index:1"
+                     @click="newIssue"  type="primary">New issue</el-button>
+            <el-input
+                clearable
+                style="right: 10px;margin: 10px;position:absolute;
+                z-index: 1;width:200px;" v-model="search"
+                placeholder="按标题搜索">
+            <i slot="prefix" class="el-input__icon el-icon-search"></i>
+        </el-input>
+        </div>
+        <el-table @filter-change="filterHandler"
+                  @sort-change="handleSort"
+                :data="tableData"
+                :row-class-name="tableRowClassName"
+                style="width: 100%">
+            <el-table-column
+                    prop="num"
+                    label=""
+                    width="60"
+            >
+                <template slot-scope="scope">
+                    <span style="margin-left: 10px;">{{ scope.row.num }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    prop="title"
+                    label="issue"
+                    width="360"
+                    >
+                <template slot-scope="scope">
+                    <span style="cursor:pointer;font-size: 16px;font-weight:900;"
+                       @click="handleClick(scope.row)">{{ scope.row.title }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    sortable="custom"
+                    prop="author"
+                    label="提出者"
+                    >
+            </el-table-column>
+            <el-table-column
+                    sortable="custom"
+                    prop="tag"
+                    label="tags"
+                    >
+            </el-table-column>
+            <el-table-column
+                    sortable="custom"
+                    prop="state"
+                    label="状态"
+                    width="100"
+                    :filters="[{text: 'open', value: 'open'},
+                    {text: 'closed', value: 'closed'},
+                    {text: 'warn', value: 'warn'}]"
+                    column-key="state"
+            >
+            </el-table-column>
+            <el-table-column
+                    sortable="custom"
+                    prop="replyCount"
+                    width="105"
+                    label="回复数">
+                <template slot-scope="scope">
+                    <i style="cursor:pointer;color:grey" class="iconfont icon-news"></i>
+                    <span style="margin-left: 5px;font-size: 16px;}">{{ scope.row.replyCount }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    sortable="custom"
+                    prop="timeline"
+                    label="更新时间">
+            </el-table-column>
+            <el-table-column
+                    prop=""
+                    label=""
+                    width="205"
+            >
+            </el-table-column>
+        </el-table>
+        <div class="page_block" style="width: 100%;
+        bottom: 100px;text-align: center;">
+            <el-pagination
+                    @current-change="handleCurrentChange"
+                    :current-page.sync="currentPage"
+                    :page-size="9"
+                    layout="prev, pager, next, jumper"
+                    :total="total">
+            </el-pagination>
+        </div>
+    </div>
+
+    <div id="contact-com">
+        <contact-component ></contact-component>
+    </div>
+
+    <div id="footer">
+        <foot-component></foot-component>
+        <copyright></copyright>
+    </div>
+
+<script>
+    let contact = new Vue({
+        el: '#contact-com',
+        data: {
+        },
+        methods: {
+        }
+    })
+
+    var foot = new Vue({
+        el: '#footer'
+    })
+
+    var issues = new Vue({
+        el:'#issues',
+
+        data:{
+            total: 9,
+            currentPage: 1,
+            search: '',
+            tableData: [],
+            value:'',
+            column:{prop:'',order:''}
+        },
+        watch: {
+            search: function (value) {
+                let _this = this
+                axios.get('/api/issue/'+ this.currentPage+"?order="+this.column.prop+"&desc="+this.column.prop+"&stateFilter="+this.value+"&search="+this.search)
+                    .then(function (res) {
+                        _this.tableData = res.data
+                    }).catch(function (error) {
+                    console.log('请求失败');
+                });
+                axios.get('/api/issue/count?stateFilter='+"?stateFilter="+this.value+"&search="+this.search)
+                    .then(function (res) {
+                        _this.total = res.data
+                    })
+                    .catch(function (error) {
+                        console.log('请求失败');
+                    });
+            }
+        },
+        methods:{
+            newIssue(){
+                window.location.href="/issues/new";
+            },
+            handleSort(column, prop, order ){
+                let _this = this
+                this.column=column;
+                axios.get('/api/issue/'+ this.currentPage+"?order="+column.prop+"&desc="+column.order+"&stateFilter="+this.value+"&search="+this.search)
+                    .then(function (res) {
+                        _this.tableData = res.data
+                    }).catch(function (error) {
+                        console.log('请求失败');
+                    });
+            },
+            handleCurrentChange(page) {
+                let _this = this
+                axios.get('/api/issue/'+ page+ "?order="+this.column.prop+"&desc="+this.column.order+"&stateFilter="+this.value+"&search="+this.search)
+                    .then(function (res) {
+                        _this.tableData = res.data
+                    })
+                    .catch(function (error) {
+                        console.log('请求失败');
+                    });
+            },
+            filterHandler(filters) {
+                let _this = this
+                let temp=""
+                console.log(filters.state)
+                for(value of filters.state.sort()){
+                    temp+=value+","
+                }
+                console.log(filters.state)
+
+                if(temp!=this.value){
+                    this.currentPage=1
+                    this.value=temp
+                }
+                axios.get('/api/issue/'+ this.currentPage+"?order="+this.column.prop+"&desc="+this.column.order+"&stateFilter="+this.value+"&search="+this.search)
+                    .then(function (res) {
+                        _this.tableData = res.data
+                    })
+                    .catch(function (error) {
+                        console.log('请求失败');
+                    });
+                axios.get('/api/issue/count?stateFilter='+"?stateFilter="+this.value+"&search="+this.search)
+                    .then(function (res) {
+                        _this.total = res.data
+                    })
+                    .catch(function (error) {
+                        console.log('请求失败');
+                    });
+            },
+            handleClick(row){
+                window.location.href="/issue/d?id="+row.id
+            },
+            tableRowClassName({row, rowIndex}) {
+                if (row.state == "warn") {
+                    return 'warning-row';
+                } else if (row.state == "closed") {
+                    return 'success-row';
+                }
+                return '';
+            },
+           init(){
+               let _this = this
+               axios.get('/api/issue')
+                   .then(function (res) {
+                       _this.tableData = res.data
+                   })
+                   .catch(function (error) {
+                       console.log('请求失败');
+                   });
+               axios.get('/api/issue/count')
+                   .then(function (res) {
+                       _this.total = res.data
+                   })
+                   .catch(function (error) {
+                       console.log('请求失败');
+                   });
+
+            }
+        },
+        mounted(){
+            this.init();
+        }
+    });
+
+    var head = new Vue({
+        el: '#header',
+        data:{
+            user:{}
+        },
+        methods:{
+            getUser(){
+                this.$http.get('/api/who').then(function (res) {
+                    this.user=JSON.parse(res.bodyText)
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            }
+        },
+        mounted(){
+            this.getUser()
+        }
+    })
+
+
+</script>
+</body>
+</html>

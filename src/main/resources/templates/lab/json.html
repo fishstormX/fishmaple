@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<div lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>实验室-json解析</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/text.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
+</head>
+<div id="king" class="king-blue">
+    <div  id="header">
+        <div id="component">
+            <top-component  v-model="searchtext"></top-component>
+        </div>
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item><a class="nav_link" href="/">首页</a></el-breadcrumb-item>
+            <el-breadcrumb-item><a class="nav_link" href="/lab/">实验室</a></el-breadcrumb-item>
+            <el-breadcrumb-item>json解析实验</el-breadcrumb-item>
+        </el-breadcrumb>
+    </div>
+    <div class="main" id="main">
+    <el-row>
+        <el-col :span="9">
+            <div class="main_left">
+                json解析实验 默认使用jackson进行解析
+                <span>js文本:</span>
+            <text-conponent id="chat_text" v-model="text"></text-conponent>
+            </div>
+        </el-col>
+        <el-col :span="6"></el-col>
+        <el-col :span="9">
+        <div class="main_right">
+            解析结果
+            <text-conponent id="chat_text" v-model="text"></text-conponent>
+        </div>
+        </el-col>
+    </el-row>
+    </div>
+
+
+
+    <div id="footer">
+            <foot-component></foot-component>
+            <copyright></copyright>
+            <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1274798157'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s19.cnzz.com/z_stat.php%3Fid%3D1274798157%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script>
+        </div>
+
+</div>
+</html>
+<script>
+var vm = new Vue({
+    el: '#header',
+    data: {
+    searchtext:""
+    }
+})
+var vm = new Vue({
+    el: '#main',
+    data: {
+        text:""
+    }
+})
+
+</script>
+</body>
+</html>

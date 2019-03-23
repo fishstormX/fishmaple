@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="description" content="web灵魂开发工程师鱼鱼的后花园" />
+    <link rel="canonical" href="https://www.fishmaple.cn/" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.1, maximum-scale=1, user-scalable=no,minimal-ui">
+    <meta property="og:site_name" content="鱼鱼的后花园" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta charset="UTF-8">
+    <meta name="keywords" content="技术,前端,java,软件开发">
+    <title>鱼鱼的后花园-移动端</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/blog.css"/>
+    <link type="text/css" rel="stylesheet" href="/font/iconfont.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <link type="text/css" rel="stylesheet" href="/properties.css"/>
+    <script src="/js/util.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfontAdapter.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
+    <style>
+        *{
+            font-size:16px;
+        }
+        .blog-list .bloglist-block{
+            padding: 15px 0 0px 0;
+        }
+        .bloglist-block .bloglist-content{
+            margin-left:0;
+            font-size:16px;
+            min-height: 0px;
+        }
+        .bloglist-block .el-tag{
+
+            font-size: 10px;
+        }
+        .bloglist-tags {
+            float: none;
+        }
+
+        .bloglist-block .bloglist-author{
+            font-size: 16px;
+        }
+        .page-block .el-pager li {
+            font-size: 16px;
+        }
+        .page-block .el-pagination .btn-next .el-icon, .el-pagination .btn-prev .el-icon {
+             font-size: 16px;
+         }
+        #blog_main .el-breadcrumb {
+            margin: 0 20px;
+        }
+        .middle_fishm {
+            width: 10%;
+            margin: 5px 0 22px -28px;
+        }
+        </style>
+</head>
+<body>
+<div style="height:90px;">
+    <a href="/"  class="nav_link">
+        <img style="position:relative;width:92%"class="logo" src="/pics/logo_m_m.png">
+    <img  class="logo middle_fishm" src="/pics/logo-fish-small.png"></a>
+    <span style="    font-size: 10px;
+    float: left;">建议使用电脑访问页面</span>
+    <h1 style="float: right;
+    font-size: 18px;">移动版</h1>
+</div>
+<div id="blog_main">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item><a class="nav_link" href="/index">首页</a></el-breadcrumb-item>
+        <el-breadcrumb-item><a class="nav_link" href="/blog">博客</a></el-breadcrumb-item>
+        <el-breadcrumb-item v-if="tagtap">{{screen}}</el-breadcrumb-item>
+    </el-breadcrumb>
+    <el-row class="blog-list" style="margin:0 15px">
+        <el-col :span="24" class="blog-left">
+            <div v-for="blog in items" class="bloglist-block">
+                <div class="bloglist-title">
+                    <a style="font-size:21px;" target="_blank" v-bind:href="'/blog/d?bid='+blog.id">{{blog.title}}</a>
+                </div>
+                <div class="bloglist-cover">
+                    <a target="_blank" v-bind:href="'/blog/d?bid='+blog.id">
+                        <img style="width: 100%;position: relative;" v-bind:src="blog.cover">
+                    </a>
+                </div>
+                <div class="bloglist-content">{{blog.content}}</div>
+                <span class="bloglist-date" style="font-size:17px">{{blog.timeline}}</span>
+                <span class="bloglist-author">{{blog.author}}</span>
+                <i class="icon iconfont icon-yuanchuang bloglist-original" title="原创文章" v-if="blog.isOriginal==1"></i>
+                <i class="icon iconfont icon-todo bloglist-todo" title="//TODO" v-if="blog.todo==1"></i>
+                <div style="height:60px"><span class="bloglist-tags">
+                            <el-tag v-bind:class="blog.tagTypes[index]"
+                                 size="small"   v-for="(tag,index) in blog.tags">{{tag}}</el-tag>
+                </span></div>
+            </div>
+            <div v-if="isNull" class="bloglist-block">
+                分类下暂时没有文章哦！
+            </div>
+        </el-col>
+    </el-row>
+</div>
+
+<div id="page_block" class="page-block" style="margin:20px 0px;">
+    <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page.sync="currentPage"
+            :page-size="7"
+            background
+            layout="prev, pager, next"
+            :total="total">
+    </el-pagination>
+</div>
+<script>
+    let pagec = new Vue({
+        el: '#page_block',
+        data: {
+            total: 70,
+            currentPage: 1
+        },
+        methods: {
+            handleCurrentChange(page) {
+                this.$http.get('/api/blog?' + (this.tagtap ? 'tag=' + this.screen + '&' : '') +
+                    "&page=" + page).then(function (res) {
+                    blog.items = JSON.parse(res.bodyText);
+                    for (let i in blog.items) {
+                        let date = new Date(blog.items[i].timeline * 1000);
+                        blog.items[i].timeline = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" +
+                            date.getDate() + "日"
+                    }
+                    if (blog.items.length === 0) {
+                        blog.isNull = true;
+                    } else {
+                        blog.isNull = false;
+                    }
+                }, function () {
+                    console.log('请求失败');
+                });
+            }
+        }
+    })
+
+    let blog = new Vue({
+        el: '#blog_main',
+        data: {
+            tagtap: false,
+            screen: "",
+            isNull: false,
+            items: [{}],
+        },
+        methods: {
+            onLoad() {
+                this.$http.get('/api/blog?page=' + pagec.currentPage).then(function (res) {
+                    this.items = JSON.parse(res.bodyText);
+                    for (let i in this.items) {
+                        let date = new Date(this.items[i].timeline * 1000);
+                        this.items[i].timeline = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" +
+                            date.getDate() + "日"
+                        this.$nextTick(() => {
+                            foot.getHeight()
+                        })
+
+                    }
+                    document.getElementsByClassName("bloglist-block")[0].style.borderTop = "0 solid"
+                }, function () {
+                    console.log('请求失败')
+                });
+                this.$http.get('/api/blog/count').then(function (res) {
+                    pagec.total = parseInt(res.bodyText)
+                    this.$nextTick(() => {
+                        //foot.getHeight()
+                    })
+                }, function () {
+                    console.log('请求失败')
+                });
+            },
+            getIn(id) {
+                window.open("/blog/d?bid=" + id,'_blank')
+            }
+        },
+        mounted() {
+            this.onLoad()
+        }
+    })
+
+</script>
+</body>
+</html>

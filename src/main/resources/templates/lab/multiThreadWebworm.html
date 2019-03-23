@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>鱼鱼の实验室-多线程爬虫实验（2星实验）</title>
+    <meta name="description" content="测试多线程性能的爬虫实验" />
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/lab/lab.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+</head>
+<body>
+<div id="king" class="king-blue">
+    <div id="header">
+        <top-component  :user="user"></top-component>
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item><a class="nav_link" href="/">首页</a></el-breadcrumb-item>
+            <el-breadcrumb-item><a class="nav_link" href="/lab">实验室</a></el-breadcrumb-item>
+            <el-breadcrumb-item>二级多线程爬虫实验</el-breadcrumb-item>
+        </el-breadcrumb>
+    </div>
+    <div id="main">
+        多线程爬虫实验（拟）<br>
+        撤销一个任务会终止线程，但线程的工作进度将会保留,最多只能同时保持10个线程<br>
+        <el-button icon="el-icon-plus" @click="opennew" circle></el-button>    添加任务
+        <el-button @click="closeAll">重置</el-button> 重置所有任务 包含爬虫数据
+        <br>
+        <el-card v-for="task in tasks" class="msg-card" shadow="hover">
+            <div slot="header"  class="clearfix">
+                <span>线程任务</span>
+                <button @click="closeone(task.id)" type="button" class="close">
+                    <i class="el-dialog__close el-icon el-icon-close"></i></button>
+            </div>
+            id:<span class="value">{{task.id}}</span><br>
+            状态：<span class="value">{{task.state}}</span><br>
+            进度：<span class="value">{{task.mid}}</span>
+        </el-card>
+
+    </div>
+    <div id="footer" class="foot-abo">
+        <foot-component></foot-component>
+        <copyright></copyright>
+    </div>
+</div>
+<script>
+    let main=new Vue({
+        el:'#main',
+        data:{
+            tasks:{state:"关闭",mid:0},
+            current:0,
+            stateUrl:"/api/threadNormalTaskState"
+        },
+        methods:{
+            closeAll(){
+                this.$http.get('/api/closeAll').then(function (res) {
+            }, function () {
+                console.log('请求失败')
+            });
+            },
+            closeone(index){
+                this.$http.get('/api/stopTask?i='+index).then(function (res) {
+                   for(let i=0;i<this.tasks.length;i++){
+                       if (this.tasks[i].id==index){
+                           this.tasks.splice(i,1)
+                           break
+                       }
+                    }
+                }, function () {
+                    console.log('请求失败')
+                });
+            },
+            opennew(){
+                this.$http.get('/api/opennew').then(function (res) {
+                    this.current=res.bodyText
+                }, function () {
+                    console.log('请求失败')
+                });
+            },
+            getState(){
+                this.$http.get(this.stateUrl).then(function (res) {
+                    this.tasks=JSON.parse(res.bodyText);
+                }, function () {
+                    console.log('请求失败')
+                });
+            }
+        },
+        mounted(){
+            setInterval(this.getState,200)
+        }
+    })
+
+    let foot = new Vue({
+        el: '#footer',
+        data: {
+            user:""
+        },
+        methods:{
+        }
+    })
+
+
+    let head = new Vue({
+        el: '#header',
+        data: {
+            user:""
+        },
+        methods:{
+            getUser(){
+                this.$http.get('/api/who').then(function (res) {
+                    this.user=JSON.parse(res.bodyText)
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            }
+        }
+    })
+</script>
+</body>
+</html>

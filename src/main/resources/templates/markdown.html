@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>马克党</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/style.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+
+</head>
+<body>
+
+    <div id="app">
+        <header>名字.md
+            <div class="buttons"></div>
+        </header>
+        <div class="editor">
+            <textarea class="code" autofocus="autofocus" v-model="code"></textarea>
+            <div class="result" v-html="compiledOutput"></div>
+        </div>
+        <footer :style="{background:actualSkin.background}">{{ appTitle }}</footer>
+    </div>
+    <div id="footer">
+        <foot-component></foot-component>
+        <copyright></copyright>
+    </div>
+    <script>
+        var foot = new Vue({
+            el: '#footer'
+        })
+    </script>
+<script src='/js/marked.min.js'></script>
+<script src='/js/mark.js'></script>
+</body>
+</html>

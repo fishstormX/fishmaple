@@ -1,0 +1,47 @@
+.m-foot-block{
+    width: 5%;
+    font-size: 200%;
+    text-align: center;
+    padding: 0 10% 0 10%;
+}
+.m-foot-block.ncp{
+    border-right: 1px grey solid;
+}
+.m-foot .iconfont{
+    font-size:25px;
+    margin:-2px auto -9px auto;
+}
+#footer .iconfont-b{
+    font-size: 30px;
+    margin: -7px auto -11px auto;
+    position: relative;
+    right: 3px;
+}
+.m-foot{
+    position: fixed;
+    bottom:0;
+    width: 100%;
+    left:0;
+    }
+.jar-buttons{
+    position: absolute;
+    width: 100%;
+    background-color: #fff;
+    bottom: 56px;
+    height: 43px;
+}
+body {
+
+    margin: 0 auto;
+    background: #f2f2f2;
+    height:100%;
+    min-width:250px;
+}
+#beam_m_page{
+    background: #fff;
+}
+img {
+    height: auto; width: auto\9; width:100%; }
+.img-handle{
+    width:100%;
+}

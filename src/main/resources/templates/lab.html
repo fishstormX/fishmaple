@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>实验室-鱼鱼的后花园</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/bg.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/lab/lab.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+</head>
+<body>
+<div id="king" class="king-blue">
+    <div class="header">
+        <div>
+            <top-component :user="user" ></top-component>
+        </div>
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item><a class="nav_link" href="/">首页</a></el-breadcrumb-item>
+            <el-breadcrumb-item>实验室</el-breadcrumb-item>
+        </el-breadcrumb>
+    </div>
+    <div class="main">
+        <div class="block">
+            <a class="nav_link"  href="/lab/multiThreadWebworm" >多线程任务测试</a>
+            模拟多线程下的爬虫任务监测测试
+        </div>
+       <div class="block">
+           <a class="nav_link"  href="/lab/webworm" >单线程爬虫测试 　</a>
+            单线程下的爬虫任务监测测试，可暂停和开启任务
+       </div>
+        <div class="block">
+            <a class="nav_link"  href="/lab/qrCode" >二维码生成器 　</a>
+            根据指定的url或是文本 生成一个二维码，可以更改颜色和添加logo
+        </div>
+        <div class="block">
+            <a class="nav_link"  href="/lab/siteMap" >网站地图生成</a>
+            根据网站域名生成网站地图(xml、html和txt)，支持http\https(https暂不支持证书核验)
+        </div>
+        <div class="block">
+            <a class="nav_link" target="_blank"  href="http://travel.onefish.pw" >木木旅行</a>
+            子项目，毕设内容，作为一个单独的网站，提供酒店爬虫，仅做为一个展示，短期不考虑继续开发
+        </div>
+    </div>
+    </div>
+    <div id="footer" class="foot-abo">
+        <foot-component></foot-component>
+        <copyright></copyright>
+    </div>
+</div>
+<script>
+    var vmm = new Vue({
+        el: '#king',
+        data: {
+            user:{}
+        },
+        methods:{
+            getUser(){
+                this.$http.get('/api/who').then(function (res) {
+                    this.user=JSON.parse(res.bodyText)
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            }
+        },
+        mounted(){
+            this.getUser()
+        }
+    })
+</script>
+</body>
+</html>

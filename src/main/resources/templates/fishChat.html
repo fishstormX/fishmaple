@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>聊天室-fishmaple</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/chat.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="/js/text.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+
+</head>
+<body v-loading="loading" id="b">
+<div id="header">
+    <top-component></top-component>
+</div>
+
+    <el-container id="main">
+        <el-header height="30px">
+            <ul id="chat_head">
+                <li>小苹果派</li>
+                <li>油炸冰淇淋</li>
+                <li>年糕火锅</li>
+                <li></li>
+            </ul>
+        </el-header>
+        <el-container>
+            <el-aside width="300px" v-bind:style="{height:sideHeight + 'px' }">
+                <div class="shade" v-bind:style="{height:sideHeight + 'px' }">
+                    登录可见
+                    <svg class="icon" aria-hidden="true">
+                       <use xlink:href="#icon-gantanhaozhong"></use>
+                    </svg>
+
+                </div>
+                <el-menu default-active="2"
+                        class="el-menu-vertical-demo blur"
+                        background-color="#fff"
+                        text-color="#000"
+                        active-text-color="#fff"
+                         v-bind:style="{height:sideHeight + 'px' }"
+                        >
+                    <el-menu-item index="1">
+                        <i class="el-icon-location"></i>
+                        <span slot="title">vue</span>
+                    </el-menu-item>
+                    <el-menu-item index="1">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">java</span>
+                    </el-menu-item>
+                    <el-menu-item index="3" disabled>
+                        <i class="el-icon-document"></i>
+                        <span slot="title">UI</span>
+                    </el-menu-item>
+                    <el-menu-item index="4">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">导航四</span>
+                    </el-menu-item>
+
+                </el-menu>
+            </el-aside>
+            <el-container>
+                <el-main v-bind:style="{height:mainHeight + 'px' }">
+                    <span>本版本暂不开放</span><br>
+                    先把blog模塊寫好囖；<br>
+                    <br>
+
+                </el-main>
+                <el-footer id="foot" height="100px">
+                    <el-row>
+                        <el-col :span="17">
+                            <text-component id="chat_text" v-model="text"></text-component>
+                        </el-col>
+                        <el-col :span="3">
+                            <div id="tempIdentity">
+                                <img src="/pics/head.jpg" height="40px"><br>
+                                <span >{{name}}</span>
+                            </div>
+                        </el-col>
+                        <el-col :span="4">
+                            <el-button @click="mumu">更换名字</el-button>
+                            <el-button @click="mumu">biu!</el-button>
+                        </el-col>
+                    </text-component>
+                    </el-row>
+                </el-footer>
+            </el-container>
+        </el-container>
+    </el-container>
+    <script>
+
+
+        Vue.http.get('/api/getAnonymous').then(function(res){
+            main.name=res.bodyText;
+        },function(){
+            console.log('请求失败');
+        });
+
+
+        var top = new Vue({
+            el: '#header',
+        })
+        var body = new Vue({
+            el: '#b',
+            data: {
+                searchtext:"搜索"
+            }
+        })
+        var winHeight;
+        var main = new Vue({
+            el: '#main',
+            data: {
+                text:"",
+                name:"",
+                mainHeight:360,
+                sideHeight:460,
+            },
+            mounted() {
+                this.load();
+            },
+            methods: {
+                mumu:function(){
+                    this.$http.get('/api/changeAnonymous').then(function(res){
+                        main.name=res.bodyText ;
+                    },function(){
+                        console.log('请求失败');
+                    });
+                },
+                load:function(){
+                    if (window.innerHeight){
+                        winHeight = window.innerHeight;
+                    }
+                    else if ((document.body) && (document.body.clientHeight)){
+                        winHeight = document.body.clientHeight;
+                    }
+                    this.mainHeight = winHeight-222;
+                    this.sideHeight = winHeight-122;
+                }
+            }
+        })
+
+        var winHeight;
+
+
+        window.onresize = function(){
+            if (window.innerHeight){
+                winHeight = window.innerHeight;
+            }
+            else if ((document.body) && (document.body.clientHeight)){
+                winHeight = document.body.clientHeight;
+            }
+            main.mainHeight = winHeight-222;
+            main.sideHeight = winHeight-122;
+        }
+    </script>
+</body>
+</html>

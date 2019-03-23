@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>日志查看</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
+
+
+</head>
+<body>
+<div id="main" class="header">
+    <div id="component">
+        <top-component :user="user" ></top-component>
+    </div>
+    <div style="line-height: 25px;margin:20px" v-html="log">
+    </div>
+
+
+</div>
+<script>
+
+
+    let head = new Vue({
+        el: '#main',
+        data: {
+            searchvalue: "",
+            tagtap: false,
+            screen: "",
+            log:"",
+            user:{}
+        },
+        methods:{
+            dosearch() {
+                window.location.href = '/search?content=' + this.searchvalue
+            },
+            getUser(){
+                this.$http.get('/api/who').then(function (res) {
+                    this.user=JSON.parse(res.bodyText)
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            },
+            onLoad(){
+                this.$http.get('/api/log').then(function (res) {
+                    this.log = res.bodyText
+                }, function () {
+                    console.log('请求失败')
+                });
+            }
+        },
+        mounted(){
+            this.onLoad()
+            this.getUser()
+        }
+    })
+</script>
+
+</body>
+</html>

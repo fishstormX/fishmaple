@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="简单的二维码生成器" />
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/lab/lab.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/lab/qr.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <title>鱼鱼の实验室-进击的二维码</title>
+</head>
+<body>
+<div id="king" class="king-green">
+    <div id="header">
+        <top-component  :user="user"></top-component>
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+            <el-breadcrumb-item><a class="nav_link" href="/">首页</a></el-breadcrumb-item>
+            <el-breadcrumb-item><a class="nav_link" href="/lab">实验室</a></el-breadcrumb-item>
+            <el-breadcrumb-item>二维码生成实验</el-breadcrumb-item>
+        </el-breadcrumb>
+    </div>
+    <div id="main">
+        <el-row class="main-qr">
+            <el-col :span="11" class="">
+                二维码生成实验<br>
+                <el-input
+                style="font-size:17px;margin:10px 0;"
+                resize="none"
+                type="textarea"
+                :autosize="{ minRows: 6, maxRows: 6}"
+                placeholder="请输入内容"
+                v-model="value"></el-input><br>
+                <el-input style="margin:10px 0;" v-if="isFont" v-model="describe" placeholder="请输入内容"></el-input>
+                <el-button type="text" @click="setFont">{{fontD}}</el-button>
+                <el-button type="text" >添加图片(暂时没写了)</el-button>
+                <el-button type="text" >主题颜色(也还没有写，目前添加描述后可生成为过度蓝主题)</el-button>
+                <el-button style="float:right" el-button type="success" plain @click="getQr">生成二维码</el-button><br>
+
+            </el-col>
+            <el-col :span="6" class="qr-right">
+                <img style="position:absolute" v-bind:src="img">
+            </el-col>
+        </el-row>
+    </div>
+    <div id="footer" class="foot-abo">
+        <foot-component></foot-component>
+        <copyright></copyright>
+    </div>
+</div>
+<script>
+    let main=new Vue({
+        el:'#main',
+        data:{
+            value:'',
+            img:"/api/lab/qr/0?content=https://www.fishmaple.cn",
+            isFont:false,
+            describe:"",
+            fontD:"添加描述"
+        },
+        methods:{
+            onLoad(){
+
+            },
+            getQr(){
+                let rnd=""
+                for(let i=0;i<12;i++) {
+                    rnd += Math.floor(Math.random() * 10)
+                }
+                let reg = new RegExp( '&' , "g" )
+                let vstr = this.value.replace( reg , '@and@' );
+                this.img=encodeURI('/api/lab/qr/d/'+rnd+'?content='+vstr+
+                    "&describe="+this.describe.replace(reg,"@and@"))
+            },
+            setFont(){
+                if(this.isFont){
+                    this.fontD="添加描述"
+                }else{
+                    this.fontD="撤销描述"
+                }
+                this.isFont=!this.isFont;
+            }
+        },
+        mounted(){
+            this.onLoad()
+        }
+    })
+
+    let foot = new Vue({
+        el: '#footer',
+        data: {
+            user:""
+        },
+        methods:{
+        }
+    })
+
+
+    let head = new Vue({
+        el: '#header',
+        data: {
+            user:""
+        },
+        methods:{
+            getUser(){
+                this.$http.get('/api/who').then(function (res) {
+                    this.user=JSON.parse(res.bodyText)
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            }
+        }
+    })
+</script>
+</body>
+</html>

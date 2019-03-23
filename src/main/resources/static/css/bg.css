@@ -1,0 +1,41 @@
+.bg-blocktop{
+     width:100px;
+     position:absolute;
+}
+.b1{
+    top:200px;
+    left:20px;
+}
+.b2{
+    top:320px;
+    left:340px;
+}
+.b2{
+    top:400px;
+    left:666px;
+}
+.bg-main{
+    border-radius:25px;
+    width:1024px;
+    height:442px;
+}
+#bg{
+    z-index:100;
+}
+#bgt{
+    z-index:120;
+}
+#bg2{
+    z-index:101;
+}
+.bg{
+    position:absolute;
+    width:1024px;
+    height:442px;
+    padding:10px 50px;
+}
+.bg-block{
+    box-shadow: 10px 10px 17px #888888;
+    border-radius:5px;
+}
+

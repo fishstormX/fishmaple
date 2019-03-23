@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>登录/注册-鱼鱼的博客</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/blog.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+</head>
+<body style="background-image: url(http://pic1.win4000.com/wallpaper/b/581705bc203ef.jpg)">
+    <div @keyup.enter="registerHandle()" id="main" style="color:#fff;width: 234px; margin:120px auto;display: inline-block;display: flex;flex-direction: column;">
+        <span v-if="qr">用户名：</span><el-input v-if="qr" v-model="name" placeholder="请输入内容"></el-input>
+        <span v-if="qr">密码儿：</span><el-input v-if="qr" type="password" v-model="psw" placeholder="请输入内容"></el-input>
+        <span v-if="isRegister&&qr">确认密码儿：<el-input type="password" v-model="psw2" placeholder="请输入内容"></el-input></span>
+        <span v-if="isRegister&&qr">邀请码儿（非必填）：<el-input v-model="letCode" placeholder="请输入内容"></el-input></span>
+        <br><el-button v-if="qr" @Click="registerHandle()">{{botton}}</el-button><br>
+        <el-button style="margin-left:0" @Click="QrLoginHandle()">{{botton2}}</el-button>
+       <!-- <a style="margin-left:0" @Click="QrLoginHandle()"><img src="/img/qq_login.png"></a>-->
+        <img style="height:234px" v-if="!qr" v-bind:src="img">
+        <a v-if="qr" @click="change()" style="color:white" class="nav_link">{{click}}</a>
+        <span v-if="!qr">请使用<a style="color:white" class="nav_link" href="/fishapp.html">fish App</a>扫描二维码进行登录</span>
+    </div>
+    <script>
+        let login = new Vue({
+            el: '#main',
+            data: {
+                name:'',
+                psw:'',
+                psw2:'',
+                letCode:'鱼鱼',
+                isRegister:false,
+                botton:'登录',
+                botton2:'扫描二维码登录',
+                click:'点此注册',
+                qr:true,
+                img:""
+            },
+            methods: {
+                change(){
+                    if(this.isRegister){
+                        this.botton="登录"
+                        this.click="点此注册"
+                        this.isRegister=false
+                    }else{
+                        this.botton="注册"
+                        this.click="点此登录"
+                        this.isRegister=true
+                    }
+                },
+                loginHandle(){
+                    this.$http.post('/api/login',{name:this.name,
+                        pswd:this.psw
+                    }).then(function (res) {
+                        if(res.bodyText=="SUCCESS"){
+                            this.$message.success("登录成功");
+                            window.location.href="/";
+                        }else{
+                            this.$message.error(res.bodyText);
+                            return
+                        }
+                    }, function () {
+                        console.log('请求失败');
+                        return
+                    });
+                },
+                checkLogin(){
+                    this.$http.get('/api/checkLogin?uuid='+this.uuid).then(function (res) {
+                       if(res.bodyText=="true"){
+                           this.$message.success("登录成功，正在跳转");
+                           window.location.href="/"
+                       }
+                    }, function(){
+                        console.log('请求失败');
+                        return
+                    });
+                },
+                QrLoginHandle(){
+                    this.qr=!this.qr;
+                    if(!this.qr){
+                        login.button2="使用密码登录"
+                        this.$http.get('/api/getQrUUID').then(function (res) {
+                            this.uuid=res.bodyText
+                            this.img=('/api/getQrLogin?uuid='+res.bodyText)
+                            this.timer = setInterval(this.checkLogin,1000)
+                        }, function(){
+                            console.log('请求失败');
+                            return
+                        });
+                    }else{
+                        clearInterval(this.timer)
+                        login.botton2='扫描二维码登录'
+                    }
+                },
+                registerHandle(){
+                    if(this.isRegister){
+                        if(this.psw!=this.psw2){
+                            this.$message.error("两次输入密码不一致")
+                            return
+                        }
+                        this.$http.post('/api/register',{name:this.name,
+                        pswd:this.psw
+                        }).then(function (res) {
+                            if(res.bodyText=="SUCCESS"){
+                                this.$message.success("注册成功");
+                                this.loginHandle()
+                            }else{
+                                this.$message.error(res.bodyText);
+                                return
+                            }
+                        }, function () {
+                            console.log('请求失败');
+                            return
+                        });
+                    }
+                    //注册过的用户直接登录
+                   else{
+                        this.loginHandle()
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+</html>

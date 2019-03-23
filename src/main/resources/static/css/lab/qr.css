@@ -1,0 +1,14 @@
+.main-qr{
+    margin-left:100px;
+}
+#main .el-textarea__inner:focus {
+    outline: 0;
+    border-color: #40cc7a;
+}
+#main .el-textarea__inner {
+    padding:10px 25px;
+    letter-spacing: 1px;
+}
+.qr-right{
+    margin-left:300px;
+}

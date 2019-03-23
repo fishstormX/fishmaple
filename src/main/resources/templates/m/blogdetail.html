@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.1, maximum-scale=1, user-scalable=no,minimal-ui">
+
+    <meta charset="UTF-8">
+    <meta name="description" th:attr="content=${blog.title}" />
+    <title th:text="${blog.title}+'-鱼鱼的博客-移动端'"></title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/blog.css"/>
+    <link type="text/css" rel="stylesheet" href="/font/iconfont.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/tool/setDictionary.js"></script>
+    <script src="/font/iconfontAdapter.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/js/util.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
+    <link type="text/css" rel="stylesheet" href="/ueditor/third-party/SyntaxHighlighter/shCoreDefault.css">
+
+    <script src="/ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
+    <style>
+
+        .syntaxhighlighter {
+
+        }
+        #header .el-breadcrumb {
+            margin: 0 20px;
+        }
+        .syntaxhighlighter td {
+            width: 98%!important;
+            word-break: break-all;
+            word-wrap: break-word;
+        }
+        .syntaxhighlighter span{
+            width: 98%!important;
+            word-break: break-word;
+        }
+        .syntaxhighlighter td code{
+        font-size: 13px!important;
+        }
+        .syntaxhighlighter td .spaces{
+            margin-left: -30px !important;
+        }
+        .gutter{
+            display: none;
+        }
+        .blog-content{
+            margin: 10px 10px 0 10px  !important;
+        }
+        .foot_nav{
+            display:none;
+        }
+        .middle_fishm {
+            width: 10%;
+            margin: 5px 0 22px -28px;
+        }
+        #blog_main img{
+            width: 98%;
+        }
+        </style>
+</head>
+<div style="height:90px;">
+    <a href="/"  class="nav_link">
+        <img style="position:relative;width:92%"class="logo" src="/pics/logo_m_m.png">
+        <img  class="logo middle_fishm" src="/pics/logo-fish-small.png"></a>
+    <span style="    font-size: 10px;
+    float: left;">建议使用电脑访问页面</span>
+    <h1 style="float: right;
+    font-size: 18px;">移动版</h1>
+</div>
+<div id="header" class="header">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item><a class="nav_link" href="/">首页</a></el-breadcrumb-item>
+        <el-breadcrumb-item><a class="nav_link" href="/blog">blog</a></el-breadcrumb-item>
+        <el-breadcrumb-item th:text="${blog.title}">${title}</el-breadcrumb-item>
+    </el-breadcrumb>
+</div>
+
+<div id="fish-bind" th:utext="${blog.outLine}"></div>
+
+<div id="blog_main">
+        <div >
+            <div class="blog-title"><h1>{{blog.title}}</h1></div>
+            <span class="blog-time">{{blog.timelineStr}}
+            </span>
+            <div><el-tag v-for="tag in blog.tags" class="blog-tags">{{tag}}</el-tag></div>
+            <div class="blog-content dicAdd" v-html="blog.content"></div>
+        </div>
+
+</div>
+
+
+
+<div id="fixed" v-if="seen"  v-bind:class="{animated:isClicked,fadeOutDown:isClicked}"
+     @click="toTop">
+    <i class="el-icon-arrow-up"></i>
+</div>
+
+
+<div id="footer">
+        <foot-component></foot-component>
+        <copyright></copyright>
+</div>
+
+<script th:inline="javascript">
+    let head = new Vue({
+        el: '#header',
+        data: {
+            user:{}
+        },
+        methods:{
+            getUser(){
+                this.$http.get('/api/who').then(function (res) {
+                    this.user=JSON.parse(res.bodyText)
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            }
+        },
+        mounted(){
+            this.getUser()
+        }
+    })
+
+    let contact = new Vue({
+        el: '#contact-com',
+        data: {
+
+        },
+        methods: {
+
+        }
+    })
+
+    let foot = new Vue({
+        el: '#footer',
+        methods:{
+            loginDialog(){
+                loginDialog.dialogVisible = true;
+            }
+        }
+    })
+
+    let fixed = new Vue({
+        el:'#fixed',
+        data:{
+            isClicked:false,
+            seen:false,
+            sdelay:0
+        },
+        methods:{
+            toTop(){
+                this.isClicked=true;
+                this.sdelay= setInterval("window.scrollBy(0,-30)",4);
+            },
+            onLoad(){
+                window.addEventListener('scroll', this.handleScroll)
+            },
+            handleScroll(){
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+                if(scrollTop<=1){
+                    clearInterval(this.sdelay);
+                    this.isClicked=false;
+                }
+                if(scrollTop>100){
+                    this.seen=true;
+                }else{
+                    this.seen=false;
+                }
+            }
+        },
+        mounted(){
+            this.onLoad()
+        }
+    });
+
+
+    let blog = new Vue({
+        el: '#blog_main',
+        data: {
+            blog: {anchors:''},
+            activeName: '',
+            positions:[],
+            top:150
+        },
+        methods: {
+            editor() {
+                window.location.href = "/blogEditor?bid=" + this.blog.id;
+            },
+            loginDialog() {
+                loginDialog.dialogVisible = true;
+            },
+            onLoad() {
+                //隐藏
+                let tm=[[${blog}]]
+                document.getElementById("fish-bind").style.display="none"
+                this.blog = tm.valueOf()
+                head.title = this.blog.title;
+                this.blog.anchors=JSON.parse(this.blog.anchors)
+                window.addEventListener('scroll', this.handleScroll)
+
+            },
+            afterLoad(){
+                SyntaxHighlighter.highlight()
+            },
+        },
+        created() {
+            this.onLoad();
+        },
+        mounted() {
+            setTimeout(this.afterLoad,1000)
+        }
+    })
+    let dictionaryAdd= new Vue({
+        el:"#back",
+        data: {
+            dictionary:[],
+            isDictionaryOn:true
+        },
+        methods:{
+            getDic(){
+                this.$http.get('/api/dictionary/all').then(function (res) {
+                    this.dictionary=JSON.parse(res.bodyText)
+                    setTimeout(this.openDic(),2000)
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            },
+            openDic() {
+                nodes = document.getElementsByClassName("dicAdd")
+                nodes = this.getChildNodes(nodes[0])
+                for (let i = 0; i < nodes.length; i++) {
+                    if (nodes[i].tagName == "PRE" || nodes[i].tagName == "CODE") {
+                        continue
+                    }
+                   str=nodes[i].innerHTML;
+                    for (let j = 0; j < this.dictionary.length; j++) {
+                        reg = new RegExp(this.dictionary[j].key, "g"); //创建正则RegExp对象
+                        //str=str.substring(str.indexOf("<"));
+                        if(str.indexOf(this.dictionary[j].key)>str.indexOf("dic-on")&&str.indexOf(this.dictionary[j].key)<str.indexOf("</span"))
+                            continue
+
+                            str = str.replace(reg,
+                                '<span class="dic-on dic" title="' + this.dictionary[j].value + '">'
+                                + this.dictionary[j].key + '</span>');
+                    }
+                    nodes[i].innerHTML = nodes[i].innerHTML.substring(0, nodes[i].innerHTML.indexOf(">")) + str
+                }
+            },
+            closeDic(){
+                dics=document.getElementsByClassName("dic")
+                for(let i=0;i<dics.length;i++){
+                    removeClass(dics[i],"dic-on")
+                    dics[i].title=""
+                }
+            },
+            getChildNodes(node){
+                var nodes = node.childNodes;
+                var arr = [];
+                for (var i = 0; i < nodes.length; i++) {
+                    var childNode = nodes[i];
+                    if(childNode.nodeType == 1){
+                        arr.push(childNode);
+                        var temp = this.getChildNodes(childNode);//递归调用getChildNodes方法，查看当前子节点下是否还有子节点
+                        arr = arr.concat(temp);//将递归获取的子节点数组与之前的数组拼接成一个数组
+                    }
+                }
+                return arr;
+            },
+            dicHandle(e){
+                this.isDictionaryOn=!this.isDictionaryOn
+                if(this.isDictionaryOn) {
+                    this.openDic()
+                    addClass(document.getElementsByClassName("dictionary-btn")[0], "my-btn-orange-cl")
+                }else{
+                    this.closeDic()
+                    removeClass(document.getElementsByClassName("dictionary-btn")[0], "my-btn-orange-cl")
+                }
+            }
+        },
+        mounted(){
+            setTimeout(this.getDic(),1000)
+        }
+    })
+</script>
+</body>
+</html>

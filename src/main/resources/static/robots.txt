@@ -1,0 +1,9 @@
+User-agent: *
+Disallow:
+Disallow: /api/
+Sitemap: http://www.fishmaple.cn/sitemap.html
+Sitemap: http://www.fishmaple.cn/sitemap.xml
+Sitemap: http://www.fishmaple.cn/sitemap.txt
+Sitemap: https://www.fishmaple.cn/sitemap.html
+Sitemap: https://www.fishmaple.cn/sitemap.xml
+Sitemap: https://www.fishmaple.cn/sitemap.txt

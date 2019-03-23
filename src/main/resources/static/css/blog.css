@@ -1,0 +1,191 @@
+.blog-list{
+    margin:10px 0 0 200px;
+}
+.bloglist-block{
+    padding:19px 0 22px 0;
+    border-top:#9EABB3 1px solid;
+
+}
+#blog_main {
+    min-height: 1000px;
+}
+
+.fixed-text{
+    position:fixed;
+    right:2px;
+    top:120px;
+    cursor:pointer;
+}
+.bloglist-title a:hover{
+    color: #000;
+    transition: color 1s ease-in-out;
+}
+.bloglist-title a
+{
+    text-decoration:none;
+    out-line: nonecolor;
+    transition: color 1s ease-in-out;
+    color:#007cff;
+    font-size:26px;
+    margin:15px 0px;
+    width: fit-content;
+    cursor:pointer;
+}
+.bloglist-tags .el-tag{
+    margin:0 9px;
+    cursor:pointer;
+}
+.right-bar .el-tag{
+    margin:5px;
+    cursor:pointer;
+}
+.bloglist-tags{
+    float:right;
+    color:#9EABB3;
+}
+
+
+.bloglist-content{
+    text-decoration:none;
+    color:#333;
+    line-height: 30px;
+    margin:10px;
+    font-size:16px;
+    margin-left: 176px;
+    min-height: 150px;
+}
+.bloglist-cover img{
+    width: 168px;
+    height: 140px;
+    position: absolute;
+    margin-top: 10px;
+}
+.bloglist-cover{
+    position: relative;
+    bottom: 10px;
+}
+.bloglist-date{
+    color:#9EABB3;
+    margin-left:10px;
+    font-size: 20px;
+}
+.bloglist-author{
+    color: #8d9191;
+    margin-left:40px;
+    font-size: 16px;
+}
+#blog_main .bloglist-todo{
+    font-size:24px;
+    color:#8a2be2;
+    position:absolute;
+    margin-left:127px;
+}
+#blog_main .bloglist-original{
+    font-size: 24px;
+    color:#008000;
+    position:absolute;
+    margin-left:59px;
+}
+.blog-content{
+    margin:30px 0 0 30px;
+}
+.blog-title{
+    text-align:center;
+    line-height:70px;
+}
+
+.blog-time{
+    color: #9EABB3;
+    margin-right:40px;
+}
+.blog-tags{
+    margin:0 9px;
+}
+.blog-right{
+    margin:0 auto;
+    max-width:60%;
+    font-size:17px;
+}
+
+.el-tabs--left .el-tabs__header.is-left{
+    position:fixed;
+    z-index:200;
+}
+
+.blog-input{
+    position:fixed;
+    left:0;
+    top:90px;
+    width: 25%;
+}
+.edui-default .edui-editor {
+    margin-left: 31%;
+    margin-top: 50px;
+}
+#editor_input{
+    margin:30px 0 0 20px;
+}
+
+.page-block{
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+
+
+p{
+    line-height:33px;
+}
+.right-bar{
+    margin-left:40px;
+}
+
+.fish-container{
+    width:100%;
+    position:fixed;
+    height:100%;
+    z-index:-1;
+}
+#fishbitmap {
+    display: none;
+}
+.taglist-block{
+    margin:10px 5px 10px 5px;
+}
+.taglist-title{
+    text-align: center;
+    font-size: 18px;
+    line-height:22px;
+    font-family:Microsoft JhengHei;
+    font-weight:bold;
+}
+.el-tabs--left .el-tabs__item.is-left{
+    text-align: left !important;
+}
+#blog_main .el-tabs__nav-scroll{
+    overflow-y:auto;
+}
+#blog_main .el-tabs__nav-wrap{
+    padding:0;
+
+}
+#blog_main .el-tabs__nav-prev{
+    display:none;
+}
+#blog_main .el-tabs__nav-next{
+    display:none;
+}
+
+/*定义表格边框*/
+
+.blog-right table
+{
+    border-collapse:collapse;
+}
+
+.blog-right table,.blog-right th,.blog-right td
+{
+    border: 1px solid black;
+    padding: 10px;
+}
+

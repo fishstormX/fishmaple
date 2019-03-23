@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="一些开发中遇到的小问题" />
+    <title>鱼鱼的issues</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.2/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor-issue.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/lang/zh-cn/zh-cn.js"></script>
+
+   <style>
+       .el-table .warning-row {
+           background: oldlace;
+       }
+
+       .el-table .success-row {
+           background: #f1fceb;
+       }
+       </style>
+    </head>
+<body>
+
+    <div id="header">
+        <top-component :user="user"></top-component>
+    </div>
+
+
+    <div id="issues_editor" style="margin-left:17%;margin-top:20px">
+        <el-input size="middle" style="width:66%"
+                  @keyup.enter="commit" maxlength="130" id="input-title" v-model="title" placeholder="标题">
+        </el-input><br><br>
+        <el-input  size="medium" style="width:32%"
+                  @keyup.enter="commit" maxlength="130" id="input-title" v-model="tag" placeholder="自定义标签">
+        </el-input>
+        <el-input  size="medium" style="margin-left:2%;width:32%;" :disabled="abled"
+                  @keyup.enter="commit" maxlength="130" id="input-title" v-model="author" placeholder="未登录署名">
+        </el-input><br><br>
+        <!--<div class="blog-input" id="editor_input">
+            <el-button @click="commit">上传博客</el-button>
+        </div>-->
+        <script id="editor" type="text/plain"></script>
+        <div style="border:#e1e1e1 solid 1px;width: 66%;">
+            <span style="line-height:30px;color:lightgrey">ueditor提供富文本编辑支持</span>
+            <el-button size="mini" style="float:right;" @click="commit" type="primary">提交</el-button>
+        </div>
+    </div>
+
+    <div id="contact-com">
+        <contact-component ></contact-component>
+    </div>
+
+    <div id="footer">
+        <foot-component></foot-component>
+        <copyright></copyright>
+    </div>
+
+<script>
+    let bid=0;
+    var ue = UE.getEditor('editor');
+    let contact = new Vue({
+        el: '#contact-com',
+        data: {
+        },
+        methods: {
+        }
+    })
+
+    var foot = new Vue({
+        el: '#footer'
+    })
+
+    var issues = new Vue({
+        el:'#issues_editor',
+        data:{
+            title:"",
+            tag:"",
+            author:"",
+            abled:true
+        },
+        methods:{
+            getContent() {
+                return UE.getEditor('editor').getContent()=="<p>issue描述</p>"?"":UE.getEditor('editor').getContent();
+            },
+            commit(){
+                this.$http.post('/api/issue', {
+                    title: this.title,
+                    content: this.getContent(),
+                    tag: this.tag,
+                    author: this.author
+                }).then(function (res) {
+                    if(JSON.parse(res.bodyText).message=="success"){
+                       window.location.href="/issues"
+                    }else{
+                        this.$message.error(JSON.parse(res.bodyText).message);
+                    }
+                }, function () {
+                    console.log('请求失败');
+                });
+            },
+            init(){
+
+            }
+        },
+        mounted(){
+            this.init();
+        }
+    });
+
+    var head = new Vue({
+        el: '#header',
+        data:{
+            user:{}
+        },
+        methods:{
+            getUser(){
+                this.$http.get('/api/who').then(function (res) {
+                    this.user=JSON.parse(res.bodyText)
+                        issues.author=this.user.name;
+                        if(this.user.name==""||this.user.name==null){
+                            issues.abled=false;
+                            console.log("未登录")
+                        }else{
+                            issues.author=issues.author+"（不可匿名）";
+                            issues.abled=true;
+                        }
+
+                    }
+                , function () {
+                    console.log('获取回话失败')
+                });
+            }
+        },
+        mounted(){
+            this.getUser()
+
+        }
+    })
+
+
+</script>
+</body>
+</html>

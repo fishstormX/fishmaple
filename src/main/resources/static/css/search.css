@@ -1,0 +1,54 @@
+.search-logo{
+    margin:20px;
+    border-bottom: 1px darkgrey solid;
+}
+.search-logo img{
+    height: 70px;
+    width: 270px;
+}
+.main-search{
+    padding: 20px 0 0 30px;
+}
+.search-result{
+    margin:20px;
+}
+
+.keyword{
+    color:blue;
+}
+.search-block{
+    margin:30px;
+    margin-right:300px;
+    line-height:30px;
+    border-bottom:1px solid darkgrey;
+    padding-bottom:15px;
+}
+.blue{
+    color:#409EFF;
+}
+.searchblock-time{
+    margin-left:20px;
+    color:darkgrey;
+}
+.searchblock-content{
+    font-family: Microsoft JhengHei;
+    margin-left:10px;
+    font-size:16px;
+}
+.searchblock-content .searchblock-key{
+    font-family: Microsoft JhengHei;
+    color:#ff2500db;
+}
+h2 .searchblock-key{
+    font-family: Microsoft JhengHei;
+    color:#ff2500db;
+}
+
+.searchblock-title{
+    font-family: Microsoft JhengHei;
+    width: fit-content;
+}
+.searchblock-title:hover{
+    color:darkblue;
+    cursor:pointer;
+}

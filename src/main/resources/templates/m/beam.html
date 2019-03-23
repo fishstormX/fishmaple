@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>罐头 —— 一个匿名留言版</title>
+    <meta name="x5-fullscreen" content="true">
+    <meta name="browsermode" content="application">
+    <meta name="x5-page-mode" content="app">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.1, maximum-scale=1, user-scalable=no,minimal-ui">
+    <link type="text/css" rel="stylesheet" href="/font/iconfont.css"/>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/material-icons.css">
+    <link rel="stylesheet" href="//unpkg.com/muse-ui@3.0.1/dist/muse-ui.css">
+    <link rel="stylesheet" href="/css/m/main.css">
+    <script src="//unpkg.com/vue/dist/vue.js"></script>
+    <script src="//unpkg.com/muse-ui@3.0.1/dist/muse-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <style>
+        .circle-back{
+            position: absolute;
+            /*display:block;
+            width: 10px;
+            height: 10px;
+            border-radius:50%;*/
+            animation: myfirst 1.5s infinite ease-in-out;
+
+            animation-delay: 0.5s;
+        }
+        @keyframes myfirst{
+
+            100% {transform: scale(2);}
+        }
+    </style>
+</head>
+<body>
+<div id="beam_m_page">
+    <div id="beam-main">
+        <img src="/pics/m/beam_logo.png" style="height:100px">
+
+        <div id="beam">
+            <img v-bind:src="jar">
+        </div>
+        <div class="first">
+            <img v-if="isShow" @click="show(1)" src="/pics/m/circle.png" v-bind:style="{opacity:'0.4',position:'absolute',left:'19.5%',top:beamh}" style="width: 25px" class="circle-back">
+            <img v-if="isShow" @click="show(1)" src="/pics/m/circle.png" v-bind:style="{opacity:'0.8',position:'absolute',left:'20%',top:beamhc}" style="width:20px" class="circle">
+
+        </div>
+        你收到一个undefined的demo罐头！
+        <mu-flex justify-content="center" class="jar-buttons" align-items="center">
+            <mu-button @click="open" round color="info">打开罐头</mu-button>
+            <mu-button round color="info">塞纸条</mu-button>
+            <mu-button round color="info" disabled>创建我的罐头</mu-button>
+        </mu-flex>
+
+    </div>
+        <div id="footer" class="m-foot">
+        <mu-container style= "padding:0;width:100%;" color="#ffffff" >
+            <mu-bottom-nav>
+                <mu-bottom-nav-item value="books" title="罐 头" icon=":iconfont iconfont-b  icon-chongwuguantou"></mu-bottom-nav-item>
+                <mu-bottom-nav-item value="movies" title="社 区" icon=":iconfont  icon-qiyegongchangjianzhu"></mu-bottom-nav-item>
+                <mu-bottom-nav-item value="music" title="消 息" icon=":iconfont  icon-news"></mu-bottom-nav-item>
+                <mu-bottom-nav-item value="pictures" title="我 的" icon=":iconfont  icon-yonghu"></mu-bottom-nav-item>
+            </mu-bottom-nav>
+        </mu-container>
+
+    </div>
+</div>
+<script>
+    var Main = {
+        data () {
+            return {
+                shift: 'movies'
+            }
+        }
+    }
+    var Ctor = Vue.extend(Main)
+    new Ctor().$mount('#footer')
+
+    let head = new Vue({
+        el: '#beam-main',
+        data: {
+            isShow:false,
+            jar:"/pics/m/jar4.png",
+            id:"",
+            beam:{
+                title:"",
+                content:""
+            },
+            beamh:"",
+            beamhc:""
+        },
+        methods:{
+            show(){
+                alert(this.beam.content);
+            },
+            open(num){
+                 this.jar="/pics/m/jar_open2.png"
+                this.beamh=(document.getElementById("beam").clientHeight*0.27+97)+"px";
+                this.beamhc=(document.getElementById("beam").clientHeight*0.27+100)+"px";
+                this.isShow=true
+            },
+            getBeam(){
+                let url = window.location.search;
+                if (url.indexOf("=") != -1){
+                    this.id = decodeURI(url.substring(url.indexOf("=") + 1))
+                }
+                this.$http.get('/api/can?id='+this.id).then(function (res) {
+                    this.beam=JSON.parse(res.bodyText)
+                }, function () {
+                    console.log('获取回话失败')
+                });
+
+                this.beamh=(document.getElementById("beam").clientHeight*0.27+97)+"px";
+                this.beamhc=(document.getElementById("beam").clientHeight*0.27+100)+"px";
+
+            }
+        },
+        mounted(){
+            this.getBeam()
+        }
+    })
+
+</script>
+</body>
+</html>

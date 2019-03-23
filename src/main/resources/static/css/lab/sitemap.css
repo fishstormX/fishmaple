@@ -1,0 +1,32 @@
+#main .el-input__inner:focus {
+    outline: 0;
+    border-color: #ffe4a2;
+}
+#main{
+    margin-top:100px;
+}
+#main .el-button--success.is-plain {
+    color: #ff9422;
+    background: #ffefd7;
+    border-color: #ffca74;
+}
+#main .el-button--success.is-plain:focus,#main .el-button--success.is-plain:hover {
+    background: #ffd78b;
+    border-color: #ffc870;
+    color: #fff;
+}
+#main .el-radio__input.is-checked .el-radio__inner {
+    border-color: #ffc033;
+    background: #ffc033;
+}
+#main .el-radio__input.is-checked+.el-radio__label {
+    color: #ffc217;
+}
+#main input {
+    height:50px;
+}
+#main .sm-block{
+    width:600px;
+    display:block;
+    margin:10px auto;
+}

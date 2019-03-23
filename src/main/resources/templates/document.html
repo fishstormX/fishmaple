@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件托管-鱼鱼的后花园</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/blog.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/document.css"/>
+    <link type="text/css" rel="stylesheet" href="/font/iconfont.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/font/iconfontAdapter.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+</head>
+<body>
+    <header>
+        <div id="component" >
+            <top-component :user="user" ></top-component>
+        </div>
+    </header>
+    <div id="nav_bar" class="top-bar">
+        <span class="file-block" v-for="item in items">
+            {{item}}/
+        </span>
+    </div>
+    <main id="main">
+        拥有权限的人方可使用文件托管系统；
+        <div class="file-block" v-for="file in files">
+            <span @click="cd(file)" class="file-name">{{file.fileName}}</span>
+        </div>
+        <el-progress type="circle" :percentage="percent"></el-progress>
+        临时存储容量：{{size}}Mb/200Mb
+    </main>
+</body>
+    <script>
+        let nav_bar = new Vue({
+            el:'#nav_bar',
+            data: {
+                items:["","///"]
+            },
+        })
+        let head = new Vue({
+            el: '#component',
+            data: {
+                user:{}
+            },
+            methods:{
+                getUser(){
+                    this.$http.get('/api/who').then(function (res) {
+                        this.user=JSON.parse(res.bodyText)
+
+                    }, function () {
+                        console.log('获取回话失败')
+                    });
+                }
+            },
+            mounted(){
+                this.getUser()
+            }
+        })
+        let main = new Vue({
+            el: '#main',
+            data: {
+                files:[],
+                items:[],
+                path:"",
+                percent:0,
+                size:0
+            },
+            methods:{
+                loadFiles(){
+                    this.$http.get('/api/document/list').then(function (res) {
+                        let tmp=JSON.parse(res.bodyText)
+                        for(let index in tmp){
+                            Vue.set(this.files,index,tmp[index])
+                        }
+                    }, function () {
+                        console.log('获取回话失败')
+                    });
+                    this.$http.get('/api/document/size').then(function (res) {
+                        this.size=res.bodyText/(1024*1024)
+                        this.size=Math.round(this.size*100)/100
+                        this.percent=Math.round(this.size*50)/100
+                    }, function () {
+                        console.log('获取回话失败')
+                    });
+                },
+                cd(file){
+                    if(file.type==0){
+                        this.$http.get('/api/document/list?path='+this.path+file.fileName).then(function (res) {
+                            let tmp=JSON.parse(res.bodyText)
+                            this.files=[]
+                            for(let index in tmp){
+                                Vue.set(this.files,index,tmp[index])
+                            }
+                            this.path=this.path+file.fileName+"/"
+                        }, function () {
+                            console.log('获取回话失败')
+                        });
+                    }
+
+                }
+            },
+            mounted(){
+                this.loadFiles()
+            }
+        })
+    </script>
+</html>

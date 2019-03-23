@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html  lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="软件工程师开发词典——鱼鱼的后花园" />
+     <title>G-wiki-鱼鱼的后花园</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src='https://code.jquery.com/jquery-2.2.1.min.js'></script>
+    <script src='/js/svg3dtagcloud.js'></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
+    <style>
+        #cloud svg{
+            margin-left:30.875%;
+        }
+        #cloud text{
+            cursor:pointer;
+            font-family:Microsoft JhengHei;
+        }
+        .entry{
+            z-index:200;
+            position:absolute;
+            left:40px;
+            top:120px;
+        }
+        .entry-key{
+            color:orange;
+            font-size:26px;
+            font-family:Microsoft JhengHei;
+            font-weight: bolder;
+            letter-spacing: 5px;
+        }
+        .entry-value{
+            width:300px;
+
+        }
+        .entry-block{
+            line-height:25px;
+            margin:7px 10px;
+        }
+        .entry label{
+            float: left;
+            writing-mode: vertical-lr;
+            width: 24px;
+            height: 52px;
+            letter-spacing: 15px;
+            padding: 24px 7px 18px 10px;
+            margin-bottom: -1px;
+        }
+        .entry textarea{
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            margin-bottom: -1px;
+        }
+
+
+        .my-autocomplete {
+        li {
+            line-height: normal;
+            padding: 7px;
+        }
+        .name {
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+        .addr {
+            font-size: 12px;
+            color: #b4b4b4;
+        }
+
+        .highlighted .addr {
+            color: #ddd;
+        }
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="header">
+    <top-component :user="user" ></top-component>
+</div>
+<div th:utext="${content}" id="fish-bind">
+
+</div>
+<div id="contact-com">
+    <contact-component></contact-component>
+</div>
+
+<div id="main">
+    <div class="entry">
+        <div v-bind:class="{animated:getAnimated,fadeOut:isChanged,fadeIn:!isChanged}" class="entry-block entry-key">{{entry.key}}</div>
+        <div v-bind:class="{animated:getAnimated,fadeOut:isChanged,fadeIn:!isChanged}"  class="entry-block entry-value" v-html="entry.value"></div>
+        <div v-bind:class="{animated:getAnimated,fadeOut:isChanged,fadeIn:!isChanged}"  class="entry-block entry-author">贡献者：{{entry.author}}</div>
+        <div v-bind:class="{animated:getAnimated,fadeOut:isChanged,fadeIn:!isChanged}"  class="entry-block entry-time">时间：{{entry.timeline}}</div>
+        开启词汇联想<el-switch v-model="isAss"></el-switch><br>
+        <el-autocomplete style="width:350px" id="input-title" v-model="key"
+                         :fetch-suggestions="querySearchAsync" placeholder="请输入内容" clearable>
+            <template slot="prepend">条目</template></el-autocomplete><br>
+        <label class="el-input-group__prepend">解释</label>
+        <el-input
+                name="value"
+                style="width:308px"
+                resize="none"
+                type="textarea"
+                :autosize="{ minRows: 4, maxRows: 4}"
+                placeholder="请输入内容"
+                v-model="value">
+        </el-input><br>
+        <el-input style="width:350px" id="input-title" v-model="author" placeholder="请输入内容" :disabled="true">
+            <template slot="prepend">贡献者</template>
+        </el-input><br>
+
+        <el-button @click="uploadDictionary">上传</el-button>
+        这个功能还没写完 先写成这样看看效果
+    </div>
+    <div id='cloud'></div>
+</div>
+
+
+
+
+
+<script>
+    let contact = new Vue({
+        el: '#contact-com',
+        data: {
+
+        },
+        methods: {
+
+        }
+    })
+
+    let main= new Vue({
+        el: '#main',
+        data: {
+            DicEntries:[],
+            entry:{key:"JAVA",value:"一门语言哈哈哈"},
+            key:"",
+            value:"",
+            author:"匿名",
+            isChanged:false,
+            getAnimated:false,
+            isAss:true,
+            results: []
+        },
+        methods:{
+            querySearchAsync(queryString, cb) {
+                if(this.isAss) {
+                    this.$http.get('/api/dictionary/tp/associational/' + queryString).then(function (res) {
+                        this.results = JSON.parse(res.bodyText)
+                        clearTimeout(this.timeout);
+                        cb(this.results);
+                    }, function () {
+                        console.log('请求失败')
+                    });
+                }else{
+                    cb([]);
+                }
+            },
+            uploadDictionary(){
+                this.$http.post('/api/dictionary/entry',{key:this.key,
+                value:this.value.replace(/\n|\r\n/g,"@br@"),author:this.author
+                }).then(function (res) {
+
+                    if(res.bodyText==="success"){
+                        this.$message.success('ok!')
+                        this.key=""
+                        this.value=""
+                        $('#cloud').html('')
+                        this.searchDics()
+                    }else{
+                        this.$message.error(res.bodyText)
+                    }
+                },function(){
+                    console.log('请求失败');
+                });
+            },
+            changeEntry(key){
+                this.$http.get('/api/dictionary/entry/'+key).then(function (res) {
+                this.entry=JSON.parse(res.bodyText)
+                let date = new Date(this.entry.timeline * 1000);
+                this.entry.timeline = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" +
+                    date.getDate() + "日       " + date.getHours() + ":" +
+                    ((date.getMinutes() > 9) ? (date.getMinutes()) : ("0" + date.getMinutes())) + ":" +
+                    ((date.getSeconds() > 9) ? (date.getSeconds()) : ("0" + date.getSeconds()))
+                this.getAnimated=false;
+                this.getAnimated=true;
+                this.isChanged=false;
+                },function(){
+                    console.log('请求失败');
+                });
+            },
+            getEntry(key){
+            this.getAnimated=true;
+            this.isChanged=true;
+                    setTimeout(function(){
+                        main.$http.get('/api/dictionary/entry/'+key).then(function (res) {
+                            this.entry=JSON.parse(res.bodyText)
+                            let date = new Date(this.entry.timeline * 1000);
+                            this.entry.timeline = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" +
+                                date.getDate() + "日       " + date.getHours() + ":" +
+                                ((date.getMinutes() > 9) ? (date.getMinutes()) : ("0" + date.getMinutes())) + ":" +
+                                ((date.getSeconds() > 9) ? (date.getSeconds()) : ("0" + date.getSeconds()))
+                            this.getAnimated=false;
+                            this.getAnimated=true;
+                            this.isChanged=false;
+                        },function(){
+                            console.log('请求失败');
+                        });
+                    },300)
+
+
+            },
+            setEntries(){
+
+                let settings = {
+                    entries: this.DicEntries,
+                    width:'45%',
+                    height: '80%',
+                    radius: '85%',
+                    radiusMin: 75,
+                    bgDraw: true,
+                    bgColor: '#fff',
+                    opacityOver: 1.00,
+                    opacityOut: 0.15,
+                    opacitySpeed: 6,
+                    fov: 800,
+                    speed: 0.3,
+                    fontSize: '18',
+                    fontColor:"#111",
+                    fontWeight: 'bold', //bold
+                    fontStyle: 'normal', //italic
+                    fontStretch: 'normal', //wider, narrower, ultra-condensed, extra-condensed, condensed, semi-condensed, semi-expanded, expanded, extra-expanded, ultra-expanded
+                    fontToUpperCase: true
+                }
+                $('#cloud').svg3DTagCloud(settings);
+                $("div").on("click","text",function(){
+
+                    main.getEntry($(this).text())
+
+                })
+
+            },
+            searchDics(){
+                this.$http.get('/api/dictionary/entries').then(function (res) {
+                    this.DicEntries=JSON.parse(res.bodyText)
+
+                    this.setEntries()
+                },function(){
+                    console.log('请求失败');
+                });
+            }
+        },
+        mounted(){
+            this.searchDics()
+        }
+    })
+    let head = new Vue({
+        el: '#header',
+        data: {
+            user:{}
+        },
+        methods:{
+            getUser(){
+                document.getElementById("fish-bind").style.display="none"
+                this.$http.get('/api/who').then(function (res) {
+                    this.user=JSON.parse(res.bodyText)
+                    main.author=this.user.name;
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            }
+        },
+        mounted(){
+            this.getUser()
+        }
+    })
+    let foot = new Vue({
+        el: '#footer'
+    })
+
+
+
+</script>
+
+
+</body>
+
+</html>

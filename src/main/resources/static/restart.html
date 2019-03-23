@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件托管-鱼鱼的后花园</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/blog.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/document.css"/>
+    <link type="text/css" rel="stylesheet" href="/font/iconfont.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/font/iconfontAdapter.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+</head>
+<body>
+    <header>
+        <div id="component" >
+            <top-component :user="user" ></top-component>
+        </div>
+    </header>
+    <main id="main" style="width: 234px; margin: 120px auto; display: flex; flex-direction: column;">
+        请确认进行服务器重启操作<br>
+        <el-input maxlength="130" v-model="input" placeholder="重启密码" show-password>
+            <template @keyup.enter="restartSer" slot="prepend">重启密码</template>
+        </el-input><br>
+        <el-button @click="restartSer" type="primary" plain>重启</el-button>
+    </main>
+    <div id="footer" class="foot-abo">
+        <foot-component></foot-component>
+        <copyright></copyright>
+    </div>
+</body>
+    <script>
+        let head = new Vue({
+            el: '#component',
+            data: {
+                user:{}
+            },
+            methods:{
+                getUser(){
+                    this.$http.get('/api/who').then(function (res) {
+                        this.user=JSON.parse(res.bodyText)
+
+                    }, function () {
+                        console.log('获取回话失败')
+                    });
+                }
+            },
+            mounted(){
+                this.getUser()
+            }
+        })
+        let main = new Vue({
+            el: '#main',
+            data: {
+               input:null
+            },
+            methods:{
+                restartSer(){
+                    this.$http.post('/api/reloadSer',{
+                        pwd:this.input,
+
+                    }).then(function(res){
+
+                        if(res.bodyText=='fail') {
+                            this.$message.error("重启密码错误");
+                        }
+
+                    },function(){
+                        this.$message.error("重启成功，此页面即将关闭");
+                        setTimeout("window.close()",5000)
+                    });
+                }
+            }
+        })
+    </script>
+</html>
