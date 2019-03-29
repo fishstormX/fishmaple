@@ -1,10 +1,8 @@
 package fishmaple.MainController;
 
 
-import com.alibaba.fastjson.JSON;
 import fishmaple.DAO.ConfigMapper;
 import fishmaple.DAO.DictionaryMapper;
-import fishmaple.DAO.IssueMapper;
 import fishmaple.DAO.ToolMapper;
 import fishmaple.DTO.Blog;
 import fishmaple.DTO.Dictionary;
@@ -13,7 +11,6 @@ import fishmaple.DTO.Tool;
 import fishmaple.Service.BlogService;
 import fishmaple.Service.IssueService;
 import fishmaple.Service.MobileService;
-import fishmaple.Service.ToolService;
 import fishmaple.utils.PublicConst;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
@@ -21,12 +18,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.List;
 
@@ -79,6 +76,15 @@ public class MainController {
         Blog blog=blogService.getBlogById(bid,false);
         model.addAttribute("blog",blog);
         return mobileHandler(request,"blogdetail");
+    }
+
+    @RequestMapping("/blog/index")
+    public String blogIndex(HttpServletRequest request, Model model, HttpServletResponse response) {
+        String content="";
+        List<Blog> list= blogService.getBlogList();
+
+        model.addAttribute("blog",list);
+        return "blogIndex";
     }
 
     @RequestMapping("/blog")

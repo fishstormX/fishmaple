@@ -62,6 +62,9 @@
         <el-breadcrumb-item><a class="nav_link" href="/blog">博客</a></el-breadcrumb-item>
         <el-breadcrumb-item v-if="tagtap">{{screen}}</el-breadcrumb-item>
     </el-breadcrumb>
+    <div style="position: relative;bottom: 54px;left: 300px;">
+        <a class="nav_link" href="/blog/index">博客索引</a>
+    </div>
     <el-row class="blog-list">
         <el-col :span="14" class="blog-left">
             <div v-for="blog in items" class="bloglist-block">
