@@ -2,6 +2,7 @@
     margin:0;
     padding:0;
     font-family: 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+    word-break:break-all;
 }
 #nav {
     list-style-type: none;
@@ -17,11 +18,13 @@
     padding:20px 4px 0 4px;
 }
 #nav li a:hover{
-    color:#007cff;;
-    transition: color 0.5s ease-in-out;
+    color:#007cff;
+    font-size:22px;
+    transition: color,font-size 0.5s ease-in-out;
 }
 #nav li a{
-    transition: color 0.5s ease-in-out;
+    font-size:16px;
+    transition: color,font-size 0.5s ease-in-out;
 }
 .nav_link{
     font-weight: bold;
@@ -232,7 +235,7 @@
     height:35px;
 }
 .background{
-    background: url(https://wx3.sinaimg.cn/mw690/9b4d057bly1fwvue6q2mgj20va11v3zt.jpg) no-repeat;
+    background: url(https://file.fishmaple.cn/bk1.jpg) no-repeat;
     background-position-x: 90%;
     background-position-y: bottom;
 }
@@ -240,6 +243,5 @@
     cursor:pointer;
     border-bottom: 1.5px blue dotted;
 }
-
 
 
