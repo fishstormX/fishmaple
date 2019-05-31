@@ -1,14 +1,17 @@
 package fishmaple.DAO;
 
 import fishmaple.DTO.Blog;
+import fishmaple.conf.Redis4CacheConf;
 import org.apache.ibatis.annotations.*;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.List;
-
-@Component
-public interface BlogMapper {
+import java.util.Set;
+@CacheNamespace(size=5,implementation = Redis4CacheConf.class)
+public interface BlogMapper{
 
     @Delete("delete from blog where id=#{bid}")
     void deleteOneBlog(String bid);
@@ -59,14 +62,15 @@ public interface BlogMapper {
                     many = @Many(select = "fishmaple.DAO.BlogMapper.getBlogTagsByBid"))})
     List<Blog> getAll();
 
+
     @Select("select id,title,timeline,author,content,priority,useDictionary,cover,isOriginal,todo from blog " +
             "ORDER BY  priority DESC" +
             ",timeline DESC LIMIT #{start},#{count}")
     @Results({@Result(id=true,property="id",column="id"),
             @Result(property = "tags",javaType = List.class,column ="id",
                     many = @Many(select = "fishmaple.DAO.BlogMapper.getBlogTagsByBid"))})
-    List<Blog> getByPage(@Param("start") int start, @Param("count") int count);
-    @Select("select `id`,title,timeline,author,isOriginal,todo from blog")
+    List<Blog> getByPage(@Param("start")int start, @Param("count")int count);
+    @Select("select `id`,title,timeline,author,isOriginal,todo from blog ORDER BY timeline DESC")
     List<Blog> fastGetAll();
 
     @Select("select blog.id,title,timeline,author,content,useDictionary,cover,isOriginal,todo from blog_tag " +
