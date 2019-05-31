@@ -16,6 +16,9 @@
     top:120px;
     cursor:pointer;
 }
+textarea{
+    height:100%;
+}
 .bloglist-title a:hover{
     color: #000;
     transition: color 1s ease-in-out;

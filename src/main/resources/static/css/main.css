@@ -19,12 +19,12 @@
 }
 #nav li a:hover{
     color:#007cff;
+    transition: color 0.8s ease-in-out,font-size 0.25s ease-in-out;
     font-size:22px;
-    transition: color,font-size 0.5s ease-in-out;
 }
 #nav li a{
     font-size:16px;
-    transition: color,font-size 0.5s ease-in-out;
+    transition: color 0.8s ease-in-out,font-size 0.25s ease-in-out;
 }
 .nav_link{
     font-weight: bold;
@@ -243,5 +243,6 @@
     cursor:pointer;
     border-bottom: 1.5px blue dotted;
 }
+
 
 

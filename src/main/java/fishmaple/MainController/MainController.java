@@ -1,8 +1,10 @@
 package fishmaple.MainController;
 
 
+import com.alibaba.fastjson.JSON;
 import fishmaple.DAO.ConfigMapper;
 import fishmaple.DAO.DictionaryMapper;
+import fishmaple.DAO.IssueMapper;
 import fishmaple.DAO.ToolMapper;
 import fishmaple.DTO.Blog;
 import fishmaple.DTO.Dictionary;
@@ -11,6 +13,7 @@ import fishmaple.DTO.Tool;
 import fishmaple.Service.BlogService;
 import fishmaple.Service.IssueService;
 import fishmaple.Service.MobileService;
+import fishmaple.Service.ToolService;
 import fishmaple.utils.PublicConst;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
@@ -18,12 +21,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.List;
 
@@ -199,6 +202,10 @@ public class MainController {
 
     private String mobileHandler(HttpServletRequest request,String toUrl){
         if (request.getHeader("User-Agent") != null) {
+            System.out.println(request.getHeader("User-Agent"));
+            if(request.getHeader("User-Agent").indexOf("Trident")>=0){
+                return  "ieBan";
+            }
             for (String mobileAgent : PublicConst.mobileAgents) {
                 if (request.getHeader("User-Agent").toLowerCase().indexOf(mobileAgent) >= 0) {
                     return "m/"+toUrl;

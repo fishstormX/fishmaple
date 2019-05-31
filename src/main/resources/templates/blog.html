@@ -52,7 +52,7 @@
     </div>
 </div>
 <div id="index" class="index-back" v-bind:style="{height:height+'px'}">
-    <i @click="upHandle" style="cursor:pointer;width:100%;text-align:center;position:absolute;bottom:35px;font-size:60px;color: lightgrey" class="infinite icon iconfont icon-Group-"></i>
+    <i @click="upHandle" v-if="height!=0" style="cursor:pointer;width:100%;text-align:center;position:absolute;bottom:35px;font-size:60px;color: lightgrey" class="infinite icon iconfont icon-Group-"></i>
     <span th:text="${ititle}" id="index-title" style="width:100%;text-align:center;position: absolute;bottom:340px;" ></span>
     <span th:text="${icontent}" id="index-content" style="width:100%;text-align:center;position: absolute;bottom:300px" >We can change the world!</span>
 </div>
@@ -62,7 +62,7 @@
         <el-breadcrumb-item><a class="nav_link" href="/blog">博客</a></el-breadcrumb-item>
         <el-breadcrumb-item v-if="tagtap">{{screen}}</el-breadcrumb-item>
     </el-breadcrumb>
-    <div style="position: relative;bottom: 54px;left: 300px;">
+    <div style="position: relative;bottom: 54px;left: 300px;width:100px;">
         <a class="nav_link" href="/blog/index">博客索引</a>
     </div>
     <el-row class="blog-list">
@@ -195,7 +195,7 @@
         },
         methods: {
             upHandle(){
-                    this.timer=setInterval(this.upr,4)
+                this.timer=setInterval(this.upr,4)
 
             },
             upr(){
@@ -204,6 +204,7 @@
                 }else{
                     window.scrollTo(0,this.height)
                     clearInterval(this.timer)
+                    this.height=0
                 }
             },
             onLoad(){
@@ -223,24 +224,24 @@
         },
         methods: {
             handleCurrentChange(page) {
-                    this.$http.get('/api/blog?' + (this.tagtap ? 'tag=' + this.screen + '&' : '') +
-                        "&page=" + page).then(function (res) {
-                        blog.items = JSON.parse(res.bodyText);
-                        for (let i in blog.items) {
-                            let date = new Date(blog.items[i].timeline * 1000);
-                            blog.items[i].timeline = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" +
-                                date.getDate() + "日"
-                        }
-                        if (blog.items.length === 0) {
-                            blog.isNull = true;
-                        } else {
-                            blog.isNull = false;
-                        }
-                    }, function () {
-                        console.log('请求失败');
-                    });
-                }
+                this.$http.get('/api/blog?page=' + page + (blog.tagtap ? ('&tag=' + blog.screen  ): '')
+                    ).then(function (res) {
+                    blog.items = JSON.parse(res.bodyText);
+                    for (let i in blog.items) {
+                        let date = new Date(blog.items[i].timeline * 1000);
+                        blog.items[i].timeline = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" +
+                            date.getDate() + "日"
+                    }
+                    if (blog.items.length === 0) {
+                        blog.isNull = true;
+                    } else {
+                        blog.isNull = false;
+                    }
+                }, function () {
+                    console.log('请求失败');
+                });
             }
+        }
     })
 
     let blog = new Vue({
@@ -371,7 +372,7 @@
             getUser(){
                 this.$http.get('/api/who').then(function (res) {
                     this.user=JSON.parse(res.bodyText)
-                        }, function () {
+                }, function () {
                     console.log('获取回话失败')
                 });
             },
@@ -463,8 +464,8 @@
                     addClass(document.getElementsByClassName("dictionary-btn")[0], "my-btn-orange-cl")
                 }else{
                     removeClass(document.getElementsByClassName("dictionary-btn")[0], "my-btn-orange-cl")
-                      }
-        },
+                }
+            },
             toTop() {
                 this.isClicked = true
                 this.sdelay = setInterval(this.toThPosition, 2)
@@ -490,7 +491,7 @@
             handleScroll() {
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
 
-                if (scrollTop > index.height-2) {
+                if (scrollTop > index.height) {
                     index.up=false;
                     this.seen = true
                 } else {
@@ -498,7 +499,7 @@
                     this.seen = false
                 }
                 if (scrollTop > index.height-100&& scrollTop <  index.height ) {
-                   document.getElementById("header").style.background="#fff"
+                    document.getElementById("header").style.background="#fff"
                     document.getElementById("top-bar").style.display="block"
 
                 } else if(!head.mouseOn&&scrollTop >  index.height) {
