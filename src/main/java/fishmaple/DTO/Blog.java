@@ -3,6 +3,7 @@ package fishmaple.DTO;
 import fishmaple.Objects.TagObject;
 import fishmaple.utils.TimeDate;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,7 +11,7 @@ import java.util.Objects;
  * @author 鱼鱼
  * 博客类
  * */
-public class Blog {
+public class Blog implements Serializable {
     private String title;
     private String content;
     private Long timeline;
