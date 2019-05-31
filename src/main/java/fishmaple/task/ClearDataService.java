@@ -2,13 +2,19 @@ package fishmaple.task;
 
 import fishmaple.DAO.AnonymousMapper;
 import fishmaple.utils.FileUtil;
+import fishmaple.utils.HttpClientUtil;
+import fishmaple.utils.JedisUtil;
+import fishmaple.utils.PublicConst;
+import org.omg.CORBA.PUBLIC_MEMBER;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import redis.clients.jedis.Jedis;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 
 @Component
@@ -20,12 +26,23 @@ public class ClearDataService{
     @Autowired
     private AnonymousMapper anonymousMapper;
     //定时任务 每6小时 整理名字数据库 释放超期限一天的名字
-    @Scheduled(cron="0 0 0/6 * * ?")
+    //@Scheduled(cron="0 0 0/6 * * ?")
     public void dateTask(){
         log.info("清理了一下过时匿名");
         anonymousMapper.clearOutData(System.currentTimeMillis()/1000);
     }
-
+    @Scheduled(cron="0 0 0/2 * * ?")
+    public void getWxToken() throws IOException {
+        Jedis jedis = JedisUtil.getJedis();
+        String temp = HttpClientUtil.getHttpreturnMap("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="
+                + PublicConst.APP_ID + "&secret=" + PublicConst.APP_SECRET).get("access_token");
+        if (temp == null) {
+            log.error("获取微信授权错误");
+            return;
+        }
+        jedis.set(PublicConst.WX_TOKEN_KEY,temp);
+        jedis.close();
+    }
 
    @Scheduled(cron="0 0/5 * * * ?")
     public void logTask() throws FileNotFoundException {
