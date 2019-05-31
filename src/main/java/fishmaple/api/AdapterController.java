@@ -73,11 +73,11 @@ public class AdapterController {
         return fail;
     }
     @RequestMapping("nowaBlUser")
-    public BlUserObject lastUser() {
+    public BlUserObject lastUser() throws IOException, ClassNotFoundException {
         Jedis jedis= JedisUtil.getJedis();
-        byte[] byt=jedis.get("bl-user".getBytes());
+        String s=jedis.get("bl-user");
         jedis.close();
-        Object obj=SerizlizeUtil.unserizlize(byt);
+        Object obj=SerizlizeUtil.unserizlize(s);
         if(obj instanceof BlUserObject){
             return (BlUserObject) obj;
         }

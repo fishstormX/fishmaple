@@ -53,7 +53,7 @@ public class UserWormTask implements Runnable {
         try {
             wait();
         } catch (InterruptedException e) {
-            log.error("wait的时候除了岔子");
+            log.error("wait的时候出了岔子");
         }
     }
 
@@ -66,7 +66,7 @@ public class UserWormTask implements Runnable {
         while (true) {
             synchronized(this) {
             blUserObject = blWormService.getBlUser(i);
-            jedis.set("bl-user".getBytes(), SerizlizeUtil.serialize(blUserObject));
+            jedis.set("bl-user", SerizlizeUtil.serialize(blUserObject));
             blMapper.save(i++, blUserObject.getSex(), blUserObject.getFans()
                     , blUserObject.getName(), blUserObject.getFace(), blUserObject.getRank());
             try {
