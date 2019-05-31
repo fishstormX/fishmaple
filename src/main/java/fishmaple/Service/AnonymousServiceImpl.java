@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.SERIALIZABLE,timeout=36000,rollbackFor=Exception.class)
+@Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.SERIALIZABLE,timeout=36000)
 public class AnonymousServiceImpl implements AnonymousService {
     @Autowired
     AnonymousMapper anonymousMapper;

@@ -56,7 +56,7 @@ public class BlogServiceImpl implements BlogService{
                        List<String> tags, int useDictionary,String cover,Integer isOriginal) {
         //fish编辑自己的博客
         if(!blogMapper.getById(id).getAuthor().equals(author)&&
-                !shiroService.getUserAuth().equals("0")){
+                !shiroService.isUserAuthAble("change_world")){
             return false;
         }
         Long timenow=System.currentTimeMillis()/1000;
@@ -85,6 +85,13 @@ public class BlogServiceImpl implements BlogService{
     public List<Blog> getBlogList(int page) {
         List<Blog> blogs=blogMapper.getByPage((page-1)*7,7);
         blogHandler(blogs);
+        return blogs;
+    }
+
+    @Override
+    public List<Blog> getBlogList() {
+        List<Blog> blogs=blogMapper.fastGetAll();
+
         return blogs;
     }
 
@@ -194,11 +201,14 @@ public class BlogServiceImpl implements BlogService{
                 !shiroService.getUserAuth().equals("0")){
             return "您没有权限删除这篇博客";
         }
-        blogMapper.addRecycle(blog.getId(),blog.getContent(),blog.getTitle(),
-                System.currentTimeMillis()/1000,blog.getAuthor(),blog.getAnchors(),
-                blog.getTags().toString());
-        blogMapper.deleteOneBlog(bid);
-        blogMapper.deleteBlogTags(bid);
+
+            blogMapper.addRecycle(blog.getId(), blog.getContent(), blog.getTitle(),
+                    System.currentTimeMillis() / 1000, blog.getAuthor(), blog.getAnchors(),
+                    blog.getTags().toString());
+
+            blogMapper.deleteOneBlog(bid);
+            blogMapper.deleteBlogTags(bid);
+
         return "success";
     }
 

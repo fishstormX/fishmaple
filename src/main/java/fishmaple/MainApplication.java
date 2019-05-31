@@ -24,6 +24,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import redis.clients.jedis.Jedis;
 
+import java.nio.charset.Charset;
+
 @SpringBootApplication
 @MapperScan(value = "fishmaple.DAO")
 @EnableCaching              //开启缓存
@@ -46,6 +48,7 @@ public class MainApplication {
                 jedis.del(Const.redisTaskName+i);
             }
             log.info("清除用户记录存档");
+            log.info("系统编码："+Charset.defaultCharset().name());
             jedis.close();
           SpringApplication.run(MainApplication.class, args);
     }

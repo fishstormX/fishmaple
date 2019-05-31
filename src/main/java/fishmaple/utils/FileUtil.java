@@ -7,11 +7,13 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class FileUtil {
+public class  FileUtil {
     private static Logger log= LoggerFactory.getLogger(FileUtil.class);
 
     /**
@@ -205,6 +207,99 @@ public class FileUtil {
     public static String getSuffix(String fileName){
         String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
         return suffix;
+    }
+
+    public static String readNIO2 (String str)throws IOException {
+
+
+        FileInputStream fin = new FileInputStream(str);
+
+        // 获取通道
+        FileChannel fc = fin.getChannel();
+
+        // 创建缓冲区
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+        StringBuffer s=new StringBuffer();
+        byte[] bs=new byte[1024];
+        // 读取数据到缓冲区
+        while(fc.read(buffer)>0){
+            buffer.flip();
+
+            for (int i=0;buffer.remaining() > 0;i++) {
+
+                byte b = buffer.get();
+                bs[i]=b;
+
+                //System.out.print(((char) b));
+
+            }
+            s.append(new String(bs));
+            buffer.clear();
+        }
+
+
+
+
+       fin.close();
+
+        return s.toString();
+
+
+
+
+    }
+
+    public static String readNIO(String pathName) {
+        FileInputStream fin = null;
+        String str="";
+        try {
+            fin = new FileInputStream(new File(pathName));
+            FileChannel channel = fin.getChannel();
+
+            int capacity = 10000;// 字节
+            ByteBuffer bf = ByteBuffer.allocate(capacity);
+            System.out.println("限制是：" + bf.limit() + ",容量是：" + bf.capacity() + " ,位置是：" + bf.position());
+            int length = -1;
+
+            while ((length = channel.read(bf)) != -1) {
+
+                /*
+                 * 注意，读取后，将位置置为0，将limit置为容量, 以备下次读入到字节缓冲中，从0开始存储
+                 */
+                bf.clear();
+                byte[] bytes = bf.array();
+                System.out.print(length+"st");
+
+                str = str+new String(bytes);
+                //System.out.print(str);
+                //System.out.println(bytes[2]+bytes[3]);
+                //str=new String(bytes);
+                //System.out.write(bytes, 0, length);
+
+                //System.out.println("end................");
+
+                //System.out.println("限制是：" + bf.limit() + "容量是：" + bf.capacity() + "位置是：" + bf.position());
+
+            }
+
+            channel.close();
+            return str;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.out.print(e.toString()+"??!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.print(e.toString()+"!!?");
+        } finally {
+            if (fin != null) {
+                try {
+                    fin.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return str;
+        }
     }
 
 }
