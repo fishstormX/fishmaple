@@ -190,7 +190,7 @@ public class BlogServiceImpl implements BlogService{
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED,isolation = Isolation.SERIALIZABLE,timeout=36000,rollbackFor=Exception.class)
-    public String deleteBlog(String bid) {
+    public String deleteBlog (String bid) {
         Blog blog=blogMapper.getById(bid);
 
 

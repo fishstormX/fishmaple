@@ -19,19 +19,19 @@ public interface BlogMapper{
     @Insert("insert into blog_recycle(`id`, `content`,`title`,`timeline`,`author`,`tags`,`anchors`) " +
             "values (#{id},#{content},#{title},#{timeline},#{author},#{tags},#{anchors})")
     void addRecycle(@Param("id") String id, @Param("content") String content,
-                    @Param("title") String title, @Param("timeline") Long timeline,
-                    @Param("author") String author, @Param("anchors") String anchors,
-                    @Param("tags") String tags);
+            @Param("title")String title, @Param("timeline")Long timeline,
+            @Param("author")String author,@Param("anchors")String anchors,
+                    @Param("tags")String tags);
 
     @Insert("insert into blog(`id`, `content`,`title`,`timeline`,`author`,`anchors`,`useDictionary`,`cover`," +
             "`isOriginal`,`todo`) " +
             "values (#{id},#{content},#{title},#{timeline},#{author},#{anchors},#{useDictionary},#{cover}," +
             "#{isOriginal},#{todo})")
     void save(@Param("id") String id, @Param("content") String content,
-              @Param("title") String title, @Param("timeline") Long timeline,
-              @Param("author") String Aid, @Param("anchors") String anchors,
-              @Param("useDictionary") int useDictionary, @Param("cover") String cover,
-              @Param("isOriginal") Integer isOriginal, @Param("todo") Integer todo);
+                     @Param("title")String title, @Param("timeline")Long timeline,
+                     @Param("author")String Aid,@Param("anchors")String anchors,
+              @Param("useDictionary")int useDictionary,@Param("cover")String cover,
+              @Param("isOriginal")Integer isOriginal,@Param("todo")Integer todo);
 
     @Update("update blog SET `title`=#{title},`content`=#{content}, " +
             "timeline=#{timeline},author=#{author},anchors=#{anchors}, " +
@@ -39,16 +39,16 @@ public interface BlogMapper{
             "todo=#{todo} " +
             "WHERE `id`=#{id}")
     void updateOne(@Param("id") String id, @Param("content") String content,
-                   @Param("title") String title, @Param("timeline") Long timeline,
-                   @Param("author") String author, @Param("anchors") String anchors,
-                   @Param("useDictionary") int useDictionary, @Param("cover") String cover,
-                   @Param("isOriginal") Integer isOriginal, @Param("todo") Integer todo);
+              @Param("title")String title, @Param("timeline")Long timeline,
+              @Param("author")String author,@Param("anchors")String anchors,
+              @Param("useDictionary")int useDictionary,@Param("cover")String cover,
+                   @Param("isOriginal")Integer isOriginal,@Param("todo")Integer todo);
 
 
     @Insert("insert into blog_tag(`id`, `blog_id`,`tag`) " +
             "values (#{id},#{bid},#{tag})")
     void saveBTags(@Param("id") String id, @Param("bid") String bid,
-                   @Param("tag") String tag);
+                     @Param("tag")String tag);
 
     @Select("select * from blog where id = #{id}")
     @Results({@Result(id=true,property="id",column="id"),
@@ -79,8 +79,8 @@ public interface BlogMapper{
     @Results({@Result(id=true,property="id",column="id"),
             @Result(property = "tags",javaType = List.class,column ="id",
                     many = @Many(select = "fishmaple.DAO.BlogMapper.getBlogTagsByBid"))})
-    List<Blog> getByPageAndTag(@Param("start") int start, @Param("count") int count,
-                               @Param("tag") String tag);
+    List<Blog> getByPageAndTag(@Param("start")int start, @Param("count")int count,
+                               @Param("tag")String tag);
 
     @Select("select tag from blog_tag where blog_id=#{bid}")
     List<String> getBlogTagsByBid(String bid);

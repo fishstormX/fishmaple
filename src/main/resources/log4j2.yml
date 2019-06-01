@@ -44,61 +44,13 @@ Configuration:
       DefaultRolloverStrategy:     # 文件最多100个
         max: 100
     #   平台日志
-    - name: PLATFORM_ROLLING_FILE
-      ignoreExceptions: false
-      fileName: ${log.path}/platform/${project.name}_platform.log
-      filePattern: "${log.path}/platform/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log.gz"
-      PatternLayout:
-        pattern: ${log.pattern}
-      Policies:
-        TimeBasedTriggeringPolicy:  # 按天分类
-          modulate: true
-          interval: 1
-      DefaultRolloverStrategy:     # 文件最多100个
-        max: 100
+
     #   业务日志
-    - name: BUSSINESS_ROLLING_FILE
-      ignoreExceptions: false
-      fileName: ${log.path}/bussiness/${project.name}_bussiness.log
-      filePattern: "${log.path}/bussiness/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log.gz"
-      PatternLayout:
-        pattern: ${log.pattern}
-      Policies:
-        TimeBasedTriggeringPolicy:  # 按天分类
-          modulate: true
-          interval: 1
-      DefaultRolloverStrategy:     # 文件最多100个
-        max: 100
+
     #   错误日志
-    - name: EXCEPTION_ROLLING_FILE
-      ignoreExceptions: false
-      fileName: ${log.path}/exception/${project.name}_exception.log
-      filePattern: "${log.path}/exception/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log.gz"
-      ThresholdFilter:
-        level: error
-        onMatch: ACCEPT
-        onMismatch: DENY
-      PatternLayout:
-        pattern: ${log.pattern}
-      Policies:
-        TimeBasedTriggeringPolicy:  # 按天分类
-          modulate: true
-          interval: 1
-      DefaultRolloverStrategy:     # 文件最多100个
-        max: 100
+
     #   DB 日志
-    - name: DB_ROLLING_FILE
-      ignoreExceptions: false
-      fileName: ${log.path}/db/${project.name}_db.log
-      filePattern: "${log.path}/db/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log"
-      PatternLayout:
-        pattern: ${log.pattern}
-      Policies:
-        TimeBasedTriggeringPolicy:  # 按天分类
-          modulate: true
-          interval: 1
-      DefaultRolloverStrategy:     # 文件最多100个
-        max: 100
+
   Loggers:
     Root:
       level: info
@@ -112,22 +64,9 @@ Configuration:
       additivity: false
       AppenderRef:
       - ref: CONSOLE
-      - ref: PLATFORM_ROLLING_FILE
-    - name: bussiness
-      level: info
-      additivity: false
-      AppenderRef:
-      - ref: BUSSINESS_ROLLING_FILE
-    - name: exception
-      level: debug
-      additivity: true
-      AppenderRef:
-      - ref: EXCEPTION_ROLLING_FILE
-    - name: db
-      level: info
-      additivity: false
-      AppenderRef:
-      - ref: DB_ROLLING_FILE
+      - ref: ROLLING_FILE
+
+
 #    监听具体包下面的日志
 #    Logger: # 为com.xjj包配置特殊的Log级别，方便调试
 #      - name: com.xjj

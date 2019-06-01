@@ -1,10 +1,15 @@
 package fishmaple.api;
 
 import fishmaple.DTO.Blog;
+import fishmaple.DTO.Tool;
 import fishmaple.Objects.UploadState;
 import fishmaple.Service.BlogService;
 import fishmaple.Service.UploadService;
 import fishmaple.shiro.ShiroService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,7 +63,7 @@ public class BlogController {
     }
 
     @DeleteMapping("/{bid}")
-    public String deleteBlog(@PathVariable String bid){
+    public String deleteBlog (@PathVariable String bid){
             return  blogService.deleteBlog(bid);
     }
 
@@ -71,7 +76,12 @@ public class BlogController {
         }
         return map;
     }
-
+    @ApiOperation(value="更新信息", notes="根据url的id来指定更新用户信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "用户ID", required = true, dataType = "Long",paramType = "path"),
+            @ApiImplicitParam(name = "page", value = "用户实体user", required = true, dataType = "int"),
+            @ApiImplicitParam(name = "page2", value = "用户实体user", required = true, dataType = "Tool")
+    })
     @GetMapping("")
     public List<Blog> getBlogList(HttpServletResponse response,HttpServletRequest request, @RequestParam(defaultValue="1",required = false)int page, @RequestParam(required = false)String tag){
         List<Blog> list;
@@ -98,6 +108,8 @@ public class BlogController {
     public Blog getBlogContent(@RequestParam String bid,@RequestParam(required = false,defaultValue="false")boolean appAbled){
         return blogService.getBlogById(bid,appAbled);
     }
+
+
 
     @PostMapping("/uploadBlogCover")
     public UploadState upload (@RequestParam("file") MultipartFile file, HttpServletRequest request) {

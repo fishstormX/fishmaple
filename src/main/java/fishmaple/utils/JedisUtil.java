@@ -40,6 +40,7 @@ public class JedisUtil {
 
         static {
             if(null==jedisPool){
+
                 log.debug("加载jedisPool");
                 JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
                 jedisPoolConfig.setMaxIdle(maxIdle);
