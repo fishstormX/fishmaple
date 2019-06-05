@@ -79,6 +79,18 @@
         </button>
     </el-popover>
 </div>
+<div style="
+    z-index: 9879;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    margin: auto;
+    text-align: center;
+    background-color: #4e4e4e7a;" id="fimage" v-if="show" @click="close">
+    <img style="position: relative;top:20px;max-height: 90%" v-bind:src="src">
+</div>
+
 <div id="footer">
         <foot-component></foot-component>
         <copyright></copyright>
@@ -101,6 +113,19 @@
         },
         mounted(){
             this.getUser()
+        }
+    })
+
+    let showImg = new Vue({
+        el: '#fimage',
+        data: {
+            show:false,
+            src:""
+        },
+        methods: {
+            close(){
+                this.show=false
+            }
         }
     })
 
