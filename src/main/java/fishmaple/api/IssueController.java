@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-
+/**
+ * @author 鱼鱼
+ * issue接口
+ * */
 @RequestMapping("/api/issue")
 @RestController
 public class IssueController {

@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
-
+/**
+ * @author 鱼鱼
+ * lab
+ * */
 @RequestMapping("/api/lab")
 @RestController
 public class LabApiController {

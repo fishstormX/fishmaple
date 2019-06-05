@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * @author 鱼鱼
+ * 手机页面
+ * */
 @RestController
 @RequestMapping("/api/m")
 public class MobileApi {
