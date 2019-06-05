@@ -18,8 +18,10 @@ import java.util.List;
 public class BaiduNLPHelperService {
     //设置APPID/AK/SK
     private static final String APP_ID = "14409067";
-    private static final String API_KEY = "";
-    private static final String SECRET_KEY = "";
+    @Value("${localConfig.baidu.nlp.api-key}")
+    private final String API_KEY ;
+    @Value("${localConfig.baidu.nlp.secret-key}")
+    private final String SECRET_KEY = ;
     private static AipNlp client = null;
 
     // 依存句法分析
