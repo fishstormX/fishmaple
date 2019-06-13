@@ -68,28 +68,19 @@
     <a href="/"  class="nav_link">
         <img style="position:relative;width:92%"class="logo" src="/pics/logo_m_m.png">
         <img  class="logo middle_fishm" src="/pics/logo-fish-small.png"></a>
-    <span style="    font-size: 10px;
-    float: left;">建议使用电脑访问页面</span>
     <h1 style="float: right;
-    font-size: 18px;">移动版</h1>
-</div>
-<div id="header" class="header">
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item><a class="nav_link" href="/">首页</a></el-breadcrumb-item>
-        <el-breadcrumb-item><a class="nav_link" href="/blog">blog</a></el-breadcrumb-item>
-        <el-breadcrumb-item th:text="${blog.title}">${title}</el-breadcrumb-item>
-    </el-breadcrumb>
+    font-size: 20px;">移动版</h1>
 </div>
 
 <div id="fish-bind" th:utext="${blog.outLine}"></div>
 
 <div id="blog_main">
         <div >
-            <div class="blog-title"><h1>{{blog.title}}</h1></div>
-            <span class="blog-time">{{blog.timelineStr}}
+            <div style="margin-top:1px" class="blog-title"><h1>{{blog.title}}</h1></div>
+            <span style="margin-left:6px" class="blog-time">{{blog.timelineStr}}
             </span>
-            <div><el-tag v-for="tag in blog.tags" class="blog-tags">{{tag}}</el-tag></div>
-            <div class="blog-content dicAdd" v-html="blog.content"></div>
+            <div><el-tag style="font-size:14px" v-for="tag in blog.tags" class="blog-tags">{{tag}}</el-tag></div>
+            <div style="margin-left:20px !important" class="blog-content dicAdd" v-html="blog.content"></div>
         </div>
 
 </div>

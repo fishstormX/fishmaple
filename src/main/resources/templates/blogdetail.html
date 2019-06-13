@@ -22,7 +22,11 @@
 
     <script src="/ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
 
-
+    <style>
+        *{
+            word-break: normal;
+        }
+    </style>
 </head>
 
 <div id="header" class="header">
@@ -90,7 +94,6 @@
     background-color: #4e4e4e7a;" id="fimage" v-if="show" @click="close">
     <img style="position: relative;top:20px;max-height: 90%" v-bind:src="src">
 </div>
-
 <div id="footer">
         <foot-component></foot-component>
         <copyright></copyright>
@@ -255,9 +258,21 @@
                         }
                         this.positions.push(position);
                     }
-
                 }
-            },
+                img = document.getElementsByTagName('img');//图片元素
+                for(i in img){
+                    img[i].onclick =  function(e) {
+
+                        console.log(e.valueOf())
+                        console.log(e.srcElement.attributes.src.value)
+                        if(e.target.className=="contact-s"){
+                            return
+                        }
+                            showImg.show=true
+                            showImg.src=e.srcElement.attributes.src.value
+                    }
+                }
+                },
             handleScroll(){
                 var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
 
