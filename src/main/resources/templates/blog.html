@@ -72,7 +72,8 @@
                     <a target="_blank" v-bind:href="'/blog/d?bid='+blog.id">{{blog.title}}</a>
                 </div>
                 <div class="bloglist-cover">
-                    <a target="_blank" v-bind:href="'/blog/d?bid='+blog.id"><img v-bind:src="blog.cover">
+                    <a target="_blank" v-bind:href="'/blog/d?bid='+blog.id">
+                        <img v-bind:src="blog.cover==''?'https://file.fishmaple.cn/timg2.jpg':blog.cover">
                     </a>
                 </div>
                 <div class="bloglist-content">{{blog.content}}</div>
