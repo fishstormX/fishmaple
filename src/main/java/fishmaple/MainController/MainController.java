@@ -11,6 +11,7 @@ import fishmaple.DTO.Dictionary;
 import fishmaple.DTO.Issue;
 import fishmaple.DTO.Tool;
 import fishmaple.Service.BlogService;
+import fishmaple.shiro.ShiroService;
 import fishmaple.Service.IssueService;
 import fishmaple.Service.MobileService;
 import fishmaple.Service.ToolService;
@@ -48,6 +49,8 @@ public class MainController {
     MobileService mobileService;
     @Autowired
     IssueService issueService;
+    @Autowired
+    ShiroService shiroService;
 
     @RequestMapping("/blogEditor")
     public String blogEditor(@RequestParam(required = false) String xx
@@ -55,6 +58,11 @@ public class MainController {
            return "blogEditor";
     }
 
+    @RequestMapping("/uc")
+    public String userCenter(Model model){
+        model.addAttribute("uName",shiroService.getUserName());
+        return "userCenter";
+    }
     @RequestMapping("/search")
     public String blogEditor(){
         return "search";

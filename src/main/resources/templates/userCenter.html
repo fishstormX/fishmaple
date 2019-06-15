@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="个人中心" />
+    <title th:text="${uName}+'的后花园'"> </title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/tool.css"/>
+    <link type="text/css" rel="stylesheet" href="/font/iconfont-uc.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="/js/mark.js"></script>
+    <script src="/js/text.js"></script>
+</head>
+<body>
+<div id="header">
+    <top-component  :tool="'tool'"  :user="user"></top-component>
+</div>
+<div id="main">
+    <el-row id="u-left">
+        <el-col :span="4" class="left_bar" style="margin:50px 20px">
+            <el-menu
+                    @select="select"
+                    default-active="1-1"
+                    class="el-menu-vertical-demo">
+                <el-submenu index="1">
+                    <template slot="title">
+                        <i class="el-icon-location"></i>
+                        <span>我的发布</span>
+                    </template>
+                    <el-menu-item-group>
+                        <el-menu-item index="blog">
+                            <i class="iconfont icon-boke-yuedu"></i>
+                            <span slot="title">我的博客</span>
+                        </el-menu-item>
+                        <el-menu-item index="tool">
+                            <i class="iconfont icon-gongju2"></i>
+                            <span slot="title">我的工具</span>
+                        </el-menu-item>
+                        <el-menu-item index="issue">
+                            <i class="iconfont icon-issue"></i>
+                            <span slot="title">我的issue</span>
+                        </el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+                <el-menu-item index="2" disabled>
+                    <i class="el-icon-menu"></i>
+                    <span slot="title">私有空间</span>
+                </el-menu-item>
+                <el-menu-item index="3" disabled>
+                    <i class="el-icon-message"></i>
+                    <span slot="title">站内信</span>
+                </el-menu-item>
+                <el-menu-item index="4">
+                    <i class="el-icon-circle-close"></i>
+                    <span slot="title">退出登录</span>
+                </el-menu-item>
+            </el-menu>
+        </el-col>
+        <el-col class="right_bar_uc" :span="14">
+
+        </el-col>
+    </el-row>
+</div>
+
+
+<div id="footer" class="foot-abo">
+    <foot-component></foot-component>
+    <copyright></copyright>
+</div>
+
+<script>
+
+
+    var foot = new Vue({
+        el: '#footer'
+    })
+
+    var main = new Vue({
+        el: '#main',
+        methods:{
+            select(index){
+                if(index=="4"){
+                    this.$http.get('/logout').then(function (res) {
+                        window.location.href='/'
+                    }, function () {
+                        console.log('获取回话失败')
+                    });
+                }
+                if(index=="4"){
+                    this.$http.get('/logout').then(function (res) {
+
+                        }, function () {
+                        console.log('获取回话失败')
+                    });
+                }
+            }
+        }
+    })
+
+
+    var head = new Vue({
+        el: '#header',
+        data:{
+            user:{}
+        },
+        methods:{
+            getUser(){
+                this.$http.get('/api/who').then(function (res) {
+                    this.user=JSON.parse(res.bodyText)
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            }
+        },
+        mounted(){
+            this.getUser()
+        }
+    })
+
+
+</script>
+</body>
+</html>
