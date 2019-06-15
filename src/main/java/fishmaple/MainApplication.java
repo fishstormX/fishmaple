@@ -32,7 +32,7 @@ import java.nio.charset.Charset;
 @EnableTransactionManagement    //开启事务
 @EnableScheduling   //开启定时器
 public class MainApplication {
-@Autowired
+    @Autowired
     IssueMapper issueMapper;
 
     private static Logger log= LoggerFactory.getLogger(MainApplication.class);

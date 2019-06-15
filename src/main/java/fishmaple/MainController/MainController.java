@@ -210,7 +210,6 @@ public class MainController {
 
     private String mobileHandler(HttpServletRequest request,String toUrl){
         if (request.getHeader("User-Agent") != null) {
-            System.out.println(request.getHeader("User-Agent"));
             if(request.getHeader("User-Agent").indexOf("Trident")>=0){
                 return  "ieBan";
             }

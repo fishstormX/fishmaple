@@ -9,6 +9,7 @@ import org.omg.CORBA.PUBLIC_MEMBER;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -19,6 +20,12 @@ import java.util.Date;
 
 @Component
 public class ClearDataService{
+    @Value("${localConfig.wx.token}")
+    String WX_TOKEN;
+    @Value("${localConfig.wx.app-id}")
+    String APP_ID;
+    @Value("${localConfig.wx.app-secret}")
+    String APP_SECRET;
     private static final String path="/home/uftp/log.out";
     private static final String paths="/home/uftp/logt.out";
 
@@ -35,7 +42,7 @@ public class ClearDataService{
     public void getWxToken() throws IOException {
         Jedis jedis = JedisUtil.getJedis();
         String temp = HttpClientUtil.getHttpreturnMap("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="
-                + PublicConst.APP_ID + "&secret=" + PublicConst.APP_SECRET).get("access_token");
+                + APP_ID + "&secret=" + APP_SECRET).get("access_token");
         if (temp == null) {
             log.error("获取微信授权错误");
             return;

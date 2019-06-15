@@ -9,6 +9,7 @@ import com.baidu.aip.nlp.AipNlp;
 import fishmaple.thirdPart.baiduNLP.DTO.NLPDepObject;
 import org.json.JSONObject;
 import com.alibaba.fastjson.JSONArray;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -17,11 +18,16 @@ import java.util.List;
 @Service
 public class BaiduNLPHelperService {
     //设置APPID/AK/SK
-    private static final String APP_ID = "14409067";
+    @Value("${localConfig.baidu.nlp.app-id}")
+    private String APP_ID ;
     @Value("${localConfig.baidu.nlp.api-key}")
-    private final String API_KEY ;
+    private String API_KEY ;
     @Value("${localConfig.baidu.nlp.secret-key}")
-    private final String SECRET_KEY = ;
+    private String SECRET_KEY;
+
+   /* private static final String APP_ID = "14409067";
+    private static final String API_KEY = "lIgk9LXsGNRrCqiMpHBMLiG0";
+    private static final String SECRET_KEY = "bT920vSsfNUAp1srxKdzzPHb2THiwxtA";*/
     private static AipNlp client = null;
 
     // 依存句法分析

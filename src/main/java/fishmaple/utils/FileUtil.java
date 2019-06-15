@@ -286,10 +286,8 @@ public class  FileUtil {
             return str;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            System.out.print(e.toString()+"??!");
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.print(e.toString()+"!!?");
         } finally {
             if (fin != null) {
                 try {

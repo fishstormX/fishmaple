@@ -2,6 +2,7 @@ package fishmaple.conf;
 
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -11,15 +12,15 @@ import java.util.PriorityQueue;
 
 @Configuration
 public class DruidConfguration {
-        /**
+    @Value("${localConfig.druidMonitor.name}")
+    private String druidName;
+    @Value("${localConfig.druidMonitor.psw}")
+    private String druidPsw;
+
+    /**
          * 注册一个StatViewServlet
          * @return
          */
-
-        @Value("${localConfig.druidMonitor.name}")
-        private String druidName;
-        @Value("${localConfig.druidMonitor.psw}")
-        private String druidPsw;
         @Bean
         public ServletRegistrationBean DruidStatViewServlet(){
 
@@ -32,7 +33,7 @@ public class DruidConfguration {
             //servletRegistrationBean.addInitParameter("deny","192.168.1.73");
             //登录查看信息的账号密码.
             servletRegistrationBean.addInitParameter("loginUsername",druidName);
-            servletRegistrationBean.addInitParameter("loginPassword",druidpsw);
+            servletRegistrationBean.addInitParameter("loginPassword",druidPsw);
             //是否能够重置数据.
             servletRegistrationBean.addInitParameter("resetEnable","false");
             return servletRegistrationBean;

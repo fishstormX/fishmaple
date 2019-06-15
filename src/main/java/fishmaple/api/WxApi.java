@@ -12,6 +12,7 @@ import fishmaple.utils.SerizlizeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletInputStream;
@@ -27,9 +28,16 @@ import java.util.Map;
 @RequestMapping("/wx")
 public class WxApi {
     @Autowired
-            WxService wxService;
+    WxService wxService;
     @Autowired
-            CanMapper canMapper;
+    CanMapper canMapper;
+    @Value("${localConfig.wx.token}")
+    String WX_TOKEN;
+    @Value("${localConfig.wx.app-id}")
+    String APP_ID;
+    @Value("${localConfig.wx.app-secret}")
+    String APP_SECRET;
+
     Logger log= LoggerFactory.getLogger(WxService.class);
     private static final char[] HEX = {'0', '1', '2', '3', '4', '5',
             '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
@@ -47,7 +55,7 @@ public class WxApi {
         public String signToken(@RequestParam String signature,@RequestParam String timestamp
         ,@RequestParam String nonce,@RequestParam String echostr) throws Exception {
             List<String> list=new ArrayList<String>();
-            list.add(timestamp);list.add(nonce);list.add(PublicConst.WX_TOKEN);
+            list.add(timestamp);list.add(nonce);list.add(WX_TOKEN);
             Collections.sort(list);
             String sign=list.get(0)+list.get(1)+list.get(2);
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");

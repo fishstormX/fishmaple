@@ -3,6 +3,7 @@ package fishmaple.thirdPart.baiduWebWorm;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import fishmaple.utils.FileUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -14,8 +15,10 @@ import java.net.URLConnection;
 
 @Service
 public class  BaiduWormService {
+    @Value("${localConfig.baidu.baike.api-key}")
+    private String BAIKE_KEY ;
     public String[] getAssociational(String key) throws IOException {
-        URL url = new URL("https://gsp0.baidu.com/8qUZeT8a2gU2pMbgoY3K/su?wd="+key+"&prod=baike");//爬取的网址
+        URL url = new URL("https://gsp0.baidu.com/"+BAIKE_KEY+"/su?wd="+key+"&prod=baike");//爬取的网址
         URLConnection urlconn = url.openConnection();
         InputStream in=urlconn.getInputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(in, "GBK"));
