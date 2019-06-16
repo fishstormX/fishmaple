@@ -101,6 +101,11 @@ textarea{
     color: #9EABB3;
     margin-right:40px;
 }
+.blog-author{
+    color: #388cff;
+    margin-right: 40px;
+    font-weight: 700;
+}
 .blog-tags{
     margin:0 9px;
 }

@@ -50,6 +50,30 @@ public interface BlogMapper{
     void saveBTags(@Param("id") String id, @Param("bid") String bid,
                      @Param("tag")String tag);
 
+    @Select("select COUNT(*) from blog_bak WHERE author_id = #{uid} AND blog_id IS NULL")
+    Integer getBakCount(@Param("uid")String uid);
+    @Select("select `id` from blog_bak WHERE author_id = #{uid} AND blog_id IS NULL ORDER BY timeline LIMIT 1")
+    Integer getLastBak(@Param("uid")String uid);
+    @Select("Delete from blog_bak WHERE `id` = #{id}")
+    Integer deleteLastBak(@Param("id")Integer id);
+
+
+    @Select("select COUNT(*) from blog_bak WHERE author_id = #{uid} AND blog_id = #{bid}")
+    Integer getNBakCount(@Param("bid") String bid, @Param("uid") String uid);
+    @Update("update blog_bak SET content=#{content},timeline=#{timestamp} WHERE author_id = #{uid} AND blog_id = #{bid}")
+    Integer updateBak(@Param("bid") String bid, @Param("uid") String uid,
+                     @Param("content")String content,@Param("timestamp")Long timestamp);
+
+
+    @Insert("insert into blog_bak(`author_id`,`content`,`timeline`) " +
+            "values (#{uid},#{content},#{timestamp})")
+    void saveBak(@Param("uid") String uid,
+                 @Param("content")String content,@Param("timestamp")Long timestamp);
+    @Insert("insert into blog_bak(`blog_id`,`author_id`,`content`,`timeline`) " +
+            "values (#{bid},#{uid},#{content},#{timestamp})")
+    void saveNBak(@Param("bid") String bid, @Param("uid") String uid,
+                   @Param("content")String content,@Param("timestamp")Long timestamp);
+
     @Select("select * from blog where id = #{id}")
     @Results({@Result(id=true,property="id",column="id"),
             @Result(property = "tags",javaType = List.class,column ="id",

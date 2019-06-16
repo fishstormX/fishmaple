@@ -103,6 +103,33 @@ public class BlogServiceImpl implements BlogService{
     }
 
     @Override
+    public boolean autoSave(String bid,String uid,String content){
+        System.out.println(bid+"  "+uid+"  ");
+
+        if(bid==""){
+            //最多三条不关联数据
+            // TODO 可能穿透超过3条
+            if(blogMapper.getBakCount(uid)>3){
+
+                Integer id = blogMapper.getLastBak(uid);
+                blogMapper.deleteLastBak(id);
+            }
+            blogMapper.saveBak(uid,content,TimeDate.getTimeNowToDb());
+            return true;
+        }else if(blogMapper.getById(bid).getAuthor().equals(shiroService.getUserName())&&
+                shiroService.getCurrentUser().getId()==uid
+                ){
+            if(blogMapper.getNBakCount(bid,uid)>0){
+                blogMapper.updateBak(bid,uid,content,TimeDate.getTimeNowToDb());
+            }else {
+                blogMapper.saveNBak(bid, uid, content,TimeDate.getTimeNowToDb());
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public List<Blog> getBlogList(int page, String tag) {
         List<Blog> blogs=blogMapper.getByPageAndTag((page-1)*7,7,tag);
         blogHandler(blogs);

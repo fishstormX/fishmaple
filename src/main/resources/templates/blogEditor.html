@@ -220,6 +220,7 @@
                     }, function () {
                         console.log('请求失败');
                     });
+                    setInterval(this.autoSave, 30000)
                     let url = window.location.search;
                     if (url.indexOf("=") != -1) {
                         bid = url.substring(url.indexOf("=") + 1);
@@ -237,13 +238,27 @@
                             setTimeout(
                                 function(){UE.getEditor('editor').setContent(blog.content, false)},
                             1000)
+
                             this.isUpdate=true;
                         }, function () {
                             console.log('请求失败');
                         });
                     }
                 },
-
+                autoSave(){
+                    this.$http.post('/api/blog/blogBak', {
+                        content: this.getContent(),
+                        id: bid,
+                    }).then(function (res) {
+                        if(res.bodyText=="success"){
+                            this.$message.success("自动保存成功");
+                        }else{
+                            this.$message.error(res.bodyText);
+                        }
+                    }, function () {
+                        console.log('请求失败');
+                    });
+                },
                 handleClose(done) {
                         this.$confirm('关闭？')
                             .then(_ => {

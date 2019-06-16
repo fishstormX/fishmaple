@@ -109,7 +109,27 @@ public class BlogController {
         return blogService.getBlogById(bid,appAbled);
     }
 
-
+    @PostMapping("/blogBak")
+    public String autoSave(@RequestBody Blog blog) {
+        if(shiroService.isLogin()){
+            if(blog.getContent().equals("")){
+                return "请输入正文";
+            }
+            boolean flag;
+            if(null!=blog.getId()&&!blog.getId().equals("0")){
+                flag = blogService.autoSave(blog.getId(),shiroService.getCurrentUser().getId(),blog.getContent());
+            }else {
+                flag = blogService.autoSave("",shiroService.getCurrentUser().getId(),blog.getContent());
+            }
+            if(flag){
+                return "success";
+            }else{
+                return "用户权限不足";
+            }
+        }else{
+            return "当前会话过期，请在新建窗口中重新登陆";
+        }
+    }
 
     @PostMapping("/uploadBlogCover")
     public UploadState upload (@RequestParam("file") MultipartFile file, HttpServletRequest request) {
