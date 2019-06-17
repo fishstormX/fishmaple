@@ -1,5 +1,6 @@
 # fishmaple
-[个人网站](https://www.fishmaple.cn)
+[个人网站](https://www.fishmaple.cn) https://www.fishmaple.cn
+io:https://fishstormx.github.io/fishmaple/
 本站点技术栈：Spring SpringBoot Mybatis Shiro前端使用Vue+Element UI
 
 - 博客：支持个人博客的编辑，博客保存时可以自动生成二级三级标题的锚点，在阅览博客的时候会根据滚动位置切换标题，博客可以高亮渲染代码内容，同时也会标注出词典中的词汇，可以使用//TODO来标记一篇有待继续编辑的博文，可以使用tag进行博客的分类筛选
