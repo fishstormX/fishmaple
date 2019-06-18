@@ -43,9 +43,5 @@ public class HttpClientUtil {
         return sb.toString();
     }
 
-    public static void main(String args[]) throws IOException {
-        String m=HttpClientUtil.getHttpreturnMap("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="
-                + PublicConst.APP_ID+"&secret="+PublicConst.APP_SECRET).get("access_token");
-        System.out.print(m);
-    }
+
 }

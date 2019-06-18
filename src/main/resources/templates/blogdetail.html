@@ -26,6 +26,12 @@
         *{
             word-break: normal;
         }
+        .off{
+            height: 0;
+        }
+        .on{
+            height: 100%;
+        }
     </style>
 </head>
 
@@ -85,15 +91,16 @@
         </button>
     </el-popover>
 </div>
-<div style="
+<div v-bind:style="{height:show?'100%':'0'}"
+        style="
     z-index: 9879;
     position: fixed;
     width: 100%;
-    height: 100%;
     top: 0;
+    height: 0;
     margin: auto;
     text-align: center;
-    background-color: #4e4e4e7a;" id="fimage" v-if="show" @click="close">
+    background-color: #4e4e4e7a;" id="fimage" @click="close">
     <img style="position: relative;top:20px;max-height: 90%" v-bind:src="src">
 </div>
 <div id="footer">
@@ -265,11 +272,12 @@
                 for(i in img){
                     img[i].onclick =  function(e) {
 
-                        console.log(e.valueOf())
-                        console.log(e.srcElement.attributes.src.value)
-                        if(e.target.className=="contact-s"){
+                        if(e.target.className=="contact-s"||e.target.className=="logo middle_pic"||
+                            e.target.className=="logo middle_fish"||e.target.className=="icons"){
                             return
                         }
+
+
                             showImg.show=true
                             showImg.src=e.srcElement.attributes.src.value
                     }

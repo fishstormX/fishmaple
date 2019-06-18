@@ -104,8 +104,6 @@ public class BlogServiceImpl implements BlogService{
 
     @Override
     public boolean autoSave(String bid,String uid,String content){
-        System.out.println(bid+"  "+uid+"  ");
-
         if(bid==""){
             //最多三条不关联数据
             // TODO 可能穿透超过3条
