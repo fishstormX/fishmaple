@@ -1,0 +1,53 @@
+.linkcard-image{
+    height: 70px;
+    width: 70px;
+    margin-top: 5px;
+}
+#main{
+    background-image: url(https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560798…&imgtype=0&src=http%3A%2F%2Fdpic.tiankong.com%2Fw7%2Fux%2FQJ8264816028.jpg);
+    background-repeat: no-repeat;
+    background-position-x: -300px;
+    background-position-y: -50px;
+}
+.linkcard-link:hover{
+    color: rgba(0, 121, 206, 0.57);
+    transition: color 0.8s ease-in-out;
+}
+.linkcard-link{
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+    top: -58px;
+    left:25px;
+    color: black;
+    transition: color 0.8s ease-in-out;
+}
+.linkcard-describe{
+    text-decoration: none;
+    color: grey;
+    cursor: pointer;
+    position: relative;
+    top: -55px;
+    left: 85px;
+    width: 185px;
+    display: block;
+}
+.circled{
+    border-radius: 40px;
+}
+.fLink-block{
+    text-align: center;
+}
+.fLink{
+    overflow-x: hidden;
+    margin: 40px 10% 0 10%;
+    width:80%;
+}
+.linkcard{
+    text-align: start;
+    display: inline-block;
+    width: 300px;
+    height: 120px;
+    margin: 10px;
+}

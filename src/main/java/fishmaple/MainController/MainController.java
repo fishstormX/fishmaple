@@ -2,10 +2,7 @@ package fishmaple.MainController;
 
 
 import com.alibaba.fastjson.JSON;
-import fishmaple.DAO.ConfigMapper;
-import fishmaple.DAO.DictionaryMapper;
-import fishmaple.DAO.IssueMapper;
-import fishmaple.DAO.ToolMapper;
+import fishmaple.DAO.*;
 import fishmaple.DTO.Blog;
 import fishmaple.DTO.Dictionary;
 import fishmaple.DTO.Issue;
@@ -51,6 +48,8 @@ public class MainController {
     IssueService issueService;
     @Autowired
     ShiroService shiroService;
+    @Autowired
+    FriendLinksMapper friendLinksMapper;
 
     @RequestMapping("/blogEditor")
     public String blogEditor(@RequestParam(required = false) String xx
@@ -186,6 +185,11 @@ public class MainController {
   public String index2Blog(HttpServletRequest request,Model model,HttpServletResponse response){
       return blog(request,model,response);
   }
+    @RequestMapping("/friendLinks")
+    public String friendLinks(HttpServletRequest request,Model model,HttpServletResponse response){
+        model.addAttribute("outLine",friendLinksMapper.getAll());
+        return "friendLinks";
+    }
     @RequestMapping("/index")
     public String index(HttpServletRequest request,Model model,HttpServletResponse response){
         return blog(request,model,response);

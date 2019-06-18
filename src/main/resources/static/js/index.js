@@ -27,6 +27,7 @@ Vue.component('top-component', {
         '            <li><a href="/lab" class="nav_link">实验室</a></li>' +
        // '            <li><a href="/fishchat" class="nav_link">聊天室</a></li>' +
         '            <li><a href="/dictionary" class="nav_link">Dwiki</a></li>' +
+        '            <li><a href="/friendLinks" class="nav_link">源星球(友情链接)</a></li>' +
        // '            <li><a href="/fishchat" class="nav_link">射线(beta)</a></li>' +
         '        </ul>' +
         '   </el-col>' +
@@ -75,12 +76,13 @@ Vue.component('foot-component', {
         ' <ul class="foot_nav">' +
         '            <li><a href="/aboutMe.html">关于我</a></li>' +
         '            <li><a href="/version.html">版本迭代</a></li>' +
+        '            <li><a href="/friendLinks">友情链接</a></li>' +
         '            <li><a href="/restart.html">重启服务器</a></li>' +
         '            <li><a href="/log.html">日志查看</span></a></li>' +
         '            <li><span style="color:darkgray">与我互动</span></li>' +
         '            <li><a href="/druid">druid监控</a></li>' +
         '            <li><a href="/sitemap.html">网站地图</a></li>' +
-        '            <li><a href="https://github.com/fish-storm"><img class="icons" src="/img/giticon.png" height="17px">github</a></li>' +
+        '            <li><a href="https://github.com/fishstormX"><img class="icons" src="/img/giticon.png" height="17px">github</a></li>' +
         ' </ul><br>'
 
 })
@@ -100,7 +102,7 @@ Vue.component('contact-component',{
         '       <img class="contact-s" src="/img/weibo_s.png"></a></div>' +
         '    <div><a target="_blank" href="">' +
         '       <img class="contact-s" src="/img/wechat_s.png"></a></div>' +
-        '    <div><a target="_blank" href="https://github.com/fish-storm">' +
+        '    <div><a target="_blank" href="https://github.com/fishstormX">' +
         '       <img class="contact-s"src="/img/github_s.png"></a></div>'+
         '</div>'
 })

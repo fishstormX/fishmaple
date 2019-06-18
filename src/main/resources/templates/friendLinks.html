@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="提供一些文件的下载服务，用户可在此上传和下载文件-web灵魂开发工程师鱼鱼的后花园" />
+    <title>源星球——鱼鱼的小伙伴们</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/link.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/tool.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="/js/mark.js"></script>
+    <script src="/js/text.js"></script>
+   </head>
+    <style>
+        #footer a:hover{
+            color:#c3c3c3;
+        }
+        </style>
+<body>
+
+    <div id="header">
+        <top-component  :tool="'tool'"  :user="user"></top-component>
+    </div>
+    <div id="fish-bind">
+        <a  th:each="info : ${outLine}" th:attr="href=${info.url}" th:text="${info.name}"></a>
+    </div>
+        <div id="main" v-bind:style="{height:height+'px'}">
+            <div class="fLink" >
+                <div class="fLink-block">
+                    <el-card v-for="link in links" class="linkcard" shadow="hover">
+                        <a v-bind:href="link.url" target="_blank"><img @click="open()" v-bind:src="link.avatar" class="linkcard-image" v-bind:class="{circled:link.circled}"></a>
+                        <a target="_blank" class="linkcard-link" v-bind:href="link.url">{{link.name}}</a><br>
+                            <a  target="_blank"v-bind:href="link.url" class="linkcard-describe">{{link.describe}}</a>
+                    </el-card>
+                    <div style="margin-top:20px">
+                        <p style="color:grey">交换友链请发送邮件到stormnetwork@163.com，友链页UI设计中，目前只接受技术领域相关的网站，望见谅</p>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    <div id="footer" class="foot-abo">
+        <foot-component></foot-component>
+        <copyright></copyright>
+        </div>
+
+<script>
+
+    var foot = new Vue({
+        el: '#footer'
+    })
+
+    var main=new Vue({
+        el:'#main',
+        data:{
+            links:[],
+            height:0
+        },
+        methods:{
+            getLinks(){
+                this.height = window.innerHeight-115;
+                this.$http.get('/api/links').then(function (res) {
+                    links=JSON.parse(res.bodyText)
+                    for(index in links){
+                       this.links.push(links[index])
+                    }
+
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            }
+        },
+        mounted(){
+
+            this.getLinks()
+        }
+    })
+
+    var head = new Vue({
+        el: '#header',
+        data:{
+            user:{}
+        },
+        methods:{
+
+            getUser(){
+                this.$http.get('/api/who').then(function (res) {
+                    this.user=JSON.parse(res.bodyText)
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            }
+        },
+        mounted(){
+            document.getElementById("fish-bind").style.display="none"
+            this.getUser()
+        }
+    })
+
+
+</script>
+</body>
+</html>
