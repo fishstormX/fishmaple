@@ -105,6 +105,7 @@ public class MainController {
         for(int i=0;i<11;i++){
               content += list.get(i).getOutLine();
         }
+        model.addAttribute("cover",configMapper.getValue("cover"));
         model.addAttribute("content",content);
         model.addAttribute("ititle",configMapper.getValue("index_title"));
         model.addAttribute("icontent",configMapper.getValue("index_content"));

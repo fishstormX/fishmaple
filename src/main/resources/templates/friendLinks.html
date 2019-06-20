@@ -34,7 +34,7 @@
             <div class="fLink" >
                 <div class="fLink-block">
                     <el-card v-for="link in links" class="linkcard" shadow="hover">
-                        <a v-bind:href="link.url" target="_blank"><img @click="open()" v-bind:src="link.avatar" class="linkcard-image" v-bind:class="{circled:link.circled}"></a>
+                        <img @click="open(link.url)" v-bind:src="link.avatar" v-bind:id="link.url" class="linkcard-image" v-bind:class="{circled:link.circled==1}">
                         <a target="_blank" class="linkcard-link" v-bind:href="link.url">{{link.name}}</a><br>
                             <a  target="_blank"v-bind:href="link.url" class="linkcard-describe">{{link.describe}}</a>
                     </el-card>
@@ -63,6 +63,9 @@
             height:0
         },
         methods:{
+            open(url){
+                window.open(url)
+            },
             getLinks(){
                 this.height = window.innerHeight-115;
                 this.$http.get('/api/links').then(function (res) {

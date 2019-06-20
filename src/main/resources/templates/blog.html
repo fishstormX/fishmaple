@@ -51,7 +51,7 @@
         <top-component :user="user" ></top-component>
     </div>
 </div>
-<div id="index" class="index-back" v-bind:style="{height:height+'px'}">
+<div id="index" th:attr="style='background-image:url('+${cover}+')'" class="index-back" v-bind:style="{height:height+'px'}">
     <i @click="upHandle" v-if="height!=0" style="cursor:pointer;width:100%;text-align:center;position:absolute;bottom:35px;font-size:60px;color: lightgrey" class="infinite icon iconfont icon-Group-"></i>
     <span th:text="${ititle}" id="index-title" style="width:100%;text-align:center;position: absolute;bottom:340px;" ></span>
     <span th:text="${icontent}" id="index-content" style="width:100%;text-align:center;position: absolute;bottom:300px" >We can change the world!</span>
@@ -367,7 +367,7 @@
         el: '#header',
         data: {
             user:{},
-            mouseOn:false
+            mouseOn:true
         },
         methods:{
             getUser(){
@@ -388,7 +388,11 @@
             },
             mouseout(){
                 this.mouseOn=false;
-                document.getElementById("header").style.background="#fff0"
+
+                    document.getElementById("header").style.background="#fff0"
+
+
+
             }
         },
         mounted(){
@@ -507,11 +511,13 @@
                     document.getElementById("top-bar").style.display="none"
                     document.getElementById("header").style.background="#fff0"
 
-                }
-                else{
+                } else{
                     document.getElementById("top-bar").style.display="block"
-
-                    document.getElementById("header").style.background="#fff0"
+                    if(scrollTop<2){
+                        document.getElementById("header").style.background="#fff"
+                    }else {
+                        document.getElementById("header").style.background = "#fff0"
+                    }
                 }
             }
         },mounted() {
