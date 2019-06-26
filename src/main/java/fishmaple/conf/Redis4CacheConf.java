@@ -4,6 +4,8 @@ import fishmaple.utils.JedisUtil;
 import fishmaple.utils.SerizlizeUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.ibatis.cache.Cache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import redis.clients.jedis.Jedis;
 
@@ -18,6 +20,7 @@ import static com.alibaba.fastjson.util.IOUtils.UTF8;
 public class Redis4CacheConf implements Cache{
     private final long EXPIRE_TIME = 600L;
     private final String COMMON_CACHE_KEY = "COM:";
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private String id;
 
@@ -34,11 +37,13 @@ public class Redis4CacheConf implements Cache{
     public void putObject(Object key, Object value) {
 
         Jedis jedis=JedisUtil.getJedis();
-
-
-
-        jedis.set(id+key.toString(),new String(SerizlizeUtil.serialize(value)));
-        jedis.close();
+        try{
+            jedis.set(id+key.toString(),new String(SerizlizeUtil.serialize(value)));
+        }catch(Exception e){
+            logger.error(e.getMessage()+id);
+        }finally{
+            jedis.close();
+        }
     }
 
     @Override
@@ -81,6 +86,7 @@ public class Redis4CacheConf implements Cache{
         for (byte[] key : keys) {
             jedis.del(key);
         }
+        jedis.close();
     }
 
     @Override
@@ -89,6 +95,7 @@ public class Redis4CacheConf implements Cache{
         int result=0;
         //jedis.select(DB_INDEX);
         Set<byte[]> keys = jedis.keys((id+"*").getBytes());
+        jedis.close();
         if (null != keys && !keys.isEmpty()) {
             result = keys.size();
         }

@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface IssueMapper {
     public List<IssueTest> findAllIssueTest();
-    public List<Issue> findAllIssueTest1();
     public Issue getById(@Param("id")String id);
     public List<Issue> getByLimit(@Param("start") int start,@Param("size")int size);
     public List<Issue> getByLimitAndState(@Param("start") int start,@Param("size")int size,@Param("state")String state,

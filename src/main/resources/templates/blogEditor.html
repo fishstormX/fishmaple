@@ -251,9 +251,15 @@
                         id: bid,
                     }).then(function (res) {
                         if(res.bodyText=="success"){
-                            this.$message.success("自动保存成功");
+                            this.$message.success({
+                                duration:1000,
+                                message:"自动保存成功",
+                                showClose:true});
                         }else{
-                            this.$message.error(res.bodyText);
+                            this.$message.error({
+                                duration:1000,
+                                message:res.bodyText,
+                                showClose:true});
                         }
                     }, function () {
                         console.log('请求失败');

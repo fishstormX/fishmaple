@@ -18,10 +18,7 @@
         SELECT i.id,i.author,title,state,tag,i.timeline
         FROM `issue` i
     </select>
-    <select id="findAllIssueTest1" resultType="fishmaple.DTO.Issue">
-        SELECT i.id,i.author,i.title,i.state,i.tag,i.timeline, iis.*
-        FROM `issue` i LEFT JOIN `issue_solve` iis ON i.id=iis.issue_id
-    </select>
+
     <select id="findIssueSById" resultType="fishmaple.DTO.IssueReply">
         SELECT * FROM `issue_solve` WHERE issue_id = #{id}
     </select>
