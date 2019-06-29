@@ -48,7 +48,7 @@
 </div>
 
 <div id="fish-bind" th:utext="${blog.outLine}"></div>
-    
+
 <div id="blog_main">
 
         <el-tabs style="transition:opacity 1s ease-in-out;opacity:0;"
@@ -250,7 +250,7 @@
                 for(let index in eles){
                     if(typeof(eles[index])=="object") {
                         let idt = eles[index].getAttribute("id")
-                        let setTopt = eles[index].offsetTop+152
+                        let setTopt = eles[index].offsetTop-1
                         idts=idt.split('')
                         let reg = new RegExp("[\\u4E00-\\u9FFF]+","g");
                         let count = 0

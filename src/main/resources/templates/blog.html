@@ -367,7 +367,7 @@
         el: '#header',
         data: {
             user:{},
-            mouseOn:true
+            mouseOn:false
         },
         methods:{
             getUser(){
@@ -387,12 +387,8 @@
                 }
             },
             mouseout(){
-                this.mouseOn=false;
-
+                    this.mouseOn=false;
                     document.getElementById("header").style.background="#fff0"
-
-
-
             }
         },
         mounted(){
