@@ -10,8 +10,8 @@
     padding: 0 12px;
 }
 .el-tabs__item{
-    line-height: 32px;
-    margin:10px 0;
+    line-height: 30px !important;
+    padding: 10px 15px !important;
 }
 #blog_main {
     min-height: 1000px;
@@ -41,6 +41,7 @@ textarea{
     width: fit-content;
     cursor:pointer;
 }
+
 .bloglist-tags .el-tag{
     margin:0 9px;
     cursor:pointer;
