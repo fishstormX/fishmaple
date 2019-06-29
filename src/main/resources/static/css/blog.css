@@ -6,6 +6,13 @@
     border-top:#9EABB3 1px solid;
 
 }
+.el-tabs__item is-left{
+    padding: 0 12px;
+}
+.el-tabs__item{
+    line-height: 32px;
+    margin:10px 0;
+}
 #blog_main {
     min-height: 1000px;
 }
@@ -43,7 +50,7 @@ textarea{
     cursor:pointer;
 }
 .bloglist-tags{
-    float:right;
+    /*float:right;*/
     color:#9EABB3;
 }
 
@@ -110,8 +117,8 @@ textarea{
     margin:0 9px;
 }
 .blog-right{
-    margin:0 auto;
-    max-width:60%;
+    margin: 0 240px 0 325px;
+    /*max-width:60%;*/
     font-size:17px;
 }
 

@@ -48,13 +48,16 @@
 </div>
 
 <div id="fish-bind" th:utext="${blog.outLine}"></div>
-
+    
 <div id="blog_main">
 
-    <el-tabs id="blog-left" v-model="activeName" tab-position="left" @tab-click="handleClick">
-            <el-tab-pane v-bind:style="{ top: top+'px' ,position:'fixed'}" style="position:fixed" v-for="anchor in blog.anchors" :name="anchor" :label="anchor">
+        <el-tabs style="transition:opacity 1s ease-in-out;opacity:0;"
+                 id="blog-left" v-model="activeName" tab-position="left" @tab-click="handleClick">
+            <el-tab-pane  v-bind:style="{ top: top+'px' ,position:'fixed'}" style="position:fixed" v-for="anchor in blog.anchors" :name="anchor" :label="anchor">
 
             </el-tab-pane>
+        </el-tabs>
+
         <div class="blog-right">
             <div class="blog-title"><h1>{{blog.title}}</h1></div>
             <span class="blog-time">{{blog.timelineStr}}
@@ -64,15 +67,10 @@
             <el-tag v-for="tag in blog.tags" class="blog-tags">{{tag}}</el-tag>
             <div class="blog-content dicAdd" v-html="blog.content"></div>
         </div>
-    </el-tabs>
+
     <div class="fixed-text"><a @Click="editor">修改文档</a>
         </div>
 </div>
-
-<div id="contact-com">
-    <contact-component></contact-component>
-</div>
-
 <div id="fixed" v-if="seen"  v-bind:class="{animated:isClicked,fadeOutDown:isClicked}"
 
      @click="toTop">
@@ -138,16 +136,6 @@
             close(){
                 this.show=false
             }
-        }
-    })
-
-    let contact = new Vue({
-        el: '#contact-com',
-        data: {
-
-        },
-        methods: {
-
         }
     })
 
@@ -232,7 +220,8 @@
             blog: {anchors:''},
             activeName: '',
             positions:[],
-            top:150
+            top:150,
+            loading:true
         },
         methods: {
             editor() {
@@ -242,7 +231,8 @@
                 loginDialog.dialogVisible = true;
             },
             handleClick(tab, event) {
-                window.location.href = "#" + event.target.innerHTML;
+                str=event.target.id;
+                window.location.href = "#" + str.substring(4,str.length)
             },
             onLoad() {
                 //隐藏
@@ -252,21 +242,47 @@
                 head.title = this.blog.title;
                 this.blog.anchors=JSON.parse(this.blog.anchors)
                 window.addEventListener('scroll', this.handleScroll)
-
+                this.mleft = document.getElementById("cleft")
             },
             afterLoad(){
                 SyntaxHighlighter.highlight()
-                let eles = document.getElementsByClassName("thinkInside");
+                let eles = document.getElementById("blog_main").getElementsByClassName("thinkInside");
                 for(let index in eles){
                     if(typeof(eles[index])=="object") {
                         let idt = eles[index].getAttribute("id")
                         let setTopt = eles[index].offsetTop+152
+                        idts=idt.split('')
+                        let reg = new RegExp("[\\u4E00-\\u9FFF]+","g");
+                        let count = 0
+                        let breaks = 1
+                        let tmp=""
+                        for(i in idts){
+                            if(reg.test(idts[i])){
+                                count+=2;
+                            }else{
+                                count++;
+                            }
+                                tmp=tmp+idts[i]
+                            if(count>26){
+                                tmp=tmp+"<br>　　"//全角空格
+                                count=3
+                                breaks++
+                            }
+                        }
+                        if(breaks>1) {
+                            console.log("tab-"+idt+"asd")
+                            document.getElementById("tab-"+idt).innerHTML = tmp;
+                            document.getElementById("tab-"+idt).style.height = breaks*40+"px"
+
+                        }
                         let position = {
                             name: idt,
                             setTop: setTopt
                         }
                         this.positions.push(position);
+
                     }
+                    document.getElementById("blog-left").style.opacity="1"
                 }
                 img = document.getElementsByTagName('img');//图片元素
                 for(i in img){

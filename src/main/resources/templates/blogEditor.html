@@ -220,7 +220,7 @@
                     }, function () {
                         console.log('请求失败');
                     });
-                    setInterval(this.autoSave, 30000)
+                    setInterval(this.autoSave, 240000)
                     let url = window.location.search;
                     if (url.indexOf("=") != -1) {
                         bid = url.substring(url.indexOf("=") + 1);
