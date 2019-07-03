@@ -12,7 +12,7 @@
     <link type="text/css" rel="stylesheet" href="/css/main.css"/>
     <link type="text/css" rel="stylesheet" href="/css/blog.css"/>
     <link type="text/css" rel="stylesheet" href="/font/iconfont.css"/>
-    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.8.2/lib/theme-chalk/index.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
     <script src="/js/index.js"></script>
     <link type="text/css" rel="stylesheet" href="/properties.css"/>
@@ -20,7 +20,7 @@
     <script src="/js/baidu.js"></script>
     <script src="/font/iconfontAdapter.js"></script>
     <script src="/font/iconfont.js"></script>
-    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://unpkg.com/element-ui@2.8.2/lib/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
     <style>
@@ -93,7 +93,6 @@
         <el-col class="right-bar" :span="6">
             <el-card shadow="always">
                 <div class="taglist-block" v-for="taggroup in tags">
-
                     <div class="taglist-title">
                         <div v-bind:style="{ backgroundColor: taggroup.bgColor }"
                              style="height: 23px;width: 5px;position: absolute;margin-left: 4%;">
@@ -107,6 +106,15 @@
                     <el-tag class="page_block" @click.native="tagScreen" type="info"
                             size="small" v-for="tag in taggroup.options">{{tag.value}}
                     </el-tag>
+                </div>
+            </el-card>
+            <el-card shadow="always" style="margin-top:20px">
+                <div class="taglist-title">
+                    主题分类
+                </div>
+                <el-divider></el-divider>
+                <div class="taglist-block" th:each="topic:${blogTopics}">
+                    <a style="font-weight: 500;" class="nav_link"  th:text="${topic.topic}" th:href="${topic.url}"></a>
                 </div>
             </el-card>
         </el-col>
@@ -324,6 +332,7 @@
                 }, function () {
                     console.log('请求失败')
                 });
+
             },
             getIn(id) {
                 window.open("/blog/d?bid=" + id,'_blank')
@@ -381,6 +390,7 @@
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
 
                 if(scrollTop <  index.height) {
+                    this.mouseOn = true;
                     this.mouseOn = true;
                     document.getElementById("header").style.background = "#fff"
                     document.getElementById("top-bar").style.display = "block"

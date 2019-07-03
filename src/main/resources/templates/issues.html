@@ -203,12 +203,9 @@
             filterHandler(filters) {
                 let _this = this
                 let temp=""
-                console.log(filters.state)
                 for(value of filters.state.sort()){
                     temp+=value+","
                 }
-                console.log(filters.state)
-
                 if(temp!=this.value){
                     this.currentPage=1
                     this.value=temp

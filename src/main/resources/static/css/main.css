@@ -244,11 +244,13 @@
     border-bottom: 1.5px blue dotted;
 }
 #fish-bind{
-    position:absolute;
-    z-index:5;
-    width:100%;
+    position: absolute;
+    z-index: 5;
+    width: 94%;
     background-color: white;
-    padding-top:1300px;
+    padding-top: 1300px;
+    font-size: 20px;
+    margin: 3%;
 }
 
 

@@ -2,3 +2,6 @@
     width:100%;
     height:500px;
 }
+.el-row {
+    margin-bottom: 20px;
+}

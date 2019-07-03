@@ -5,6 +5,7 @@
 
     <meta charset="UTF-8">
     <meta name="description" th:attr="content=${blog.title}" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <title th:text="${blog.title}+'-鱼鱼的博客-移动端'"></title>
     <link type="text/css" rel="stylesheet" href="/css/main.css"/>
     <link type="text/css" rel="stylesheet" href="/css/blog.css"/>
@@ -25,9 +26,7 @@
     <script src="/ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
     <style>
 
-        .syntaxhighlighter {
 
-        }
         #header .el-breadcrumb {
             margin: 0 20px;
         }
@@ -74,13 +73,13 @@
 
 <div id="fish-bind" th:utext="${blog.outLine}"></div>
 
-<div id="blog_main">
+<div id="blog_main" style="display:none">
         <div >
             <div style="margin-top:1px" class="blog-title"><h1>{{blog.title}}</h1></div>
             <span style="margin-left:6px" class="blog-time">{{blog.timelineStr}}
             </span>
             <div><el-tag style="font-size:14px" v-for="tag in blog.tags" class="blog-tags">{{tag}}</el-tag></div>
-            <div style="margin-left:20px !important" class="blog-content dicAdd" v-html="blog.content"></div>
+            <div style="font-size: 18px;margin-left:20px !important" class="blog-content dicAdd" v-html="blog.content"></div>
         </div>
 
 </div>
@@ -194,7 +193,7 @@
                 head.title = this.blog.title;
                 this.blog.anchors=JSON.parse(this.blog.anchors)
                 window.addEventListener('scroll', this.handleScroll)
-
+                document.getElementById("blog_main").style.display="block"
             },
             afterLoad(){
                 SyntaxHighlighter.highlight()
