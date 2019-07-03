@@ -2,8 +2,10 @@ package fishmaple.api;
 
 import fishmaple.DTO.Blog;
 import fishmaple.DTO.Tool;
+import fishmaple.Objects.ElementOption;
 import fishmaple.Objects.UploadState;
 import fishmaple.Service.BlogService;
+import fishmaple.Service.BlogTopicService;
 import fishmaple.Service.UploadService;
 import fishmaple.shiro.ShiroService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -32,6 +34,8 @@ public class BlogController {
     UploadService uploadService;
     @Autowired
     ShiroService shiroService;
+    @Autowired
+    BlogTopicService blogTopicService;
 
     @PostMapping("")
     public String blogEditor(@RequestBody Blog blog){
@@ -46,7 +50,7 @@ public class BlogController {
             if(!blog.getId().equals("0")){
                 if(blogService.update(blog.getId(),blog.getContent(),blog.getTitle(),
                     shiroService.getUserName(),blog.getTags(),blog.getUseDictionary(),blog.getCover(),
-                    blog.getIsOriginal())){
+                    blog.getIsOriginal(),blog.getTopicId())){
                 return "success";
                 }else{
                     return "您不能编辑别人的博文";
@@ -54,7 +58,7 @@ public class BlogController {
             }else {
                blogService.save(blog.getContent(), blog.getTitle(),
                         shiroService.getCurrentUser().getName(), blog.getTags(),
-                       blog.getUseDictionary(),blog.getCover(),blog.getIsOriginal());
+                       blog.getUseDictionary(),blog.getCover(),blog.getIsOriginal(),blog.getTopicId());
             }
             return "success";
         }else{
@@ -135,4 +139,24 @@ public class BlogController {
     public UploadState upload (@RequestParam("file") MultipartFile file, HttpServletRequest request) {
         return uploadService.upload(file,request,"blog_cover");
     }
+
+    @PostMapping("/blogTopic")
+    public Map<String,Object> AddTopic(@RequestBody Map<String,String> map){
+        String gid=map.get("gid");
+        String group=map.get("group");
+        String topic=map.get("topic");
+
+        return blogTopicService.setNewTopic(gid,group,topic);
+    }
+
+    @GetMapping("/blogTopic")
+    public List<ElementOption> getTopic(){
+        return blogTopicService.getTopics();
+    }
+
+    @GetMapping("/blogTopic/group")
+    public List<ElementOption> getTopicGroup(){
+        return blogTopicService.getGroups();
+    }
+
 }

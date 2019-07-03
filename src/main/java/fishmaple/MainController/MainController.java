@@ -7,11 +7,8 @@ import fishmaple.DTO.Blog;
 import fishmaple.DTO.Dictionary;
 import fishmaple.DTO.Issue;
 import fishmaple.DTO.Tool;
-import fishmaple.Service.BlogService;
+import fishmaple.Service.*;
 import fishmaple.shiro.ShiroService;
-import fishmaple.Service.IssueService;
-import fishmaple.Service.MobileService;
-import fishmaple.Service.ToolService;
 import fishmaple.utils.PublicConst;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
@@ -50,6 +47,10 @@ public class MainController {
     ShiroService shiroService;
     @Autowired
     FriendLinksMapper friendLinksMapper;
+    @Autowired
+    BlogTopicService blogTopicService;
+    @Autowired
+    BlogTopicMapper blogTopicMapper;
 
     @RequestMapping("/blogEditor")
     public String blogEditor(@RequestParam(required = false) String xx
@@ -97,6 +98,16 @@ public class MainController {
         return "blogIndex";
     }
 
+    @RequestMapping("/blog/topicBlog")
+    public String blogTopic(@RequestParam Integer topicId,HttpServletRequest request, Model model, HttpServletResponse response) {
+        String content="";
+        List<Blog> list= blogService.getBlogListByTopicId(topicId);
+        String topic = blogTopicMapper.getTopicName(topicId);
+        model.addAttribute("topic",topic);
+        model.addAttribute("blog",list);
+        return "topicBlog";
+    }
+
     @RequestMapping("/blog")
     public String blog(HttpServletRequest request, Model model, HttpServletResponse response) {
         String content="";
@@ -111,6 +122,7 @@ public class MainController {
         model.addAttribute("icontent",configMapper.getValue("index_content"));
         model.addAttribute("page",1);
         model.addAttribute("pageD","");
+        model.addAttribute("blogTopics",blogTopicService.getAllTopics());
         log.info(request.getRemoteAddr()+" "+request.getRequestURI()+" "+"访问博客");
         return mobileHandler(request,"blog");
     }

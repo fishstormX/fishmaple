@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--客户映射 指定到dao接口 -->
+<mapper namespace="fishmaple.DAO.BlogTopicMapper">
+    <!-- 用于演示的古典版一对多查询 考虑到使用对象惹 怕不是会变慢 -->
+    <resultMap type="fishmaple.DTO.IssueTest" id="getManyIssue">
+        <id column="id" property="id"/>
+        <result column="author" property="author"/>
+        <result column="title" property="title"/>
+        <result column="state" property="state"/>
+        <result column="ta" property="tag"/>
+    </resultMap>
+
+    <select id="getTopicsByUserId" resultType="fishmaple.DTO.BlogTopic">
+        SELECT * FROM blog_topic
+        WHERE user_id = #{userId}
+    </select>
+    <select id="getTopicName" resultType="java.lang.String">
+        SELECT topic FROM blog_topic
+        WHERE id = #{id}
+    </select>
+
+    <select id="getAllTopics" resultType="fishmaple.DTO.BlogTopic">
+        SELECT * FROM blog_topic
+        WHERE f_topic_id != -1
+    </select>
+
+    <select id="getTopicsByUserIdAndTopicId" resultType="fishmaple.DTO.BlogTopic">
+        SELECT * FROM blog_topic WHERE user_id = #{userId} AND f_topic_id=#{topicId}
+    </select>
+
+    <insert id="addTopic" parameterType="fishmaple.DTO.BlogTopic" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO blog_topic(topic,user_id,f_topic_id) values(#{topic}, #{userId},#{fTopicId})
+    </insert>
+
+    <select id="verifyTopic" resultType="Integer" parameterType="fishmaple.DTO.BlogTopic">
+        select count(id) from  blog_topic where 1=1
+        <if test="id != null and id != 0">
+                     and id = #{id}
+        </if>
+        <if test="topic != null and topic != ''">
+                and topic = #{topic}
+        </if>
+        <if test="userId != null and userId != ''">
+                and user_id = #{userId}
+        </if>
+        <if test="fTopicId != null and fTopicId != ''">
+                and f_topic_id = #{fTopicId}
+        </if>
+    </select>
+
+</mapper>

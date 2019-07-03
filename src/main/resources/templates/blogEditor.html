@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh_CN"  s>
+<html lang="zh_CN">
 <head>
     <meta charset="UTF-8">
     <title>编辑博客——鱼鱼的博客</title>
@@ -50,48 +50,91 @@
     </div>
     <div id="editorc">
         <div class="blog-input" id="editor_input">
-        <el-input size="middle" maxlength="130" id="input-title" v-model="input" placeholder="请输入内容">
-            <template @keyup.enter="uploadBlog" slot="prepend">标题</template>
-        </el-input><br><br>
-        标签: <span>(支持手动输入标签)</span>
-        <el-select style="width:350px" size="middle"
-                   id="input-select" filterable allow-create v-model="stag" multiple placeholder="请选择">
-            <el-option-group
-                    v-for="tag in tags"
-                    :key="tag.label"
-                    :label="tag.label">
-                <el-option popper-append-to-body="false"
-                        v-for="item in tag.options"
-                        :key="item.value"
-                        :label="item.value"
-                        :value="item.value">
-                </el-option>
-            </el-option-group>
-        </el-select><br>
+            <el-row>
+                <el-col :span="24">
+                    <el-input size="middle" maxlength="130" id="input-title" v-model="input" placeholder="请输入内容">
+                        <template @keyup.enter="uploadBlog" slot="prepend">标题</template>
+                    </el-input>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="24">
+                    <span style="position: relative;top: 1.5px;" >标签：</span>
+                        <el-select size="middle"
+                                   id="input-select" filterable allow-create v-model="stag" multiple placeholder="标签（可手动输入）">
+                            <el-option-group
+                                    v-for="tag in tags"
+                                    :key="tag.label"
+                                    :label="tag.label">
+                                <el-option popper-append-to-body="false"
+                                           v-for="item in tag.options"
+                                           :key="item.value"
+                                           :label="item.value"
+                                           :value="item.value">
+                                </el-option>
+                            </el-option-group>
+                        </el-select>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="24">
+                    <span>分类：</span>
+                    <el-cascader
+                            id="input-topic"
+                            placeholder="选择归类"
+                            :options="options"
+                            v-model="topic"
+                            filterable>
+                    </el-cascader>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20">
+                <el-col :span="8">
+                    <span style="top: 1.5px;position: relative;">原创</span>
+                    <el-switch style="margin-right:10px;"  v-model="isOriginal" active-value=1 inactive-value=0></el-switch>
+                </el-col>
+                <el-col :span="4">
+                    <el-popover
+                            placement="right"
+                            title="tips"
+                            trigger="hover">
+                        <div style="margin-left:10px">
+                            <ul>
+                                <li>后台会自动对h2和h3级别段落添加锚点处理 但是请确标题保唯一性</li>
+                                <li>你可以在全篇使用//TODO标识一篇未完成的博客。</li>
+                                <li>转载文章或多半转载文章请不要勾选原创</li>
+                            </ul>
+                        </div>
+                        <i style="position: relative;top: 1.5px;font-size: 17px;" slot="reference" class="el-icon-info"></i>
+                    </el-popover>
+                </el-col>
+            </el-row>
+            <el-container>
+                <el-aside width="200px">上传封面
+                    <el-upload
+                            drag="true"
+                            class="avatar-uploader"
+                            action="/api/blog/uploadBlogCover"
+                            :show-file-list="false"
+                            :on-success="handleAvatarSuccess"
+                            :before-upload="beforeAvatarUpload">
+                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-aside>
+                <el-container>
+                    <el-header height="30px">
+                    </el-header>
+                    <el-main style="text-align: center">
+                        <el-button @click="uploadBlog">上传博客</el-button>
+                    </el-main>
+                    <el-footer style="text-align: center">
+                        <el-button v-if="shown" @click="dialogVisible = true" type="danger">删除博客</el-button>
+                    </el-footer>
+                </el-container>
+            </el-container>
+            <!--<span style="top: 1px;position: relative;">开启词典</span><el-switch v-model="useDictionary" active-value=1 inactive-value=0></el-switch>-->
            <br>
-            <span style="top: 8px;position: relative;">开启词典<el-switch v-model="useDictionary" active-value=1 inactive-value=0></el-switch>
-            <span>原创<el-switch v-model="isOriginal" active-value=1 inactive-value=0>
-            </el-switch></span>
-            <br><br>
-            后台会自动对h2和h3级别段落添加锚点处理，请好好利用！<br>
-            （请务必保证段落标题各自的唯一性）<br>
-            你可以在全篇使用 //TODO 标识一个未完成的段落。
-                <el-button @click="dialogVisible = true" type="danger">删除这篇博客</el-button>
-                <el-button @click="uploadBlog">上传博客</el-button>
-           <br>
-            上传封面<el-upload
-                    drag="true"
-                    class="avatar-uploader"
-                    action="/api/blog/uploadBlogCover"
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload">
-                <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
-
-
-
         </div>
         <el-dialog
                 title="注意！"
@@ -104,10 +147,53 @@
                 <el-button type="primary" @click="deleteBlog">确 定</el-button>
                 </span>
         </el-dialog>
+        <el-dialog title="添加主题" :visible.sync="dialogFormVisible">
+        <el-form>
+            <el-form-item label="组 (可为空) ：" >
+                <el-select
+                        v-model="newGroup"
+                        filterable
+                        allow-create
+                        clearable
+                        default-first-option
+                        placeholder="选择或创建组（可为空）"
+                        showclose="false"
+                >
+
+                    <el-option
+                            v-for="item in groups"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="主题：" >
+                <el-select
+                        v-model="newTopic"
+                        filterable
+                        allow-create
+                        clearable
+                        default-first-option
+                        placeholder="选择或创建主题">
+                    <el-option
+                            v-for="item in topics"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="saveTopic">确 定</el-button>
+        </div>
+    </el-dialog>
          <script id="editor" type="text/plain"></script>
 
-
     </div>
+
 <script>
         let bid=0;
         var ue = UE.getEditor('editor');
@@ -134,14 +220,27 @@
         let editor =new Vue({
             el: '#editorc',
             data: {
+                placeholder:"",
+                placeholder2:"",
+                dialogFormVisible:false,
                 dialogVisible:false,
                 isUpdate:false,
                 stag: [],
                 input: "",
                 useDictionary:"1",
                 isOriginal:"",
-                imageUrl: '',
-                cover:'',
+                imageUrl: "",
+                cover:"",
+                topic:[],
+                shown:false,
+                groups:[],
+                topics:[],
+                newGroup:"",
+                newTopic:"",
+                options: [{
+                    value: '添加新主题　',
+                    label: '添加新主题　',
+                }],
                 tags: [{
                     label: '编程语言',
                     options: []
@@ -162,15 +261,84 @@
 
             },
             methods: {
+                saveTopic(){
+                    let o=false
+                    for(let i in this.groups){
+                        if(this.newGroup==this.groups[i].value){
+                            o=true;
+                            break;
+                        }
+                    }
+
+                    this.$http.post('/api/blog/blogTopic',{
+                        group:o?"":this.newGroup,
+                        gid:o?this.newGroup:"",
+                        topic:this.newTopic
+                    }).then(function (res) {
+                        this.topics=[]
+                        let message=JSON.parse(res.bodyText);
+                        if(message.message=="success"){
+                            this.options=[]
+                            for (let i in message.options) {
+                                this.options.push(message.options[i])
+                            }
+                        }else{
+                            this.$message.error({
+                                duration:3000,
+                                message:message.message,
+                                showClose:true});
+                        }
+                        console.log(o)
+                        if(o){
+                            for(let i in this.options){
+                                if(this.options[i].value==this.newGroup){
+                                    for(let j in this.options[i].children){
+                                        if(this.options[i].children[j].label==this.newTopic){
+                                            this.topic=[this.newGroup,this.options[i].children[j].value]
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                        }else{
+                            console.log(this.options.length,this.newGroup)
+                            if(this.newGroup==""){
+                                for(let i in this.options){
+                                    if(this.options[i].label==this.newTopic){
+                                        this.topic=[this.options[i].value]
+                                        break
+                                    }
+                                }
+                            }else{
+                                for(let i in this.options){
+                                    if(this.options[i].label==this.newGroup){
+                                        for(let j in this.options[i].children){
+                                            if(this.options[i].children[j].label==this.newTopic){
+                                                this.topic=[this.options[i].value,this.options[i].children[j].value]
+                                                break
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            this.newGroup=""
+                            this.newTopic=""
+                            this.dialogFormVisible = false;
+                        }
+                    }, function () {
+                        console.log('请求失败')
+                    });
+
+
+                },
                 handleAvatarSuccess(res, file) {
                     this.imageUrl = URL.createObjectURL(file.raw);
                     this.cover = res.url
                 },
                 beforeAvatarUpload(file) {
-                    const isLt2M = file.size / 1024 / 1024 < 0.5;
-
+                    const isLt2M = file.size / 1024 / 1024 < 2;
                     if (!isLt2M) {
-                        this.$message.error('上传头像图片大小不能超过 500k!');
+                        this.$message.error('上传封面图片大小不能超过2M!');
                     }
                     return isLt2M;
                 },
@@ -189,6 +357,10 @@
                     return UE.getEditor('editor').getContent();
                 },
                 uploadBlog: function () {
+                    let topicId
+                    if(this.topic.length>0){
+                        topicId=this.topic[this.topic.length-1]
+                    }
                     this.$http.post('/api/blog', {
                         title: this.input,
                         content: this.getContent(),
@@ -197,7 +369,8 @@
                         id: bid,
                         useDictionary:this.useDictionary,
                         isOriginal:this.isOriginal,
-                        cover: this.cover
+                        cover: this.cover,
+                        topicId:topicId
                     }).then(function (res) {
                         if(res.bodyText==="success"){
                             window.location.href="/blog"
@@ -208,42 +381,93 @@
                         console.log('请求失败');
                     });
                 },
+                resetholder(){
+                    document.getElementById("input-select").getElementsByTagName("input")[0].setAttribute("placeholder",this.placeholder)
+                },
+                resetholder2(){
+                    document.getElementById("input-topic").getElementsByTagName("input")[0].setAttribute("placeholder",this.placeholder2)
+                },
+                resetWidth(){
+                    let w=document.getElementById("input-title").offsetWidth-57
+                    document.getElementById("input-select").style.width=w+"px"
+                    document.getElementById("input-topic").style.width=w+"px"
+                },
                 onLoad() {
+                    this.placeholder = document.getElementById("input-select").getAttribute("placeholder")
+                    this.placeholder2 = document.getElementById("input-topic").getElementsByTagName("div")[0].getAttribute("placeholder")
+                    this.resetWidth()
+                    this.resetholder()
+                    this.resetholder2()
                     this.$http.get('/api/blog/tag').then(function (res) {
                         let ts = JSON.parse(res.bodyText);
                         for (let i = 0; i < 4; i++) {
                             for (let index = 0; index < ts[i].length; index++) {
-                                var tempTag = {value: ts[i][index]};
-                                this.tags[i].options.push(tempTag);
+                                var tempTag = {value: ts[i][index]}
+                                this.tags[i].options.push(tempTag)
                             }
                         }
                     }, function () {
-                        console.log('请求失败');
+                        console.log('请求失败')
+                    });
+
+                    this.$http.get('/api/blog/blogTopic').then(function (res) {
+                        let topics = JSON.parse(res.bodyText);
+                        this.options=[]
+                        for (let i in topics) {
+                            this.options.push(topics[i])
+                        }
+                        if (url.indexOf("=") != -1) {
+                            this.shown=true
+                            bid = url.substring(url.indexOf("=") + 1);
+                            this.$http.get('/api/blog/detail?bid='+bid).then(function (res) {
+                                let blog = JSON.parse(res.bodyText);
+                                this.input=blog.title;
+                                this.stag=blog.tags;
+                                this.imageUrl=blog.cover
+                                this.cover=blog.cover
+                                this.title=blog.title
+                                this.isOriginal=blog.isOriginal
+
+                                if(this.isOriginal==1){
+                                }
+                                setTimeout(
+                                    function(){UE.getEditor('editor').setContent(blog.content, false)},
+                                    1000)
+                                this.isUpdate=true;
+                                if(blog.topicId!=null) {
+                                    for (let i in this.options) {
+                                        if(this.options[i].value==blog.topicId){
+                                            this.topic=[blog.topicId]
+                                            break
+                                        }
+                                        if (this.options[i].children!=null && this.options[i].children.length > 0) {
+                                            for (let j in this.options[i].children) {
+                                                if (this.options[i].children[j].value== blog.topicId) {
+                                                    this.topic=[this.options[i].value,blog.topicId.toString()]
+                                                    console.log(this.topic)
+                                                    break
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }, function () {
+                                console.log('请求失败');
+                            });
+                        }else{
+                            this.shown=false;
+                        }
+                    }, function () {
+                        console.log('请求失败')
                     });
                     setInterval(this.autoSave, 240000)
                     let url = window.location.search;
-                    if (url.indexOf("=") != -1) {
-                        bid = url.substring(url.indexOf("=") + 1);
-                        this.$http.get('/api/blog/detail?bid='+bid).then(function (res) {
-                            let blog = JSON.parse(res.bodyText);
-                            this.input=blog.title;
-                            this.stag=blog.tags;
-                            this.imageUrl=blog.cover
-                            this.cover=blog.cover
-                            this.title=blog.title
-                            this.isOriginal=blog.isOriginal
-                            if(this.isOriginal==1){
 
-                            }
-                            setTimeout(
-                                function(){UE.getEditor('editor').setContent(blog.content, false)},
-                            1000)
 
-                            this.isUpdate=true;
-                        }, function () {
-                            console.log('请求失败');
-                        });
+                    window.onresize = () => {
+                      this.resetWidth()
                     }
+
                 },
                 autoSave(){
                     this.$http.post('/api/blog/blogBak', {
@@ -275,6 +499,35 @@
                     }
             }, mounted() {
                 this.onLoad();
+            },
+            watch:{
+                stag(val){
+                    if(val.length>0) {
+                        document.getElementById("input-select").getElementsByTagName("input")[0].setAttribute("placeholder", "")
+                    }else{
+                        this.resetholder()
+                    }
+                },
+                topic(val){
+                    if(val[0]=="添加新主题　"){
+                        this.$http.get('/api/blog/blogTopic/group').then(function (res) {
+                            this.groups=[]
+                            let groups=JSON.parse(res.bodyText);
+                            for (let i in groups) {
+                                this.groups.push(groups[i])
+                            }
+                        }, function () {
+                            console.log('请求失败')
+                        });
+                        this.topic=[]
+                        this.dialogFormVisible = true
+                    }
+                    if(val.length>0) {
+                        document.getElementById("input-topic").getElementsByTagName("input")[0].setAttribute("placeholder", "")
+                    }else{
+                        this.resetholder2()
+                    }
+                }
             }
         })
 </script>

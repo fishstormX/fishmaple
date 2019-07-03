@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html  lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="description" content="web灵魂开发工程师鱼鱼的技术博客" />
+    <link rel="canonical" href="https://www.fishmaple.cn/" />
+    <meta property="og:site_name" th:attr="content=${topic}" />
+    <title th:text="${topic}+'-分类-鱼鱼的博客'"></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="twitter:image:src" content="https://www.fishmaple.cn/pics/logo-fish.png" />
+    <meta charset="UTF-8">
+    <meta name="keywords" content="技术博客,后台学习,灵魂web开发,java开发,程序开发">
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/blog.css"/>
+    <link type="text/css" rel="stylesheet" href="/font/iconfont.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <link type="text/css" rel="stylesheet" href="/properties.css"/>
+    <script src="/js/util.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfontAdapter.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
+
+</head>
+<body>
+
+
+<div id="header" class="header">
+    <div id="component" >
+        <top-component :user="user" ></top-component>
+    </div>
+</div>
+
+<div id="blog_main">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item><a class="nav_link" href="/index">首页</a></el-breadcrumb-item>
+        <el-breadcrumb-item><a class="nav_link" href="/blog">博客</a></el-breadcrumb-item>
+        <el-breadcrumb-item th:text="'分类：'+${topic}">分类</el-breadcrumb-item>
+    </el-breadcrumb>
+    <el-row class="blog-list" style="line-height:30px">
+        <div th:each="blog:${blog}">
+            <a  class="nav_link" th:attr="href='/blog/d?bid='+${blog.id}" th:text="${blog.title}"></a>
+        </div>
+    </el-row>
+</div>
+
+
+<div id="fixed-all">
+<div id="contact-com" v-if="seen">
+    <contact-component></contact-component>
+</div>
+
+<div id="left-fixed" v-if="seen" class="my-btns">
+    <el-popover
+            placement="right"
+            title="博客"
+            width="200"
+            trigger="hover"
+            content="新建博客">
+        <a slot="reference" href="/blogEditor">
+            <el-button  icon="el-icon-edit" circle></el-button>
+        </a>
+    </el-popover>
+</div>
+</div>
+
+
+<div id="footer">
+    <foot-component></foot-component>
+    <copyright></copyright>
+</div>
+<script>
+
+    let index = new Vue({
+        el: '#index',
+        data:{
+            up:true,
+            timer:"",
+            height:1000
+        },
+        methods: {
+            upHandle(){
+                    this.timer=setInterval(this.upr,4)
+            },
+            upr(){
+                if(this.up){
+                    window.scrollBy(0,10)
+                }else{
+                    window.scrollTo(0,this.height)
+                    clearInterval(this.timer)
+                }
+            },
+            onLoad(){
+                this.height= window.screen.availHeight;
+            }
+        },
+        mounted(){
+            this.onLoad()
+        }
+    })
+
+    let pagec = new Vue({
+        el: '#page_block',
+        data: {
+            total: 70,
+            currentPage: 1
+        },
+        methods: {
+            handleCurrentChange(page) {
+                    this.$http.get('/api/blog?' + (this.tagtap ? 'tag=' + this.screen + '&' : '') +
+                        "&page=" + page).then(function (res) {
+                        blog.items = JSON.parse(res.bodyText);
+                        for (let i in blog.items) {
+                            let date = new Date(blog.items[i].timeline * 1000);
+                            blog.items[i].timeline = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" +
+                                date.getDate() + "日"
+                        }
+                        if (blog.items.length === 0) {
+                            blog.isNull = true;
+                        } else {
+                            blog.isNull = false;
+                        }
+                    }, function () {
+                        console.log('请求失败');
+                    });
+                }
+            }
+    })
+
+    let blog = new Vue({
+        el: '#blog_main',
+        data: {
+            tagtap: false,
+            screen: "",
+            isNull: false,
+            items: [{}],
+            tags: [{
+                label: '编程语言',
+                icon: 'yunyingguanli',
+                bgColor: '#add8e6',
+                icoColor: "#7fcbec",
+                options: []
+            },
+                {
+                    label: '分类',
+                    icon: 'zuzhiqunzu',
+                    bgColor: '#9affbc',
+                    icoColor: "#81e1ab",
+                    options: []
+                },
+                {
+                    label: '技术概念',
+                    icon: 'gongnengdingyi',
+                    bgColor: '#ffabab',
+                    icoColor: "#fb8585",
+                    options: []
+                },
+                {
+                    label: '框架',
+                    icon: 'guize',
+                    bgColor: '#e8bd6c',
+                    icoColor: "#ffad14",
+                    options: []
+                },
+            ]
+        },
+
+    })
+
+    let head = new Vue({
+        el: '#header',
+        data: {
+            user:{},
+            mouseOn:false
+        },
+        methods:{
+            getUser(){
+                this.$http.get('/api/who').then(function (res) {
+                    this.user=JSON.parse(res.bodyText)
+                        }, function () {
+                    console.log('获取回话失败')
+                });
+            }
+        },
+        mounted(){
+            this.getUser()
+        }
+    })
+
+    let foot = new Vue({
+        el: '#footer',
+        data: {
+            isActive: true
+        },
+        methods: {
+            loginDialog() {
+                loginDialog.dialogVisible = true
+            },
+            getHeight() {
+                let bh = document.body.scrollHeight
+                let ch = document.documentElement.clientHeight
+                if (bh < ch) {
+                    this.isActive = true
+                } else {
+                    this.isActive = false
+                }
+            },
+        }
+    })
+
+
+    let leftFixed = new Vue({
+        el: '#fixed-all',
+        data:{
+            isClicked: false,
+            seen: false,
+            sdelay: 0
+        },
+        methods:{
+            toTop() {
+                this.isClicked = true
+                this.sdelay = setInterval(this.toThPosition, 2)
+            },
+            toThPosition(){
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+                if(scrollTop>index.height){
+
+                    window.scrollBy(0,-10)
+                }else{
+
+                    window.scrollTo(0,index.height);
+                    clearInterval(this.sdelay)
+                    this.isClicked = false
+                }
+            }
+        }
+    })
+
+
+</script>
+
+</body>
+</html>

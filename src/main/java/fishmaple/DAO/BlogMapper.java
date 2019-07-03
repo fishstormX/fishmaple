@@ -24,25 +24,27 @@ public interface BlogMapper{
                     @Param("tags")String tags);
 
     @Insert("insert into blog(`id`, `content`,`title`,`timeline`,`author`,`anchors`,`useDictionary`,`cover`," +
-            "`isOriginal`,`todo`) " +
+            "`isOriginal`,`todo`,`topic_id`) " +
             "values (#{id},#{content},#{title},#{timeline},#{author},#{anchors},#{useDictionary},#{cover}," +
-            "#{isOriginal},#{todo})")
+            "#{isOriginal},#{todo},#{topicId})")
     void save(@Param("id") String id, @Param("content") String content,
                      @Param("title")String title, @Param("timeline")Long timeline,
                      @Param("author")String Aid,@Param("anchors")String anchors,
               @Param("useDictionary")int useDictionary,@Param("cover")String cover,
-              @Param("isOriginal")Integer isOriginal,@Param("todo")Integer todo);
+              @Param("isOriginal")Integer isOriginal,@Param("todo")Integer todo,
+              @Param("topicId")Integer topicId);
 
     @Update("update blog SET `title`=#{title},`content`=#{content}, " +
             "timeline=#{timeline},author=#{author},anchors=#{anchors}, " +
             "`useDictionary`=#{useDictionary},cover=#{cover},isOriginal=#{isOriginal}," +
-            "todo=#{todo} " +
+            "todo=#{todo},topic_id=#{topicId} " +
             "WHERE `id`=#{id}")
     void updateOne(@Param("id") String id, @Param("content") String content,
               @Param("title")String title, @Param("timeline")Long timeline,
               @Param("author")String author,@Param("anchors")String anchors,
               @Param("useDictionary")int useDictionary,@Param("cover")String cover,
-                   @Param("isOriginal")Integer isOriginal,@Param("todo")Integer todo);
+                   @Param("isOriginal")Integer isOriginal,@Param("todo")Integer todo,
+                   @Param("topicId")Integer topicId);
 
 
     @Insert("insert into blog_tag(`id`, `blog_id`,`tag`) " +
@@ -87,7 +89,7 @@ public interface BlogMapper{
     List<Blog> getAll();
 
 
-    @Select("select id,title,timeline,author,content,priority,useDictionary,cover,isOriginal,todo from blog " +
+    @Select("select * from blog " +
             "ORDER BY  priority DESC" +
             ",timeline DESC LIMIT #{start},#{count}")
     @Results({@Result(id=true,property="id",column="id"),
@@ -97,7 +99,10 @@ public interface BlogMapper{
     @Select("select `id`,title,timeline,author,isOriginal,todo from blog ORDER BY timeline DESC")
     List<Blog> fastGetAll();
 
-    @Select("select blog.id,title,timeline,author,content,useDictionary,cover,isOriginal,todo from blog_tag " +
+    @Select("select `id`,title,timeline,author,isOriginal,todo from blog WHERE topic_id = #{topicId} ORDER BY timeline DESC")
+    List<Blog> fastGetByTopicId(@Param("topicId")Integer topicId);
+
+    @Select("select * from blog_tag " +
             "left join blog on blog.id=blog_tag.blog_id " +
             "where tag = #{tag} ORDER BY timeline DESC LIMIT #{start},#{count}")
     @Results({@Result(id=true,property="id",column="id"),

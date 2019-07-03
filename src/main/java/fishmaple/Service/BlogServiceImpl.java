@@ -33,7 +33,7 @@ public class BlogServiceImpl implements BlogService{
 
     @Override
     public void save(String content, String title,String author,List<String> tags,
-                     int useDictionary,String cover,Integer isOriginal) {
+                     int useDictionary,String cover,Integer isOriginal,Integer topicId) {
         //TODO  权限
         Long timenow=System.currentTimeMillis()/1000;
         String bid=EncoderUtil.getUUID(1);
@@ -45,7 +45,7 @@ public class BlogServiceImpl implements BlogService{
         if(content.indexOf("//TODO")>0){
             todo=1;
         }
-        blogMapper.save(bid,temp.get(1),title,timenow,author,temp.get(0), useDictionary,cover,isOriginal,todo);
+        blogMapper.save(bid,temp.get(1),title,timenow,author,temp.get(0), useDictionary,cover,isOriginal,todo,topicId);
         for(String tag: tags){
             blogMapper.saveBTags(EncoderUtil.getUUID(1),bid,tag);
         }
@@ -53,7 +53,7 @@ public class BlogServiceImpl implements BlogService{
 
     @Override
     public boolean update(String id, String content, String title, String author,
-                       List<String> tags, int useDictionary,String cover,Integer isOriginal) {
+                       List<String> tags, int useDictionary,String cover,Integer isOriginal,Integer topicId) {
         //fish编辑自己的博客
         if(!blogMapper.getById(id).getAuthor().equals(author)&&
                 !shiroService.isUserAuthAble("change_world")){
@@ -73,7 +73,7 @@ public class BlogServiceImpl implements BlogService{
         if(content.indexOf("//TODO")>0){
             todo=1;
         }
-        blogMapper.updateOne(id,temp.get(1),title,timenow,author,temp.get(0),useDictionary,cover,isOriginal,todo);
+        blogMapper.updateOne(id,temp.get(1),title,timenow,author,temp.get(0),useDictionary,cover,isOriginal,todo,topicId);
         blogMapper.deleteBlogTags(id);
         for(String tag: tags){
             blogMapper.saveBTags(EncoderUtil.getUUID(1),id,tag);
@@ -91,6 +91,12 @@ public class BlogServiceImpl implements BlogService{
     @Override
     public List<Blog> getBlogList() {
         List<Blog> blogs=blogMapper.fastGetAll();
+
+        return blogs;
+    }
+    @Override
+    public List<Blog> getBlogListByTopicId(Integer topicId) {
+        List<Blog> blogs=blogMapper.fastGetByTopicId(topicId);
 
         return blogs;
     }

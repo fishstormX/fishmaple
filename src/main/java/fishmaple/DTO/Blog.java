@@ -27,12 +27,22 @@ public class Blog implements Serializable {
     private int useDictionary;
     private String cover;
     private Integer todo;
+    //topic_id
+    private Integer topicId;
     /************不属于库中的字段*********/
     private String code;
     private String tagTemp;
     private boolean isUpdate;
     private List<String> tagTypes;
     private String TimelineStr;
+
+    public Integer getTopicId() {
+        return topicId;
+    }
+
+    public void setTopicId(Integer topicId) {
+        this.topicId = topicId;
+    }
 
     public String getTimelineStr() {
         return TimelineStr;
