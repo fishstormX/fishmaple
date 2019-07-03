@@ -17,6 +17,7 @@
     <div @keyup.enter="registerHandle()" id="main" style="color:#fff;width: 234px; margin:120px auto;display: inline-block;display: flex;flex-direction: column;">
         <span v-if="qr">用户名：</span><el-input v-if="qr" v-model="name" placeholder="请输入内容"></el-input>
         <span v-if="qr">密码儿：</span><el-input v-if="qr" type="password" v-model="psw" placeholder="请输入内容"></el-input>
+        <el-checkbox style="color:white" v-if="!isRegister&&qr" v-model="rememberMe">自动登录</el-checkbox>
         <span v-if="isRegister&&qr">确认密码儿：<el-input type="password" v-model="psw2" placeholder="请输入内容"></el-input></span>
         <span v-if="isRegister&&qr">邀请码儿（非必填）：<el-input v-model="letCode" placeholder="请输入内容"></el-input></span>
         <br><el-button v-if="qr" @Click="registerHandle()">{{botton}}</el-button><br>
@@ -39,7 +40,8 @@
                 botton2:'扫描二维码登录',
                 click:'点此注册',
                 qr:true,
-                img:""
+                img:"",
+                rememberMe:false
             },
             methods: {
                 change(){
@@ -54,8 +56,10 @@
                     }
                 },
                 loginHandle(){
-                    this.$http.post('/api/login',{name:this.name,
-                        pswd:this.psw
+                    this.$http.post('/api/login',{
+                        name:this.name,
+                        pswd:this.psw,
+                        rememberMe:this.rememberMe
                     }).then(function (res) {
                         if(res.bodyText=="SUCCESS"){
                             this.$message.success("登录成功");

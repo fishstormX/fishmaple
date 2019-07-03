@@ -25,7 +25,6 @@ public class ShiroConfiguration {
 
     @Bean(name = "shiroFilter")
     public ShiroFilterFactoryBean shiroFilter(@Qualifier("securityManager") SecurityManager manager) {
-
         ShiroFilterFactoryBean bean = new ShiroFilterFactoryBean();
         bean.setSecurityManager(manager);
         //配置登录的url和登录成功的url
@@ -37,8 +36,10 @@ public class ShiroConfiguration {
         filterChainDefinitionMap.put("/blogEditor", "authc");
         filterChainDefinitionMap.put("/document", "authc");
         filterChainDefinitionMap.put("/uc", "authc");
-        filterChainDefinitionMap.put("/templates/*.*", "authc");//表示需要认证才可以访问
         filterChainDefinitionMap.put("/logout", "logout");
+        filterChainDefinitionMap.put("/*", "anon");
+        filterChainDefinitionMap.put("/templates/*.*", "authc");//表示需要认证才可以访问
+
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return bean;
     }
@@ -49,6 +50,7 @@ public class ShiroConfiguration {
         System.err.println("--------------shiro已经加载----------------");
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
         manager.setRealm(authRealm);
+
         return manager;
     }
 

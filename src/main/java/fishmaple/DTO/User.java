@@ -1,17 +1,19 @@
 package fishmaple.DTO;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 /**
  * @author 鱼鱼
  * 用户类
  * */
-public class User {
+public class User implements Serializable {
     private String  id;
     private String name;
     private String auth;
     private String registertime;
     private String pswd;
+    private transient Boolean rememberMe;
     private Set<Role> roles=new HashSet<>();
 
     @Override
@@ -24,6 +26,14 @@ public class User {
                 ", pswd='" + pswd + '\'' +
                 ", roles=" + roles +
                 '}';
+    }
+
+    public Boolean getRememberMe() {
+        return rememberMe;
+    }
+
+    public void setRememberMe(Boolean rememberMe) {
+        this.rememberMe = rememberMe;
     }
 
     public String getId() {

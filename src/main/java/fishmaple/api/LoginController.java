@@ -123,6 +123,7 @@ public class LoginController {
             return "含有非法字符";
         }
         UsernamePasswordToken userToken=new UsernamePasswordToken(user.getName(),user.getPswd());
+        userToken.setRememberMe(user.getRememberMe());
         try{
             Jedis jedis= JedisUtil.getJedis();
             subject.login(userToken);
