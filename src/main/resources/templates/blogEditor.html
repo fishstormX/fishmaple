@@ -269,7 +269,6 @@
                             break;
                         }
                     }
-
                     this.$http.post('/api/blog/blogTopic',{
                         group:o?"":this.newGroup,
                         gid:o?this.newGroup:"",
@@ -288,7 +287,6 @@
                                 message:message.message,
                                 showClose:true});
                         }
-                        console.log(o)
                         if(o){
                             for(let i in this.options){
                                 if(this.options[i].value==this.newGroup){
@@ -437,7 +435,7 @@
                                 if(blog.topicId!=null) {
                                     for (let i in this.options) {
                                         if(this.options[i].value==blog.topicId){
-                                            this.topic=[blog.topicId]
+                                            this.topic=[blog.topicId.toString()]
                                             break
                                         }
                                         if (this.options[i].children!=null && this.options[i].children.length > 0) {
