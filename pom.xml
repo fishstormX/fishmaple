@@ -28,11 +28,17 @@
 
         <!-- https://mvnrepository.com/artifact/javax.mail/mail -->
 
+        <!-- https://mvnrepository.com/artifact/com.sun.mail/javax.mail -->
         <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>javax.mail-api</artifactId>
+            <groupId>locallib</groupId>
+            <artifactId>mail</artifactId>
             <version>1.6.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/javax.mail.jar
+            </systemPath>
         </dependency>
+
+
         <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
