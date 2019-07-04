@@ -108,6 +108,11 @@ public class MainController {
         return "topicBlog";
     }
 
+    @RequestMapping("/sideWall")
+    public String sideWall(HttpServletRequest request, Model model, HttpServletResponse response) {
+        return "sideWall";
+    }
+
     @RequestMapping("/blog")
     public String blog(HttpServletRequest request, Model model, HttpServletResponse response) {
         String content="";

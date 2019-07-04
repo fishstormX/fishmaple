@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html  lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="description" content="web灵魂开发工程师鱼鱼的技术博客" />
+    <link rel="canonical" href="https://www.fishmaple.cn/" />
+    <meta property="og:site_name" content="给我留言-鱼鱼的博客" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="twitter:image:src" content="https://www.fishmaple.cn/pics/logo-fish.png" />
+    <meta charset="UTF-8">
+    <meta name="keywords" content="技术博客,后台学习,灵魂web开发,java开发,程序开发">
+    <title>给我留言-鱼鱼的博客</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/blog.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/link.css"/>
+    <link type="text/css" rel="stylesheet" href="/font/iconfont.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <link type="text/css" rel="stylesheet" href="/properties.css"/>
+    <script src="/js/util.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfontAdapter.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
+
+</head>
+<body>
+
+
+<div id="header" class="header">
+    <div id="component" >
+        <top-component :user="user" ></top-component>
+    </div>
+</div>
+</div>
+<div id="main" style="background:white">
+    <div class="fLink" >
+        <div class="fLink-block" style=" width: 650px;
+    margin: auto;">
+
+            <div style="margin-top:20px">
+                <p style="color:grey">留下信息与我通信吧，交换友链的小伙伴请在正文中输入你的网站 名称 描述和网站图标地址</p>
+            </div>
+            <el-form label-width="180px">
+                <el-form-item label="留言内容（必填）">
+                    <el-input
+                            type="textarea"
+                            :autosize="{ minRows: 4, maxRows: 4}"
+                            placeholder="请输入内容"
+                            v-model="content">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="你的邮箱：（必填）">
+                    <el-input v-model="email"></el-input>
+                </el-form-item>
+                <el-form-item label="昵称：（必填）">
+                    <el-input v-model="name"></el-input>
+                </el-form-item>
+                <el-form-item label="网站地址：">
+                    <el-input v-model="website"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" icon="el-icon-message" @click="onSubmit">寄件</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+        <el-dialog
+                title="提示"
+                :visible.sync="dialogVisible"
+                width="30%"
+                :before-close="handleClose">
+            <span>{{message}}</span>
+            <span slot="footer" class="dialog-footer">
+   <el-button type="primary" @click="dialogVisible = false">O K</el-button>
+  </span>
+        </el-dialog>
+    </div>
+</div>
+
+<div id="fixed-all">
+
+<div id="contact-com" v-if="seen">
+    <contact-component></contact-component>
+</div>
+
+</div>
+
+
+<div id="footer" class="foot-abo">
+    <foot-component></foot-component>
+    <copyright></copyright>
+</div>
+<script>
+
+
+
+
+    let blog = new Vue({
+        el: '#main',
+        data: {
+           content:"",
+            name:"",
+            website:"",
+            email:"",
+            message:"",
+            dialogVisible:false
+        },
+        methods:{
+            handleClose(){
+                this.dialogVisible = false
+            },
+            onSubmit(){
+                this.$http.post('/api/sendTalk',{
+                    content:this.content,
+                    name:this.name,
+                    website:this.website,
+                    email:this.email
+                }).then(function (res) {
+                    this.message=res.bodyText
+                    this.dialogVisible=true
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            }
+        },
+    })
+
+    let head = new Vue({
+        el: '#header',
+        data: {
+            user:{},
+            mouseOn:false
+        },
+        methods:{
+            getUser(){
+                this.$http.get('/api/who').then(function (res) {
+                    this.user=JSON.parse(res.bodyText)
+                        }, function () {
+                    console.log('获取回话失败')
+                });
+            }
+        },
+        mounted(){
+            this.getUser()
+        }
+    })
+
+    let foot = new Vue({
+        el: '#footer',
+        data: {
+            isActive: true
+        },
+        methods: {
+            loginDialog() {
+                loginDialog.dialogVisible = true
+            },
+            getHeight() {
+                let bh = document.body.scrollHeight
+                let ch = document.documentElement.clientHeight
+                if (bh < ch) {
+                    this.isActive = true
+                } else {
+                    this.isActive = false
+                }
+            },
+        }
+    })
+
+
+    let leftFixed = new Vue({
+        el: '#fixed-all',
+        data:{
+            isClicked: false,
+            seen: false,
+            sdelay: 0
+        },
+        methods:{
+            toTop() {
+                this.isClicked = true
+                this.sdelay = setInterval(this.toThPosition, 2)
+            },
+            toThPosition(){
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+                if(scrollTop>index.height){
+
+                    window.scrollBy(0,-10)
+                }else{
+
+                    window.scrollTo(0,index.height);
+                    clearInterval(this.sdelay)
+                    this.isClicked = false
+                }
+            }
+        }
+    })
+
+
+</script>
+
+</body>
+</html>
