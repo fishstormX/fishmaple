@@ -113,7 +113,7 @@
                     主题分类
                 </div>
                 <el-divider></el-divider>
-                <div class="taglist-block" th:each="topic:${blogTopics}">
+                <div class="taglist-block" style="margin-top: 20px" th:each="topic:${blogTopics}">
                     <a style="font-weight: 500;" class="nav_link"  th:text="${topic.topic}" th:href="${topic.url}"></a>
                 </div>
             </el-card>
