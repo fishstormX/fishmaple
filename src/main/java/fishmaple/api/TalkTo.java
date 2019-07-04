@@ -2,6 +2,8 @@ package fishmaple.api;
 
 import fishmaple.Objects.FileObject;
 import fishmaple.utils.SendEmail;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.GeneralSecurityException;
@@ -25,8 +27,7 @@ public class TalkTo {
         boolean isMatched = matcher.matches();
         if(!isMatched){
             return "邮箱地址格式错误";
-        }
-        else{
+        } else{
             try {
                 SendEmail.send("新留言(#^.^#)-鱼鱼的博客", "收到新留言<br>" + map.get("content") + "<br>" +
                                 map.get("email") + "<br>" + map.get("name") + "<br>" + map.get("website") + "<br>",
@@ -39,7 +40,7 @@ public class TalkTo {
 
                 SendEmail.send("留言已揽收(#^.^#)-鱼鱼的博客", content, map.get("email"), SendEmail.REDIRECT);
             }catch(Exception e){
-
+                    e.printStackTrace();
             }finally{
                 return "博主已经收到留言 请等待反馈";
             }

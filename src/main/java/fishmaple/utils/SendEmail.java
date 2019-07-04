@@ -1,5 +1,7 @@
 package fishmaple.utils;
 import com.sun.mail.util.MailSSLSocketFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.mail.*;
 import javax.mail.internet.*;
@@ -12,19 +14,25 @@ public class SendEmail {
     public static String REDIRECT = "redirect@fishmaple.cn"; // 发件人地址
     static String USER = "鱼鱼"; // 用户名
     static String PWD = "-"; // 授权码
+    static Logger log = LoggerFactory.getLogger(SendEmail.class);
 
 
+     public static void send(String subject,String context,String tos,String ccs)  {
+         Properties props = new Properties();
 
-     public static void send(String subject,String context,String tos,String ccs) throws GeneralSecurityException {
-        Properties props = new Properties();
-        MailSSLSocketFactory sf=new MailSSLSocketFactory();
-        sf.setTrustAllHosts(true);
+         try {
+
+             MailSSLSocketFactory sf = new MailSSLSocketFactory();
+             sf.setTrustAllHosts(true);
+             props.put("mail.smtp.ssl.socketFactory",sf);//设置发送邮件的邮件服务器的属性（这里使用网易的smtp服务器）
+         }catch(Exception e){
+
         // props.put("mail.smtp.ssl.socketFactory.class", "javax.net.ssl.SSLSocketFactory");//设置发送邮件的邮件服务器的属性（这里使用网易的smtp服务器）
-         props.put("mail.smtp.ssl.socketFactory",sf);//设置发送邮件的邮件服务器的属性（这里使用网易的smtp服务器）
-         props.put("mail.smtp.ssl,enable", "true");//设置发送邮件的邮件服务器的属性（这里使用网易的smtp服务器）
-        // props.put("mail.smtp.socketFactory.port", "456");//设置发送邮件的邮件服务器的属性（这里使用网易的smtp服务器）
 
+     } props.put("mail.smtp.ssl.enable", "true");//设置发送邮件的邮件服务器的属性（这里使用网易的smtp服务器）
+        // props.put("mail.smtp.socketFactory.port", "456");//设置发送邮件的邮件服务器的属性（这里使用网易的smtp服务器）
          props.put("mail.smtp.host", HOST);//设置发送邮件的邮件服务器的属性（这里使用网易的smtp服务器）
+         props.put("mail.smtp.port", "465");//设置发送邮件的邮件服务器的属性（这里使用网易的smtp服务器）
         props.put("mail.smtp.auth", "true");  //需要经过授权，也就是有户名和密码的校验，这样才能通过验证（一定要有这一条）
         Session session = Session.getDefaultInstance(props);//用props对象构建一个session
         session.setDebug(true);
@@ -52,7 +60,6 @@ public class SendEmail {
            contentPart.setContent(context, "text/html;charset=utf-8");
             //contentPart.setText(context);
             multipart.addBodyPart(contentPart);
-
             message.setContent(multipart);//将multipart对象放到message中
             message.saveChanges(); //保存邮件
 
@@ -63,6 +70,7 @@ public class SendEmail {
 
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println(e.toString());
         }
     }
 
