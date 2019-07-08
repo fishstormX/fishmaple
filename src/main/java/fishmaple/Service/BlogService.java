@@ -20,4 +20,5 @@ public interface BlogService{
     int getCount(String tag);
     String deleteBlog(String bid);
     boolean autoSave(String bid,String uid,String content);
+    public String blogLine(Blog blog);
 }

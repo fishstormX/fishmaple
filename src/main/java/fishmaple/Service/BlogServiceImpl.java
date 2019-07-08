@@ -186,6 +186,26 @@ public class BlogServiceImpl implements BlogService{
         }
     }
 
+    //blog 获取摘要
+    @Override
+    public String blogLine(Blog blog) {
+            Document doc= Jsoup.parseBodyFragment(blog.getContent());
+            Elements es = doc.getElementsByTag("p");
+            StringBuffer content=new StringBuffer("");
+            for(Element e:es){
+                String[] strs=e.text().trim().split("。");
+                for(String str:strs) {
+                    if ((content.length() < 130 && str.length() < 120) || content.length() < 100){
+                        content.append(str).append("  ");}
+                    else{
+                        break;
+                    }
+                }
+            }
+            return content.toString();
+    }
+
+
     private String getFirstImg(String content){
         Document doc=Jsoup.parseBodyFragment(content);
         Elements elements = doc.getElementsByTag("img");

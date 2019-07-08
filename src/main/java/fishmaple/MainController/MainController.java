@@ -85,6 +85,7 @@ public class MainController {
     @RequestMapping("/blog/d")
     public String blogDetail(HttpServletRequest request,@RequestParam String bid, Model model){
         Blog blog=blogService.getBlogById(bid,false);
+        model.addAttribute("describe",blogService.blogLine(blog));
         model.addAttribute("blog",blog);
         return mobileHandler(request,"blogdetail");
     }
