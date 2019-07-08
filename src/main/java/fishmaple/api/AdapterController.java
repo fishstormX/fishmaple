@@ -3,7 +3,9 @@ package fishmaple.api;
 
 import fishmaple.DAO.BlMapper;
 
+import fishmaple.DTO.Tongji;
 import fishmaple.Objects.SearchResult;
+import fishmaple.Service.BaiduTongjiService;
 import fishmaple.Service.SearchService;
 import fishmaple.thirdPart.bilibiliWebWorm.BlUserObject;
 import fishmaple.thirdPart.bilibiliWebWorm.BlWormService;
@@ -38,6 +40,8 @@ public class AdapterController {
     BlWormService blWormService;
     @Autowired
     BlMapper blMapper;
+    @Autowired
+    BaiduTongjiService baiduTongjiService;
     Logger log= LoggerFactory.getLogger(AdapterController.class);
 
     @RequestMapping("/dosearch")
@@ -130,5 +134,9 @@ public class AdapterController {
 
         log.debug("清除所有爬虫数据");
         jedis.close();
+    }
+    @GetMapping("tongji")
+    public Tongji Tongji(){
+        return baiduTongjiService.getResult();
     }
 }

@@ -1,5 +1,6 @@
 package fishmaple.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayDeque;
 import java.util.Date;
@@ -32,10 +33,38 @@ public class TimeDate {
         return System.currentTimeMillis()/1000;
     }
 
+    /**
+     *  计算得到时间差，单位：天   注：不含结束日期  2019-02-21~2019-02-23  结果2
+     * @param startDate 开始日期
+     * @param endDate  结束日期
+     * @return
+     */
+    public static int dateDifference(String startDate, String endDate)   {
+        Date d1 = conversionToDate(startDate,"yyyyMMdd");
+        Date d2 = conversionToDate(endDate,"yyyyMMdd");
+        long dateDifference = d2.getTime() - d1.getTime();
+        long nd = 1000 * 24 * 60 * 60;
+        return (int)(dateDifference / nd);
+    }
+
+
+    //格式化时间
+    private static Date conversionToDate(String date, String format){
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        Date d = null;
+        try {
+            d = sdf.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return d;
+    }
+
+
+
 
     public static void main(String args[]){
-        Stack<Integer> s=new Stack<>();
-        s.push(12);
+
         //System.ous.pop();
 
         /*ArrayDeque<Integer> a=new ArrayDeque<>();

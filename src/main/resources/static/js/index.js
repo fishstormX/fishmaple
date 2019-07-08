@@ -72,8 +72,14 @@ Vue.component('top-component', {
 })
 
 Vue.component('foot-component', {
+    data(){
+        return {
+            tongji:{uv:0,pv:0,ip:0}
+        }
+    },
+    props: ['tongji'],
     template:
-        ' <ul class="foot_nav">' +
+        ' <div><ul class="foot_nav">' +
         '            <li><a href="/aboutMe.html">关于我</a></li>' +
         '            <li><a href="/version.html">版本迭代</a></li>' +
         '            <li><a href="/friendLinks">友情链接</a></li>' +
@@ -83,7 +89,22 @@ Vue.component('foot-component', {
         '            <li><a href="/druid">druid监控</a></li>' +
         '            <li><a href="/sitemap.html">网站地图</a></li>' +
         '            <li><a href="https://github.com/fishstormX"><img class="icons" src="/img/giticon.png" height="17px">github</a></li>' +
-        ' </ul><br>'
+        ' </ul>'+
+        ' <ul style="font-size:14px" class="foot_nav">' +
+        '            <li>统计自 2019.3.4</li>' +
+        '            <li>浏览量(PV):<span style="color:blue">{{tongji.pv}}</span></li>' +
+        '            <li>访客数(UV):<span style="color:blue">{{tongji.uv}}</span></li>' +
+        '            <li>IP数:<span style="color:blue">{{tongji.ip}}</span></li>' +
+        '            <li>数据来源：<a href="https://tongji.baidu.com"><img style="position:relative;top:3px" ' +
+        'src="https://tongji.baidu.com/sc-web/image/icon/31.gif"></a></li>' +
+       ' </ul></div>'
+  ,mounted(){
+        this.$http.get('/api/tongji').then(function(res){
+            this.tongji = JSON.parse(res.bodyText);
+        },function(){
+            console.log('请求失败');
+        });
+    }
 
 })
 Vue.component('copyright', {

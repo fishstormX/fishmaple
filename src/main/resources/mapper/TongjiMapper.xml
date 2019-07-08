@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--客户映射 指定到dao接口 -->
+<mapper namespace="fishmaple.DAO.TongjiMapper">
+
+    <select id="getIndex" resultType="java.lang.String">
+        SELECT date FROM tongji ORDER BY id DESC LIMIT 1
+    </select>
+
+    <insert id="add" parameterType="fishmaple.DTO.Tongji">
+        Insert tongji(date,uv,pv,ip) values(#{date},#{uv},#{pv},#{ip})
+    </insert>
+
+    <insert id="update" parameterType="fishmaple.DTO.Tongji">
+        UPDATE tongji  SET uv=#{uv},pv=#{pv},ip=#{ip} WHERE date=#{date}
+    </insert>
+
+</mapper>
