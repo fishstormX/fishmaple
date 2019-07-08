@@ -102,7 +102,7 @@ public interface BlogMapper{
     @Select("select `id`,title,timeline,author,isOriginal,todo from blog WHERE topic_id = #{topicId} ORDER BY timeline DESC")
     List<Blog> fastGetByTopicId(@Param("topicId")Integer topicId);
 
-    @Select("select * from blog_tag " +
+    @Select("select blog.id AS id, `content`,`title`,`timeline`,`author`,`anchors`,`useDictionary`,`cover`,`isOriginal`,`todo` from blog_tag " +
             "left join blog on blog.id=blog_tag.blog_id " +
             "where tag = #{tag} ORDER BY timeline DESC LIMIT #{start},#{count}")
     @Results({@Result(id=true,property="id",column="id"),
