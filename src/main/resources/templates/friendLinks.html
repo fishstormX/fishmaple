@@ -21,6 +21,16 @@
         #footer a:hover{
             color:#c3c3c3;
         }
+        .text_a:hover
+        {
+            color: darkblue;
+            text-decoration: none;
+        }
+        .text_a{
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
         </style>
 <body>
 
@@ -39,7 +49,9 @@
                             <a  target="_blank"v-bind:href="link.url" class="linkcard-describe">{{link.describe}}</a>
                     </el-card>
                     <div style="margin-top:20px">
-                        <p style="color:grey">交换友链请发送邮件到admin@fishmaple.cn或点击页面下方的"与我互动"，友链页UI设计中，目前只接受技术领域相关的网站，望见谅</p>
+                        <p style="color:#a1a1a1">交换友链请发送邮件到admin@fishmaple.cn或点击"
+                            <a href="/sideWall" target="_blank" class="text_a">与我互动</a>
+                            "，友链页UI设计中，目前只接受技术领域相关的网站，望见谅</p>
                     </div>
                 </div>
             </div>
