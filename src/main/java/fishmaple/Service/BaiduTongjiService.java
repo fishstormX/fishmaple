@@ -27,13 +27,13 @@ public class BaiduTongjiService {
     @Autowired
     TongjiMapper tongjiMapper;
 
-    @Value("${localConfig.tongji.name}")
+    @Value("${localConfig.baidu.tongji.name}")
     String name;
-    @Value("${localConfig.tongji.pswd}")
+    @Value("${localConfig.baidu.tongji.pswd}")
     String pswd;
-    @Value("${localConfig.tongji.token}")
+    @Value("${localConfig.baidu.tongji.token}")
     String token;
-    @Value("${localConfig.tongji.siteId}")
+    @Value("${localConfig.baidu.tongji.siteId}")
     String siteId;
 
     private String formatStrDate(Integer date){
@@ -55,11 +55,12 @@ public class BaiduTongjiService {
         try{
             Tongji total = new Tongji();
             total.setDate(TimeDate.getTimeStampNow());
-            total.setUv(0);
-            total.setPv(0);
-            total.setIp(0);
+            //继承2019.3.4-2019.7.9误删的数据 心痛~ _~
+            total.setUv(604);
+            total.setPv(5629);
+            total.setIp(482);
             if(null == jedis.get("tongji")){
-                Map<String,Tongji> map = getJsonResult("20190304",TimeDate.getTimeStampNow());
+                Map<String,Tongji> map = getJsonResult("20190710",TimeDate.getTimeStampNow());
                 String index = tongjiMapper.getIndex();
                 Boolean flag=false;
                 for(Map.Entry<String,Tongji> entry:map.entrySet()){
