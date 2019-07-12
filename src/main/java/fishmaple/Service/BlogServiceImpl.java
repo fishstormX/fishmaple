@@ -186,12 +186,15 @@ public class BlogServiceImpl implements BlogService{
         }
     }
 
-    //blog 获取摘要
+    //blog 获取摘要,添加tag的摘要
     @Override
     public String blogLine(Blog blog) {
             Document doc= Jsoup.parseBodyFragment(blog.getContent());
             Elements es = doc.getElementsByTag("p");
             StringBuffer content=new StringBuffer("");
+            for(String tag:blog.getTags()){
+                content.append(tag+",");
+            }
             for(Element e:es){
                 String[] strs=e.text().trim().split("。");
                 for(String str:strs) {
