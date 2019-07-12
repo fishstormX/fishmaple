@@ -5,7 +5,7 @@
 
     <groupId>com.fishstorm</groupId>
     <artifactId>fishmaple</artifactId>
-    <version>1.1.3-b-SNAPSHOT</version>
+    <version>1.1.4</version>
     <packaging>jar</packaging>
 
     <name>shirodemo</name>
