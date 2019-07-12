@@ -117,7 +117,7 @@ public class MainController {
     @RequestMapping("/blog")
     public String blog(HttpServletRequest request, Model model, HttpServletResponse response) {
         String content="";
-        List<Blog> list= blogService.getBlogList(25,0);
+        List<Blog> list= blogService.getBlogList(60,0);
         Collections.shuffle(list);
         for(int i=0;i<11;i++){
               content += list.get(i).getOutLine();
