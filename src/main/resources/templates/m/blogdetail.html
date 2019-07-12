@@ -4,7 +4,7 @@
      <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.1, maximum-scale=1, user-scalable=no,minimal-ui">
 
     <meta charset="UTF-8">
-    <meta name="description" th:attr="content=${blog.title}" />
+    <meta name="description" th:attr="content=${describe}" />
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <title th:text="${blog.title}+'-鱼鱼的博客-移动端'"></title>
     <link type="text/css" rel="stylesheet" href="/css/main.css"/>
@@ -25,7 +25,9 @@
 
     <script src="/ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
     <style>
-
+        .syntaxhighlighter td.code .line{
+            padding: 0 1.5em!important;
+        }
 
         #header .el-breadcrumb {
             margin: 0 20px;
@@ -40,7 +42,7 @@
             word-break: break-word;
         }
         .syntaxhighlighter td code{
-        font-size: 13px!important;
+            font-size: 16px!important;
         }
         .syntaxhighlighter td .spaces{
             margin-left: -30px !important;
@@ -61,9 +63,19 @@
         #blog_main img{
             width: 98%;
         }
+        #blog_main .container{
+            overflow-x: auto !important;
+            display: block;
+            white-space: pre;
+            word-wrap: normal;
+            margin:10px !important;
+        }
+        #blog_main table{
+            display: block;
+        }
         </style>
 </head>
-<div style="height:90px;">
+<div>
     <a href="/"  class="nav_link">
         <img style="position:relative;width:92%"class="logo" src="/pics/logo_m_m.png">
         <img  class="logo middle_fishm" src="/pics/logo-fish-small.png"></a>
