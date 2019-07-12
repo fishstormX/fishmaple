@@ -42,7 +42,7 @@ public class TalkTo {
             }catch(Exception e){
                     e.printStackTrace();
             }finally{
-                return "博主已经收到留言 请等待反馈";
+                return "博主已经收到留言，请等待反馈并检查你的邮箱，如果没有收到邮件请稍后重试";
             }
         }
     }
