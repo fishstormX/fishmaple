@@ -67,7 +67,7 @@
                     <el-input v-model="website"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" icon="el-icon-message" @click="onSubmit">寄件</el-button>
+                    <el-button v-loading="loading" type="primary" icon="el-icon-message" @click="onSubmit">寄件</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -110,13 +110,15 @@
             website:"",
             email:"",
             message:"",
-            dialogVisible:false
+            dialogVisible:false,
+            loading:false
         },
         methods:{
             handleClose(){
                 this.dialogVisible = false
             },
             onSubmit(){
+                this.loading=true
                 this.$http.post('/api/sendTalk',{
                     content:this.content,
                     name:this.name,
@@ -125,6 +127,7 @@
                 }).then(function (res) {
                     this.message=res.bodyText
                     this.dialogVisible=true
+                    this.loading=false
                 }, function () {
                     console.log('获取回话失败')
                 });

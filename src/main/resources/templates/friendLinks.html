@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh_CN" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="description" content="提供一些文件的下载服务，用户可在此上传和下载文件-web灵魂开发工程师鱼鱼的后花园" />
     <title>源星球——鱼鱼的小伙伴们</title>
     <link type="text/css" rel="stylesheet" href="/css/main.css"/>
@@ -50,7 +50,7 @@
                     </el-card>
                     <div style="margin-top:20px">
                         <p style="color:#a1a1a1">交换友链请发送邮件到admin@fishmaple.cn或点击"
-                            <a href="/sideWall" target="_blank" class="text_a">与我互动</a>
+                            <a href="/sideWall" target="_blank" class="text_a">给我留言</a>
                             "，友链页UI设计中，目前只接受技术领域相关的网站，望见谅</p>
                     </div>
                 </div>
@@ -85,15 +85,22 @@
                     for(index in links){
                        this.links.push(links[index])
                     }
+                    setTimeout(this.s,1000)
 
                 }, function () {
                     console.log('获取回话失败')
                 });
+            },
+            s(){
+                if(this.height-115<document.getElementsByClassName("fLink-block")[0].clientHeight){
+                    document.getElementById("footer").style.position="static"
+                }
             }
         },
         mounted(){
-
             this.getLinks()
+
+
         }
     })
 

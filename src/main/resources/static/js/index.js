@@ -85,7 +85,7 @@ Vue.component('foot-component', {
         '            <li><a href="/friendLinks">友情链接</a></li>' +
         '            <li><a href="/restart.html">重启服务器</a></li>' +
         '            <li><a href="/log.html">日志查看</a></li>' +
-        '            <li><a href="/sideWall">与我互动/友链申请</a></li>' +
+        '            <li><a href="/sideWall">给我留言/友链申请</a></li>' +
         '            <li><a href="/druid">druid监控</a></li>' +
         '            <li><a href="/sitemap.html">网站地图</a></li>' +
         '            <li><a href="https://github.com/fishstormX"><img class="icons" src="/img/giticon.png" height="17px">github</a></li>' +
@@ -110,7 +110,7 @@ Vue.component('foot-component', {
 Vue.component('copyright', {
     template:
         ' <ul class="foot_nav" id="copyright">' +
-        '          <li><a target="_blank" href="http://www.miitbeian.gov.cn"> 黑ICP备17006684号-1</a>　fishmaple</li>' +
+        '          <li><a target="_blank" href="http://www.beian.miit.gov.cn"> 黑ICP备17006684号-1</a>　fishmaple</li>' +
         ' </ul>'
 
 })

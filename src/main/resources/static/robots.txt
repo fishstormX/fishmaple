@@ -1,5 +1,4 @@
 User-agent: *
-Disallow:
 Disallow: /api/
 Sitemap: http://www.fishmaple.cn/sitemap.html
 Sitemap: http://www.fishmaple.cn/sitemap.xml
