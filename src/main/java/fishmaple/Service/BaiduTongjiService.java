@@ -6,15 +6,15 @@ import com.alibaba.fastjson.TypeReference;
 import fishmaple.DAO.TongjiMapper;
 import fishmaple.DTO.Tongji;
 import fishmaple.thirdPart.toutiaoWorm.ToutiaoObject;
-import fishmaple.utils.HttpClientUtil;
-import fishmaple.utils.JedisUtil;
-import fishmaple.utils.SerizlizeUtil;
-import fishmaple.utils.TimeDate;
+import fishmaple.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.Jedis;
 import sun.net.www.http.HttpClient;
 
@@ -50,6 +50,7 @@ public class BaiduTongjiService {
         //System.out.println(baiduTongjiService.getJsonResult("20190209",TimeDate.getTimeStampNow()));
     }
 
+
     public Tongji getResult(){
         Jedis jedis= JedisUtil.getJedis();
         try{
@@ -62,22 +63,21 @@ public class BaiduTongjiService {
             if(null == jedis.get("tongji")){
                 Map<String,Tongji> map = getJsonResult("20190710",TimeDate.getTimeStampNow());
                 String index = tongjiMapper.getIndex();
-                Boolean flag=false;
+
+                ThreadPoolUtil.addTask(new Thread (()->{
+                    for(Map.Entry<String,Tongji> entry:map.entrySet()) {
+                        if (new Integer(entry.getKey().replaceAll("/", "")) > new Integer(index.replaceAll("/", ""))) {
+                            tongjiMapper.add(entry.getValue());
+                        } else //if(entry.getKey().equals(TimeDate.getTimeStampNow())&&TimeDate.getTimeStampNow().equals(index))
+                        {
+                            tongjiMapper.update(entry.getValue());
+                        }
+                    }
+                }));
                 for(Map.Entry<String,Tongji> entry:map.entrySet()){
                     total.setUv(total.getUv()+entry.getValue().getUv());
                     total.setPv(total.getPv()+entry.getValue().getPv());
                     total.setIp(total.getIp()+entry.getValue().getIp());
-                    if(entry.getKey().equals(TimeDate.getTimeStampNow())){
-                        tongjiMapper.update(entry.getValue());
-                    }else if(flag){
-                        tongjiMapper.add(entry.getValue());
-                    } else if(entry.getKey().equals(index)){
-                        if(entry.getKey().equals(TimeDate.getTimeStampNow())){
-                            tongjiMapper.update(entry.getValue());
-                        }
-                        flag=true;
-                        continue;
-                    }
                 }
                 jedis.set("tongji",SerizlizeUtil.serialize(total),"NX","EX",1800);
 
@@ -85,7 +85,6 @@ public class BaiduTongjiService {
             }else{
                 Object obj=SerizlizeUtil.unserizlize(jedis.get("tongji"));
                 if(obj instanceof Tongji){
-                    System.out.println((Tongji) obj);
                     return (Tongji) obj;
                 }
             }
@@ -169,7 +168,6 @@ public class BaiduTongjiService {
                     tongji.setIp((datatmp.get(2).equals("--")?0:new Integer(datatmp.get(2))));
                     results.put(dates.get(j).substring(2,dates.get(j).length()-2),tongji);
                 }
-
             } catch (Exception e) {
                 System.out.println("ERROR");
                 logger.error("error,{}",e.getMessage());
