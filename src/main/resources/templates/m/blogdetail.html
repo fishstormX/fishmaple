@@ -77,23 +77,36 @@
 </head>
 <div>
     <a href="/"  class="nav_link">
-        <img style="position:relative;width:92%"class="logo" src="/pics/logo_m_m.png">
-        <img  class="logo middle_fishm" src="/pics/logo-fish-small.png"></a>
-    <h1 style="float: right;
-    font-size: 20px;">移动版</h1>
+        <img style="width:95%"class="logo" src="/pics/m_logo.jpg">
+    </a>
 </div>
 
-<div id="fish-bind" th:utext="${blog.outLine}"></div>
+<div id="fish-bind" style="width:95%; margin: 10px;" th:utext="${blog.outLine}"></div>
 
-<div id="blog_main" style="display:none">
+<div id="blog_main" style="display:none; margin: 10px;">
         <div >
             <div style="margin-top:1px" class="blog-title"><h1>{{blog.title}}</h1></div>
             <span style="margin-left:6px" class="blog-time">{{blog.timelineStr}}
             </span>
             <div><el-tag style="font-size:14px" v-for="tag in blog.tags" class="blog-tags">{{tag}}</el-tag></div>
+            <div>
+                <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">
+                    <img style="border-width:0; position: relative;top: 3px; width: auto;"
+                                                                                               alt="知识共享许可协议"  src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png" /></a>
+                本作品采用<a style="text-decoration: none;" rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议</a>进行许可。
+            </div>
             <div style="font-size: 18px;margin-left:20px !important" class="blog-content dicAdd" v-html="blog.content"></div>
         </div>
-
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:block; text-align:center;"
+         data-ad-layout="in-article"
+         data-ad-format="fluid"
+         data-ad-client="ca-pub-3833610662771337"
+         data-ad-slot="8823815613"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
 </div>
 
 

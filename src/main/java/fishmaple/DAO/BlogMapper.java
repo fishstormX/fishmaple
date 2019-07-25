@@ -89,7 +89,8 @@ public interface BlogMapper{
     List<Blog> getAll();
 
 
-    @Select("select * from blog " +
+    @Select("select blog.id AS id, `content`,`title`,`timeline`,`author`,`anchors`,`useDictionary`,`cover`," +
+            "`isOriginal`,`todo`,`topic_id`,priority,user.avatar AS avatar from blog JOIN user ON blog.author=user.name " +
             "ORDER BY  priority DESC" +
             ",timeline DESC LIMIT #{start},#{count}")
     @Results({@Result(id=true,property="id",column="id"),
@@ -102,8 +103,8 @@ public interface BlogMapper{
     @Select("select `id`,title,timeline,author,isOriginal,todo from blog WHERE topic_id = #{topicId} ORDER BY timeline DESC")
     List<Blog> fastGetByTopicId(@Param("topicId")Integer topicId);
 
-    @Select("select blog.id AS id, `content`,`title`,`timeline`,`author`,`anchors`,`useDictionary`,`cover`,`isOriginal`,`todo` from blog_tag " +
-            "left join blog on blog.id=blog_tag.blog_id " +
+    @Select("select blog.id AS id, `content`,`title`,`timeline`,`author`,`anchors`,`useDictionary`,`cover`,`isOriginal`,`todo`,priority,user.avatar AS avatar from blog_tag " +
+            "left join blog on blog.id=blog_tag.blog_id JOIN user ON blog.author=user.name " +
             "where tag = #{tag} ORDER BY timeline DESC LIMIT #{start},#{count}")
     @Results({@Result(id=true,property="id",column="id"),
             @Result(property = "tags",javaType = List.class,column ="id",

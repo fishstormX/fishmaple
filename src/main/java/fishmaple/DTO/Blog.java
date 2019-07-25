@@ -35,6 +35,15 @@ public class Blog implements Serializable {
     private boolean isUpdate;
     private List<String> tagTypes;
     private String TimelineStr;
+    private String avatar="#icon-nanhaizi";
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
     public Integer getTopicId() {
         return topicId;

@@ -66,12 +66,10 @@
         </style>
 </head>
 <body>
-<div style="height:90px;">
+<div>
     <a href="/"  class="nav_link">
-        <img style="position:relative;width:92%"class="logo" src="/pics/logo_m_m.png">
-    <img  class="logo middle_fishm" src="/pics/logo-fish-small.png"></a>
-    <h1 style="float: right;
-    font-size: 20px;">移动版</h1>
+        <img style="width:95%"class="logo" src="/pics/m_logo.jpg">
+    </a>
 </div>
 <div id="blog_main">
     <el-row class="blog-list" style="margin:0 14px">
@@ -91,12 +89,22 @@
                 <div class="bloglist-content">{{blog.content}}</div>
                 <span class="bloglist-date" style="font-size:17px">{{blog.timeline}}</span>
                 <span class="bloglist-author">{{blog.author}}</span>
-                <i class="icon iconfont icon-yuanchuang bloglist-original" title="原创文章" v-if="blog.isOriginal==1"></i>
-                <i class="icon iconfont icon-todo bloglist-todo" title="//TODO" v-if="blog.todo==1"></i>
-                <div style="margin:5px 0;"><span class="bloglist-tags">
+                <i style="position: static" class="icon iconfont icon-yuanchuang bloglist-original" title="原创文章" v-if="blog.isOriginal==1"></i>
+                <i style="position: static" class="icon iconfont icon-todo bloglist-todo" title="//TODO" v-if="blog.todo==1"></i>
+                <span class="bloglist-tags">
                             <el-tag style="font-size: 14px;margin: 5px 10px;}" v-bind:class="blog.tagTypes[index]" v-for="(tag,index) in blog.tags">{{tag}}</el-tag>
-                </span></div>
+                </span>
             </div>
+            <!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-format="fluid"
+                 data-ad-layout-key="-6x+dm+16-3z+6k"
+                 data-ad-client="ca-pub-3833610662771337"
+                 data-ad-slot="1979205668"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>-->
             <div v-if="isNull" class="bloglist-block">
                 分类下暂时没有文章哦！
             </div>
@@ -164,7 +172,6 @@
                     this.w = width - 20
                 }
                 this.h = this.w * 120 / 168
-                console.log(this.w,width,this.m)
                 this.$http.get('/api/blog?page=' + pagec.currentPage).then(function (res) {
                     this.items = JSON.parse(res.bodyText);
                     for (let i in this.items) {
@@ -172,12 +179,8 @@
                         let date = new Date(this.items[i].timeline * 1000);
                         this.items[i].timeline = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" +
                             date.getDate() + "日"
-                        this.$nextTick(() => {
-                            foot.getHeight()
-                        })
-
                     }
-                   document.getElementsByClassName("bloglist-block")[0].style.borderTop = "0 solid"
+
                 }, function () {
                     console.log('请求失败')
                 });

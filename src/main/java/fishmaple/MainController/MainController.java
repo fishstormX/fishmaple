@@ -96,7 +96,7 @@ public class MainController {
         List<Blog> list= blogService.getBlogList();
 
         model.addAttribute("blog",list);
-        return "blogIndex";
+        return mobileHandler(request,"blogIndex");
     }
 
     @RequestMapping("/blog/topicBlog")
@@ -106,7 +106,7 @@ public class MainController {
         String topic = blogTopicMapper.getTopicName(topicId);
         model.addAttribute("topic",topic);
         model.addAttribute("blog",list);
-        return "topicBlog";
+        return mobileHandler(request,"topicBlog");
     }
 
     @RequestMapping("/sideWall")

@@ -1,10 +1,20 @@
 .blog-list{
-    margin:10px 0 0 200px;
+    margin:10px 0 0 150px;
 }
 .bloglist-block{
-    padding:19px 0 22px 0;
-    border-top:#9EABB3 1px solid;
+  /* transition: box-shadow .3s ease-in-out,-webkit-box-shadow .3s ease-in-out;*/
+    background: #fff;
+   /* -webkit-box-shadow: 0 0 0 0 rgba(0,0,0,.1);
+    box-shadow: 0 0 0 0 rgba(0,0,0,.1);
+    margin: 0px 0 26px 0;*/
+    padding: 15px 22px 15px 30px;
 
+    border-top:1.3px solid darkgrey;
+}
+.bloglist-block:hover{
+   /* transition: box-shadow .3s ease-in-out,-webkit-box-shadow .3s ease-in-out;
+    -webkit-box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);*/
 }
 .el-tabs__item is-left{
     padding: 0 12px;
@@ -46,6 +56,13 @@ textarea{
     margin:0 9px;
     cursor:pointer;
 }
+.icon-avatar{
+    width: 35px;
+    height: 35px;
+    position: relative;
+    left: 72px;
+    top: 11px;
+}
 .right-bar .el-tag{
     margin:5px;
     cursor:pointer;
@@ -53,6 +70,10 @@ textarea{
 .bloglist-tags{
     /*float:right;*/
     color:#9EABB3;
+    line-height: 40px;
+    position: relative;
+    bottom:3px;
+    margin-left: 20px;
 }
 
 
@@ -62,12 +83,17 @@ textarea{
     line-height: 30px;
     margin:10px;
     font-size:16px;
-    margin-left: 176px;
+    margin-left: 200px;
     min-height: 150px;
+   /* border-bottom: #ebeef5 1.3px solid;*/
 }
+.bloglist-content a{
+     text-decoration: none;
+     color: #000;
+ }
 .bloglist-cover img{
-    width: 168px;
-    height: 140px;
+    width: 192px;
+    height: 160px;
     position: absolute;
     margin-top: 10px;
 }
@@ -78,24 +104,25 @@ textarea{
 .bloglist-date{
     color:#9EABB3;
     margin-left:10px;
-    font-size: 20px;
 }
 .bloglist-author{
     color: #8d9191;
-    margin-left:40px;
+    margin-left: 80px;
     font-size: 16px;
 }
 #blog_main .bloglist-todo{
     font-size:24px;
     color:#8a2be2;
-    position:absolute;
-    margin-left:127px;
+    margin-left:50px;
+    position: relative;
+    bottom: 3px;
 }
 #blog_main .bloglist-original{
     font-size: 24px;
     color:#008000;
-    position:absolute;
-    margin-left:59px;
+    margin-left:50px;
+    position: relative;
+    bottom: 3px;
 }
 .blog-content{
     margin:30px 0 0 30px;
@@ -116,6 +143,10 @@ textarea{
 }
 .blog-tags{
     margin:0 9px;
+}
+.blog-license{
+    text-align: center;
+    margin-top:20px;
 }
 .blog-right{
     margin: 0 240px 0 325px;
