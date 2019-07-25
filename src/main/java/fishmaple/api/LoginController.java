@@ -4,6 +4,7 @@ package fishmaple.api;
 import fishmaple.DAO.LoginLogMapper;
 import fishmaple.DAO.UserMapper;
 import fishmaple.DTO.User;
+import fishmaple.Service.IdentifyingService;
 import fishmaple.shiro.ShiroService;
 import fishmaple.shiro.TokenService;
 import fishmaple.utils.*;
@@ -24,6 +25,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author 鱼鱼
@@ -42,20 +45,50 @@ public class LoginController {
     TokenService tokenService;
     @Autowired
     LoginLogMapper loginLogMapper;
+    @Autowired
+    IdentifyingService identifyingService;
     @RequestMapping("/registerCheck")
     public String registerCheck(@RequestBody User user) {
-        if(userMapper.selectNameCount(user.getName())>0){
+        if(userMapper.selectNameCount(user.getName())>0) {
             return "用户名重复";
+        }else if(userMapper.selectNameCount(user.getEmail())>0){
+            return "邮箱已注册";
         }else if(user.getName().indexOf(" ")>-1){
             return "用户名含有非法字符";
         }else if(user.getName().length()>15){
             return "用户名过长";
         }else if(user.getPswd().length()<6){
             return "密码太短啦";
-        }else if(user.getName().equals(user.getPswd())){
+        }else if(user.getName().equals(user.getPswd())) {
             return "用户名请不要与密码相同";
-        }else
-            return "ok";
+        }else  if(user.getEmail()==null){
+            return "邮箱不可为空";
+        }else {
+            String check = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+            Pattern regex = Pattern.compile(check);
+            Matcher matcher = regex.matcher(user.getEmail());
+            boolean isMatched = matcher.matches();
+            if(!isMatched){
+                return "邮箱地址格式错误";
+            }else
+                return "ok";
+        }
+    }
+
+    @PostMapping(value="/registerEmail")
+    public String sendEmail(@RequestBody User user) {
+        if(registerCheck(user).equals("ok")) {
+            String code=identifyingService.getIdentifyingCode(user.getEmail());
+            String content = "你好 ,"+user.getName()+"你的注册验证码为<br>　　"+ code +"　　感谢您对本博客的关注<br>　　<br>" +
+                    "                 <a href=\"https://www.fishmaple.cn\"><img src=\"https://www.fishmaple.cn/pics/logo_m_m.png\" class=\"logo middle_pic\"> <img src=\"https://www.fishmaple.cn/pics/logo-fish-small.png\" class=\"logo middle_fish\"></a>"+
+                    "                 <br><br><br><span style='float:right'>from　</strong>鱼鱼的博客</strong></span>" +
+                    "                  <br><br><span style='float:right;color:darkgrey'>Copyright ©  fishmaple. </span>";
+            SendEmail.send("注册验证码-鱼鱼的博客", content,
+                    user.getEmail(), SendEmail.REDIRECT);
+            return "验证码已经发送，请检查邮箱，如果多次未收到验证码，请给我留言";
+        }else{
+            return registerCheck(user);
+        }
     }
 
     @RequestMapping(value="/register",method= RequestMethod.POST)
@@ -63,15 +96,16 @@ public class LoginController {
         if(user.getPswd().contains("@@@@@@@@@")){
             return "密码含有非法字符";
         }
+        if(!identifyingService.checkCode(user.getIdentifyingCode(),user.getEmail())){
+            return "验证码不正确";
+        }
         if(registerCheck(user).equals("ok")){
             String psw= pswEncodeFacade.pswEncode(user.getPswd(),user.getName());
             Long timenow=System.currentTimeMillis()/1000;
-            userMapper.setUser(EncoderUtil.getUUID(1),user.getName(),timenow,psw);
+            userMapper.setUser(EncoderUtil.getUUID(1),user.getName(),user.getEmail(),timenow,psw);
             Map<String,String> map=RequestUtil.getInfo(request);
-
-
             loginLogMapper.insertLog(EncoderUtil.getUUID(1),user.getName(),
-                    TimeDate.timestamp2time(0L,0),map.get("browser"),map.get("os"),
+                    TimeDate.timestamp2time(System.currentTimeMillis(),0),map.get("browser"),map.get("os"),
                     "m".equals(from)?"register-app":"register",request.getRemoteAddr());
             return "SUCCESS";
         }
@@ -92,7 +126,7 @@ public class LoginController {
             Map<String,String> map=RequestUtil.getInfo(request);
             String uid=EncoderUtil.getUUID(1);
             loginLogMapper.insertLog(EncoderUtil.getUUID(1),user.getName(),
-                    TimeDate.timestamp2time(0L,0),map.get("browser"),map.get("os"),
+                    TimeDate.timestamp2time(System.currentTimeMillis(),0),map.get("browser"),map.get("os"),
                     "login-app",request.getRemoteAddr());
             result.put("msg","SUCCESS");
             result.put("token",tokenService.sign(user.getName(),user.getPswd(),shiroService.getCurrentUser().getId()));
@@ -121,6 +155,10 @@ public class LoginController {
         Subject subject=SecurityUtils.getSubject();
         if(user.getPswd().contains("@@@@@@@@@")){
             return "含有非法字符";
+        }
+        String name = userMapper.getNameByEmail(user.getName());
+        if(name!=null){
+            user.setName(name);
         }
         UsernamePasswordToken userToken=new UsernamePasswordToken(user.getName(),user.getPswd());
         userToken.setRememberMe(user.getRememberMe());

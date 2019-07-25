@@ -13,6 +13,8 @@ public class User implements Serializable {
     private String auth;
     private String registertime;
     private String pswd;
+    private String email;
+    private String identifyingCode;
     private transient Boolean rememberMe;
     private Set<Role> roles=new HashSet<>();
 
@@ -26,6 +28,22 @@ public class User implements Serializable {
                 ", pswd='" + pswd + '\'' +
                 ", roles=" + roles +
                 '}';
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getIdentifyingCode() {
+        return identifyingCode;
+    }
+
+    public void setIdentifyingCode(String identifyingCode) {
+        this.identifyingCode = identifyingCode;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Boolean getRememberMe() {

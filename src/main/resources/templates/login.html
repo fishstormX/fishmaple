@@ -14,13 +14,22 @@
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
 </head>
 <body style="background-image: url(https://file.fishmaple.cn/581705bc203ef.jpg)">
-    <div @keyup.enter="registerHandle()" id="main" style="color:#fff;width: 234px; margin:120px auto;display: inline-block;display: flex;flex-direction: column;">
-        <span v-if="qr">用户名：</span><el-input v-if="qr" v-model="name" placeholder="请输入内容"></el-input>
+    <div @keyup.enter="registerHandle()" id="main" style="color:#fff;width: 254px; margin:120px auto;display: inline-block;display: flex;flex-direction: column;">
+        <span v-if="qr">{{ne}}：</span><el-input v-if="qr" v-model="name" placeholder="请输入内容"></el-input>
         <span v-if="qr">密码儿：</span><el-input v-if="qr" type="password" v-model="psw" placeholder="请输入内容"></el-input>
         <el-checkbox style="color:white" v-if="!isRegister&&qr" v-model="rememberMe">自动登录</el-checkbox>
+
+
+
         <span v-if="isRegister&&qr">确认密码儿：<el-input type="password" v-model="psw2" placeholder="请输入内容"></el-input></span>
+        <span  v-if="isRegister&&qr">邮箱：<el-input v-model="email" v-if="isRegister&&qr" placeholder="请输入内容"  >
+            <el-button  v-loading="loading" v-if="isRegister&&qr" @Click="sendEmail()" slot="append">发送验证码</el-button>
+        </el-input>
+    </span>
+        <span v-if="isRegister&&qr">验证码：<el-input v-model="identifyingCode" placeholder="请输入内容"></el-input></span>
         <span v-if="isRegister&&qr">邀请码儿（非必填）：<el-input v-model="letCode" placeholder="请输入内容"></el-input></span>
-        <br><el-button v-if="qr" @Click="registerHandle()">{{botton}}</el-button><br>
+        <br>
+        <el-button v-if="qr" @Click="registerHandle()">{{botton}}</el-button><br>
         <el-button style="margin-left:0" @Click="QrLoginHandle()">{{botton2}}</el-button>
        <!-- <a style="margin-left:0" @Click="QrLoginHandle()"><img src="/img/qq_login.png"></a>-->
         <img style="height:234px" v-if="!qr" v-bind:src="img">
@@ -31,6 +40,7 @@
         let login = new Vue({
             el: '#main',
             data: {
+                ne:'用户名/邮箱',
                 name:'',
                 psw:'',
                 psw2:'',
@@ -41,18 +51,38 @@
                 click:'点此注册',
                 qr:true,
                 img:"",
-                rememberMe:false
+                rememberMe:false,
+                loading:false,
+                identifyingCode:"",
+                email:''
             },
             methods: {
+                sendEmail(){
+                    this.loading=true
+                    this.$http.post('/api/registerEmail',{
+                        name:this.name,
+                        pswd:this.psw,
+                        email:this.email
+                    }).then(function (res) {
+                            this.$message.info(res.bodyText);
+                            this.loading=false
+                    }, function () {
+                        this.loading=false
+                        console.log('请求失败');
+                        return
+                    });
+                },
                 change(){
                     if(this.isRegister){
                         this.botton="登录"
                         this.click="点此注册"
                         this.isRegister=false
+                        this.ne="用户名/邮箱"
                     }else{
                         this.botton="注册"
                         this.click="点此登录"
                         this.isRegister=true
+                        this.ne="用户名"
                     }
                 },
                 loginHandle(){
@@ -107,8 +137,11 @@
                             this.$message.error("两次输入密码不一致")
                             return
                         }
-                        this.$http.post('/api/register',{name:this.name,
-                        pswd:this.psw
+                        this.$http.post('/api/register',{
+                            name:this.name,
+                            pswd:this.psw,
+                            email:this.email,
+                            identifyingCode:this.identifyingCode
                         }).then(function (res) {
                             if(res.bodyText=="SUCCESS"){
                                 this.$message.success("注册成功");

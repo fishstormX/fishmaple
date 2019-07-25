@@ -32,11 +32,13 @@ public interface UserMapper {
                     many = @Many(select = "fishmaple.DAO.UserMapper.getRolesByUserId"))})
     public  User selectUserById(String id);
 
-    @Select("Select COUNT(*) from user WHERE `user`.name =#{name}")
+    @Select("Select COUNT(*) from user WHERE `user`.name =#{name} OR  `user`.email =#{name}")
     public int selectNameCount(String name);
+    @Select("Select name from user WHERE  `user`.email =#{email}")
+    public String getNameByEmail(String email);
 
-    @Insert("insert into user(`id`, `name`,`registerTime`,`pswd`) " +
-            "values (#{id},#{name},#{registerTime},#{pswd})")
-    void setUser(@Param("id")String id,@Param("name")String name,
+    @Insert("insert into user(`id`, `name`,`email`,`registerTime`,`pswd`) " +
+            "values (#{id},#{name},#{email},#{registerTime},#{pswd})")
+    void setUser(@Param("id")String id,@Param("name")String name,@Param("email")String email,
                  @Param("registerTime")Long timeline,@Param("pswd")String pswd);
 }
