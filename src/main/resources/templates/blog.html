@@ -54,11 +54,7 @@
         <top-component :user="user" ></top-component>
     </div>
 </div>
-<div id="index" th:attr="style='background-image:url('+${cover}+')'" class="index-back" v-bind:style="{height:height+'px'}">
-    <i @click="upHandle" v-if="height!=0" style="cursor:pointer;width:100%;text-align:center;position:absolute;bottom:35px;font-size:60px;color: lightgrey" class="infinite icon iconfont icon-Group-"></i>
-    <span th:text="${ititle}" id="index-title" style="width:100%;text-align:center;position: absolute;bottom:340px;" ></span>
-    <span th:text="${icontent}" id="index-content" style="width:100%;text-align:center;position: absolute;bottom:300px" >We can change the world!</span>
-</div>
+
 <div id="blog_main">
     <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item><a class="nav_link" href="/index">首页</a></el-breadcrumb-item>
@@ -173,26 +169,7 @@
     <br>
 </div>
 </div>
-<div id="loginDialog">
-    <el-dialog
-            title="登录 (。＿ 。）仅限我自己呢"
-            :visible.sync="dialogVisible"
-            width="30%"
-            :before-close="handleClose">
-        <span>
-            <div>
-                权限认定：小可爱
-            </div>
-         <div slot="tip" class="login_tip">
-             登录名字：<el-input v-model="name"></el-input><br>
-             跃迁码：<el-input v-model="psw"></el-input>
-         </div>
-        </span>
-        <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="login">确 定</el-button>
-        </span>
-    </el-dialog>
-</div>
+
 
 <div id="footer" v-bind:class="{ 'foot-abo': isActive }">
     <foot-component></foot-component>
