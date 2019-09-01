@@ -229,6 +229,7 @@ public class BlogServiceImpl implements BlogService{
             blog.setContent(setBaseUrl(blog.getContent()));
         }
         blog.setTimelineStr(TimeDate.timestamp2time(blog.getTimeline()*1000,0));
+        blog.setCreateTimeStr(TimeDate.timestamp2time(Long.parseLong(blog.getId().substring(0,10))*1000,0));
         return blog;
     }
 

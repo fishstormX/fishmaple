@@ -63,11 +63,15 @@
 
         <div class="blog-right">
             <div class="blog-title"><h1>{{blog.title}}</h1></div>
-            <span class="blog-time">{{blog.timelineStr}}
+            创建于
+            <span class="blog-time">{{blog.createTimeStr}}
             </span>&nbsp;&nbsp;created &nbsp;by&nbsp;
             <span class="blog-author">{{blog.author}}
             </span>
+
             <el-tag v-for="tag in blog.tags" class="blog-tags">{{tag}}</el-tag>
+            <br>最后修改于
+            <span class="blog-time">{{blog.timelineStr}}</span>
             <div v-if="blog.isOriginal==1" class="blog-license">
                 <el-tag type="success" style="font-size:14px;">
                     <a target="_blank" rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img style="border-width:0; position: relative;top: 3px;"

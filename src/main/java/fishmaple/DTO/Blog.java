@@ -1,6 +1,5 @@
 package fishmaple.DTO;
 
-import fishmaple.Objects.TagObject;
 import fishmaple.utils.TimeDate;
 
 import java.io.Serializable;
@@ -34,8 +33,17 @@ public class Blog implements Serializable {
     private String tagTemp;
     private boolean isUpdate;
     private List<String> tagTypes;
-    private String TimelineStr;
+    private transient String timelineStr;
+    private transient String createTimeStr;
     private String avatar="#icon-nanhaizi";
+
+    public String getCreateTimeStr() {
+        return createTimeStr;
+    }
+
+    public void setCreateTimeStr(String createTimeStr) {
+        this.createTimeStr = createTimeStr;
+    }
 
     public String getAvatar() {
         return avatar;
@@ -54,11 +62,11 @@ public class Blog implements Serializable {
     }
 
     public String getTimelineStr() {
-        return TimelineStr;
+        return timelineStr;
     }
 
     public void setTimelineStr(String timelineStr) {
-        TimelineStr = timelineStr;
+        this.timelineStr = timelineStr;
     }
 
     public Integer getTodo() {
