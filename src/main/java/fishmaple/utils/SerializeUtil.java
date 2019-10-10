@@ -5,7 +5,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.*;
 
-public class SerizlizeUtil {
+public class SerializeUtil {
     //序列化
     public static String serialize(Object obj){
         try {
@@ -33,7 +33,7 @@ public class SerizlizeUtil {
         return byteArray;
     }
 
-    public static Object unserizlize(String str) throws IOException, ClassNotFoundException {
+    public static Object unserialize(String str) {
         try {
             ByteArrayInputStream bis = new ByteArrayInputStream(Base64.decode(str));
             ObjectInputStream ois = new ObjectInputStream(bis);
@@ -59,7 +59,7 @@ public class SerizlizeUtil {
     }
 
     //反序列化
-    public static Object unserizlize(byte[] byt){
+    public static Object unserialize(byte[] byt){
         ObjectInputStream oii=null;
         ByteArrayInputStream bis=null;
         bis=new ByteArrayInputStream(byt);

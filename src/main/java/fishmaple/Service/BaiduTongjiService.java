@@ -1,22 +1,16 @@
 package fishmaple.Service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.TypeReference;
 import fishmaple.DAO.TongjiMapper;
 import fishmaple.DTO.Tongji;
-import fishmaple.thirdPart.toutiaoWorm.ToutiaoObject;
 import fishmaple.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.Jedis;
-import sun.net.www.http.HttpClient;
 
 import java.util.*;
 
@@ -79,11 +73,11 @@ public class BaiduTongjiService {
                     total.setPv(total.getPv()+entry.getValue().getPv());
                     total.setIp(total.getIp()+entry.getValue().getIp());
                 }
-                jedis.set("tongji",SerizlizeUtil.serialize(total),"NX","EX",1800);
+                jedis.set("tongji", SerializeUtil.serialize(total),"NX","EX",1800);
 
                 return total;
             }else{
-                Object obj=SerizlizeUtil.unserizlize(jedis.get("tongji"));
+                Object obj= SerializeUtil.unserialize(jedis.get("tongji"));
                 if(obj instanceof Tongji){
                     return (Tongji) obj;
                 }

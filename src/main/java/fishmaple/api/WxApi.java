@@ -2,22 +2,14 @@ package fishmaple.api;
 
 
 import fishmaple.DAO.CanMapper;
-import fishmaple.DTO.Can;
-import fishmaple.Service.CanService;
 import fishmaple.Service.WxService;
-import fishmaple.utils.EncoderUtil;
-import fishmaple.utils.PublicConst;
 import fishmaple.utils.SerializeXmlUtil;
-import fishmaple.utils.SerizlizeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Collections;

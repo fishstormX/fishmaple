@@ -2,7 +2,7 @@ package fishmaple.thirdPart.bilibiliWebWorm;
 
 import fishmaple.DAO.BlMapper;
 import fishmaple.utils.JedisUtil;
-import fishmaple.utils.SerizlizeUtil;
+import fishmaple.utils.SerializeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
@@ -66,7 +66,7 @@ public class UserWormTask implements Runnable {
         while (true) {
             synchronized(this) {
             blUserObject = blWormService.getBlUser(i);
-            jedis.set("bl-user", SerizlizeUtil.serialize(blUserObject));
+            jedis.set("bl-user", SerializeUtil.serialize(blUserObject));
             blMapper.save(i++, blUserObject.getSex(), blUserObject.getFans()
                     , blUserObject.getName(), blUserObject.getFace(), blUserObject.getRank());
             try {

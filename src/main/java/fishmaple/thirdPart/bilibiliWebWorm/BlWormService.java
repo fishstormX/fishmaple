@@ -2,7 +2,6 @@ package fishmaple.thirdPart.bilibiliWebWorm;
 
 import fishmaple.DAO.BlMapper;
 import fishmaple.utils.JedisUtil;
-import fishmaple.utils.SerizlizeUtil;
 import fishmaple.utils.ThreadPoolUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,18 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import fishmaple.thirdPart.baiduWebWorm.BaiduSearchObject;
 import fishmaple.utils.FileUtil;
 import redis.clients.jedis.Jedis;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 

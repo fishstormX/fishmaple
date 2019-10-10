@@ -6,6 +6,8 @@ import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.apache.shiro.web.session.mgt.WebSessionManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +25,16 @@ import java.util.LinkedHashMap;
 @Configuration
 public class ShiroConfiguration {
 
+
+    @Bean(name = "sessionManager")
+    public DefaultWebSessionManager securityManager(@Qualifier("redisSessionDAO")RedisSessionDAO redisSessionDAO){
+            DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
+            defaultWebSessionManager.setGlobalSessionTimeout(7200000L);
+            defaultWebSessionManager.setSessionDAO(redisSessionDAO);
+            return defaultWebSessionManager;
+    }
+
+
     @Bean(name = "shiroFilter")
     public ShiroFilterFactoryBean shiroFilter(@Qualifier("securityManager") SecurityManager manager) {
         ShiroFilterFactoryBean bean = new ShiroFilterFactoryBean();
@@ -39,18 +51,17 @@ public class ShiroConfiguration {
         filterChainDefinitionMap.put("/logout", "logout");
         filterChainDefinitionMap.put("/*", "anon");
         filterChainDefinitionMap.put("/templates/*.*", "authc");//表示需要认证才可以访问
-
         bean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return bean;
     }
 
     //配置核心安全事务管理器
     @Bean(name = "securityManager")
-    public SecurityManager securityManager(@Qualifier("authRealm") AuthRealm authRealm) {
-        System.err.println("--------------shiro已经加载----------------");
+    public SecurityManager securityManager(@Qualifier("sessionManager")WebSessionManager webSessionManager,
+                                           @Qualifier("authRealm") AuthRealm authRealm) {
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
+        manager.setSessionManager(webSessionManager);
         manager.setRealm(authRealm);
-
         return manager;
     }
 

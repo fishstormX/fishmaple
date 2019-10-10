@@ -1,20 +1,15 @@
 package fishmaple.conf;
 
 import fishmaple.utils.JedisUtil;
-import fishmaple.utils.SerizlizeUtil;
-import org.apache.commons.codec.digest.DigestUtils;
+import fishmaple.utils.SerializeUtil;
 import org.apache.ibatis.cache.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Configuration;
 import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
-
-import static com.alibaba.fastjson.util.IOUtils.UTF8;
 
 
 public class Redis4CacheConf implements Cache{
@@ -38,7 +33,7 @@ public class Redis4CacheConf implements Cache{
 
         Jedis jedis=JedisUtil.getJedis();
         try{
-            jedis.set(id+key.toString(),new String(SerizlizeUtil.serialize(value)));
+            jedis.set(id+key.toString(),new String(SerializeUtil.serialize(value)));
         }catch(Exception e){
             logger.error(e.getMessage()+id);
         }finally{
@@ -54,13 +49,7 @@ public class Redis4CacheConf implements Cache{
         jedis.close();
         Object x=null;
         if(s!=null) {
-            try {
-                x=SerizlizeUtil.unserizlize(s);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+                x= SerializeUtil.unserialize(s);
         }
         return x;
     }

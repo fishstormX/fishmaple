@@ -13,7 +13,7 @@ import fishmaple.thirdPart.bilibiliWebWorm.Const;
 import fishmaple.thirdPart.bilibiliWebWorm.TaskState;
 import fishmaple.utils.FileUtil;
 import fishmaple.utils.JedisUtil;
-import fishmaple.utils.SerizlizeUtil;
+import fishmaple.utils.SerializeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +81,7 @@ public class AdapterController {
         Jedis jedis= JedisUtil.getJedis();
         String s=jedis.get("bl-user");
         jedis.close();
-        Object obj=SerizlizeUtil.unserizlize(s);
+        Object obj= SerializeUtil.unserialize(s);
         if(obj instanceof BlUserObject){
             return (BlUserObject) obj;
         }
