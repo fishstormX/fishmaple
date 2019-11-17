@@ -58,7 +58,6 @@ public class ShiroConfiguration {
     //配置核心安全事务管理器
     @Bean(name = "securityManager")
     public SecurityManager securityManager(//@Qualifier("sessionManager")WebSessionManager webSessionManager,
-                                           @Autowired RedisSessionDAO redisSessionDAO,
                                            @Qualifier("authRealm") AuthRealm authRealm,
                                            @Qualifier("redisCacheManager4Shiro") RedisCacheManager4Shiro redisCacheManager4Shiro) {
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
@@ -66,7 +65,7 @@ public class ShiroConfiguration {
         defaultWebSessionManager.setGlobalSessionTimeout(7200000L);
         defaultWebSessionManager.setSessionDAO(redisSessionDAO);*/
          RedisSessionManager redisSessionManager = new RedisSessionManager();
-        redisSessionManager.setGlobalSessionTimeout(720000L);
+        redisSessionManager.setGlobalSessionTimeout(4*60*60*1000L);
         redisSessionManager.setSessionDAO(new EnterpriseCacheSessionDAO());
         manager.setCacheManager(redisCacheManager4Shiro);
         manager.setSessionManager(redisSessionManager);

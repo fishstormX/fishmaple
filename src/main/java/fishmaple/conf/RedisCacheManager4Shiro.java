@@ -2,6 +2,7 @@ package fishmaple.conf;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
@@ -34,6 +35,10 @@ public class RedisCacheManager4Shiro implements CacheManager {
     }
 
     class RedisCache<K, V> implements Cache<K, V>{
+
+        public RedisCache() {
+            redisTemplate.boundHashOps(CACHE_KEY).expire(180, TimeUnit.MINUTES);
+        }
 
         private static final String CACHE_KEY = "shiro_redis_subject";
 
