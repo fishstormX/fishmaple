@@ -12,7 +12,6 @@ public class MobileFilter implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        //registry.addInterceptor(mfHandler).addPathPatterns("/blog*");
         //registry.addInterceptor(mfHandler).addPathPatterns("/blog/*");
     }
 

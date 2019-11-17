@@ -114,9 +114,10 @@ var Fish = function() {
 }
 /* ---------------------- FISH "CLASS" END -------------- */
 
+    var canvas = document.getElementById('fishtank');
+    var context = canvas.getContext('2d');
 /* ---------------------- MAIN START -------------------- */
-var canvas = document.getElementById('fishtank');
-var context = canvas.getContext('2d');
+
 
 var fishes = [];
 
@@ -128,7 +129,7 @@ var fishBitmap = new Image()
 fishBitmap.onload = function() {
     update();
 };
-fishBitmap.src = "/img/fish8.png";
+fishBitmap.src = "/img/fish.png";
 
 //Draw Circle
 function draw(f,size) {
@@ -145,7 +146,8 @@ function draw(f,size) {
         w = 10 + 10 / acc;
     }
 
-    context.drawImage(fishBitmap, 0, 0, size*6+30, size*1.8+9);
+   // context.drawImage(fishBitmap, 0, 0, size*6+30, size*1.8+9);
+    context.drawImage(fishBitmap, 0, 0, 20, 6);
     context.rotate(-r);
     context.translate(-f.x, -f.y);
 }
@@ -164,8 +166,9 @@ var cursorDown = false,
     keyDown = false;
 
 document.onmousemove = function(e) {
-    cursor.x = e.clientX - (window.innerWidth / 2 - canvas.width / 2);
+    cursor.x = e.clientX - (window.innerWidth / 2 - canvas.width / 2)-67.5;
     cursor.y = e.clientY - (window.innerHeight / 2 - canvas.height / 2);
+    console.log(cursor.x+" "+cursor.y)
 }
 
 

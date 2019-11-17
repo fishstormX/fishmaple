@@ -13,7 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@Component
+//改为使用redis 维护会话信息 不再同一拦截
+//@Component
 public class NFHandler implements HandlerInterceptor {
     @Autowired
     ShiroService shiroService;

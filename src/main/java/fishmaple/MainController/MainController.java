@@ -147,8 +147,13 @@ public class MainController {
     }
     @RequestMapping("/editor")
     public String editor(HttpServletRequest request){
-        log.info(request.getRemoteAddr()+" "+request.getRequestURI()+" "+"访问博客");
+        log.info(request.getRemoteAddr()+" "+request.getRequestURI()+" "+"编辑博客");
         return "editor";
+    }
+
+    @RequestMapping("/master")
+    public String master(HttpServletRequest request){
+        return "master";
     }
 
 

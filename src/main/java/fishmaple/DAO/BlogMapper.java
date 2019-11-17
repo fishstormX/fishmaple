@@ -1,16 +1,13 @@
 package fishmaple.DAO;
 
 import fishmaple.DTO.Blog;
-import fishmaple.conf.Redis4CacheConf;
+import fishmaple.conf.RedisCache4BlogConf;
 import org.apache.ibatis.annotations.*;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
-@CacheNamespace(size=5,implementation = Redis4CacheConf.class)
+
+@CacheNamespace(size=5,implementation = RedisCache4BlogConf.class)
 public interface BlogMapper{
 
     @Delete("delete from blog where id=#{bid}")

@@ -12,14 +12,14 @@ import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 
 
-public class Redis4CacheConf implements Cache{
+public class RedisCache4BlogConf implements Cache{
     private final long EXPIRE_TIME = 600L;
     private final String COMMON_CACHE_KEY = "COM:";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private String id;
 
-    public Redis4CacheConf(final String id){
+    public RedisCache4BlogConf(final String id){
         this.id=id;
     }
 
