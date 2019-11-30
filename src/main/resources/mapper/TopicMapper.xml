@@ -22,7 +22,17 @@
 
     <select id="getAllTopics" resultType="fishmaple.DTO.BlogTopic">
         SELECT * FROM blog_topic
-        WHERE f_topic_id != -1
+        WHERE f_topic_id in(0,-1)
+    </select>
+
+    <select id="getTopicById" resultType="fishmaple.DTO.BlogTopic">
+        SELECT * FROM blog_topic
+        WHERE id = #{id}
+    </select>
+
+    <select id="getSubTopicById" resultType="fishmaple.DTO.BlogTopic">
+        SELECT * FROM blog_topic
+        WHERE f_topic_id = #{id}
     </select>
 
     <select id="getTopicsByUserIdAndTopicId" resultType="fishmaple.DTO.BlogTopic">

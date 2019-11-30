@@ -32,7 +32,7 @@
             background: #fff0;
             z-index: 100000;
             top: 0;
-            transition: background 1s ease-in-out;
+            transition: opacity 1s ease-in-out;
         }
         .header:hover{
             width: 100%;
@@ -182,7 +182,7 @@
         data:{
             up:true,
             timer:"",
-            height:1000
+            height:10
         },
         methods: {
             upHandle(){
@@ -199,7 +199,7 @@
                 }
             },
             onLoad(){
-                this.height= window.screen.availHeight;
+                //this.height= window.screen.availHeight;
             }
         },
         mounted(){
@@ -369,18 +369,26 @@
                 });
             },
             hover(){
-                let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+               // let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
 
-                if(scrollTop <  index.height) {
-                    this.mouseOn = true;
+                //if(scrollTop <  index.height) {
                     this.mouseOn = true;
                     document.getElementById("header").style.background = "#fff"
-                    document.getElementById("top-bar").style.display = "block"
-                }
+                document.getElementById("header").style.opacity = 1
+                    //document.getElementById("top-bar").style.display = "block"
+
+                //}
+                //}else{
+                //}
             },
             mouseout(){
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+                if(scrollTop >  10) {
                     this.mouseOn=false;
-                    document.getElementById("header").style.background="#fff0"
+                    //document.getElementById("header").style.background="#fff0"
+                    //document.getElementById("top-bar").style.display = "none"
+                    document.getElementById("header").style.opacity = 0
+                }
             }
         },
         mounted(){
@@ -491,21 +499,24 @@
                     index.up=true;
                     this.seen = false
                 }
-                if (scrollTop > index.height-100&& scrollTop <  index.height ) {
-                    document.getElementById("header").style.background="#fff"
-                    document.getElementById("top-bar").style.display="block"
+                if (scrollTop > 10 ) {
+                   // document.getElementById("header").style.background="#fff"
+                    //document.getElementById("top-bar").style.display="block"
+                    document.getElementById("header").style.opacity = 0
 
                 } else if(!head.mouseOn&&scrollTop >  index.height) {
-                    document.getElementById("top-bar").style.display="none"
-                    document.getElementById("header").style.background="#fff0"
+                   // document.getElementById("top-bar").style.display="none"
+                    //document.getElementById("header").style.background="#fff0"
+                    document.getElementById("header").style.opacity = 0
 
                 } else{
-                    document.getElementById("top-bar").style.display="block"
-                    if(scrollTop<2){
-                        document.getElementById("header").style.background="#fff"
-                    }else {
-                        document.getElementById("header").style.background = "#fff0"
-                    }
+                   // document.getElementById("top-bar").style.display="block"
+                    document.getElementById("header").style.opacity = 1
+                    // if(scrollTop<2){
+                    //     document.getElementById("header").style.background="#fff"
+                    // }else {
+                    //     document.getElementById("header").style.background = "#fff0"
+                    // }
                 }
             }
         },mounted() {

@@ -3,10 +3,7 @@ package fishmaple.MainController;
 
 import com.alibaba.fastjson.JSON;
 import fishmaple.DAO.*;
-import fishmaple.DTO.Blog;
-import fishmaple.DTO.Dictionary;
-import fishmaple.DTO.Issue;
-import fishmaple.DTO.Tool;
+import fishmaple.DTO.*;
 import fishmaple.Service.*;
 import fishmaple.shiro.ShiroService;
 import fishmaple.utils.PublicConst;
@@ -22,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -101,10 +99,22 @@ public class MainController {
 
     @RequestMapping("/blog/topicBlog")
     public String blogTopic(@RequestParam Integer topicId,HttpServletRequest request, Model model, HttpServletResponse response) {
-        String content="";
-        List<Blog> list= blogService.getBlogListByTopicId(topicId);
-        String topic = blogTopicMapper.getTopicName(topicId);
-        model.addAttribute("topic",topic);
+        List<Blog> list= new ArrayList<>();
+        BlogTopic topic = blogTopicMapper.getTopicById(topicId);
+        List<BlogTopic> topics=null;
+        if(topic.getfTopicId()==-1){
+             topics=blogTopicMapper.getSubTopicById(topicId);
+             for(BlogTopic subTopic:topics ) {
+                    List<Blog> tmp = blogService.getBlogListByTopicId(subTopic.getId());
+                    if(!tmp.isEmpty()){
+                        list.addAll(tmp);
+                    }
+             }
+        }else{
+            list= blogService.getBlogListByTopicId(topicId);
+        }
+        model.addAttribute("topic",topic.getTopic());
+        model.addAttribute("subTopic",topics);
         model.addAttribute("blog",list);
         return mobileHandler(request,"topicBlog");
     }
