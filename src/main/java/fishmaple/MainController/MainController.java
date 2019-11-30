@@ -102,6 +102,7 @@ public class MainController {
         List<Blog> list= new ArrayList<>();
         BlogTopic topic = blogTopicMapper.getTopicById(topicId);
         List<BlogTopic> topics=null;
+        model.addAttribute("isSub",false);
         if(topic.getfTopicId()==-1){
              topics=blogTopicMapper.getSubTopicById(topicId);
              for(BlogTopic subTopic:topics ) {
@@ -110,8 +111,13 @@ public class MainController {
                         list.addAll(tmp);
                     }
              }
+        }else if(topic.getfTopicId()==0){
+            list= blogService.getBlogListByTopicId(topicId);
         }else{
             list= blogService.getBlogListByTopicId(topicId);
+            BlogTopic parentTopic = blogTopicMapper.getTopicById(topic.getfTopicId());
+            model.addAttribute("PaTopic",parentTopic);
+            model.addAttribute("isSub",true);
         }
         model.addAttribute("topic",topic.getTopic());
         model.addAttribute("subTopic",topics);

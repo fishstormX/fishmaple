@@ -38,8 +38,13 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item><a class="nav_link" href="/index">首页</a></el-breadcrumb-item>
         <el-breadcrumb-item><a class="nav_link" href="/blog">博客</a></el-breadcrumb-item>
-        <el-breadcrumb-item th:text="'分类：'+${topic}">分类</el-breadcrumb-item>
+        <el-breadcrumb-item ><a class="nav_link" th:attr="href=@{/blog/topicBlog(topicId=${isSub?PaTopic.id:topic})}" th:text="${isSub?PaTopic.topic:topic}"></a></el-breadcrumb-item>
+        <el-breadcrumb-item th:if="${isSub}"  th:text="${topic}">分类</el-breadcrumb-item>
     </el-breadcrumb>
+    <div style="margin:40px 110px;" >
+           <span th:each="item,itemstr:${subTopic}"> <a class="nocl-a"  target="_blank" style="color: #409EFF;text-decoration: none;"
+                                                th:attr="href=@{/blog/topicBlog(topicId=${item.id})}" th:text="${item.topic}"></a>  <span th:if="${itemstr.index} lt ${#lists.size(subTopic)-1}"> | </span> </span>
+    </div>
     <el-row class="blog-list" style="line-height:30px">
         <div th:each="blog:${blog}">
             <a  class="nav_link" th:attr="href='/blog/d?bid='+${blog.id}" th:text="${blog.title}"></a>

@@ -152,7 +152,10 @@
 #copyright{
     font-size:13px;
 }
-
+.nocl-a:hover{
+    color: #409EFF;
+    text-decoration: none;
+}
 #fixed{
     position:fixed;
     right:50px;
