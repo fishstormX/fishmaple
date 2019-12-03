@@ -101,6 +101,9 @@ textarea{
     position: relative;
     bottom: 10px;
 }
+.bloglist-cover-loading{
+    text-align: center;
+}
 .bloglist-date{
     color:#9EABB3;
     margin-left:10px;

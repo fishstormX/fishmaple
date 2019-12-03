@@ -70,14 +70,14 @@
                 <div class="bloglist-title">
                     <a target="_blank" v-bind:href="'/blog/d?bid='+blog.id">{{blog.title}}</a>
                 </div>
-                <div class="bloglist-cover">
+                <div v-bind:class="loaded?'bloglist-cover':'bloglist-cover-loading'">
                     <a target="_blank" v-bind:href="'/blog/d?bid='+blog.id">
                         <img v-bind:src="(blog.cover==''||blog.cover==null)?'https://file.fishmaple.cn/timg2.jpg':blog.cover">
                     </a>
                 </div>
                 <div class="bloglist-content"><a v-bind:href="'/blog/d?bid='+blog.id">{{blog.content}}</a></div>
                 <span class="bloglist-date">{{blog.timeline}}</span>
-                <img class="icon-avatar" v-bind:src="'/font/icon_avatar/'+blog.avatar+'.png'">
+                <img class="icon-avatar" v-show="blog.avatar!=''" v-bind:src="'/font/icon_avatar/'+blog.avatar+'.png'">
                 <span class="bloglist-author">{{blog.author}}</span>
                <span class="bloglist-tags">
                             <el-tag @click.native="tagScreen" size="small" v-bind:class="blog.tagTypes[index]"
@@ -239,9 +239,10 @@
         el: '#blog_main',
         data: {
             tagtap: false,
+            loaded:false,
             screen: "",
             isNull: false,
-            items: [{avatar:"nanhaizi"}],
+            items: [{avatar:"",cover:"/pics/timg.gif"}],
             tags: [{
                 label: '编程语言',
                 icon: 'yunyingguanli',
@@ -303,6 +304,7 @@
 
                     }
                     document.getElementsByClassName("bloglist-block")[0].style.borderTop = "0 solid"
+                    this.loaded=true
                 }, function () {
                     console.log('请求失败')
                 });

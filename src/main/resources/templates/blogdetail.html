@@ -294,9 +294,14 @@
                             setTop: setTopt
                         }
                         this.positions.push(position);
-
                     }
                     document.getElementById("blog-left").style.opacity="1"
+                }
+                eleps = document.getElementById("main-blog").getElementsByTagName("p");
+                for(i in eleps){
+                    if(eleps[i].innerHTML=="<br<br></br<br>"){
+                        eleps[i].innerHTML="<br>"
+                    }
                 }
                 img = document.getElementById("main-blog").getElementsByTagName('img');//图片元素
                 for(i in img){
@@ -306,8 +311,6 @@
                             e.target.className=="logo middle_fish"||e.target.className=="icons"){
                             return
                         }
-
-
                             showImg.show=true
                             showImg.src=e.srcElement.attributes.src.value
                     }
