@@ -6,6 +6,7 @@ import fishmaple.DAO.*;
 import fishmaple.DTO.*;
 import fishmaple.Service.*;
 import fishmaple.shiro.ShiroService;
+import fishmaple.task.LoadBlogListTask;
 import fishmaple.utils.PublicConst;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
@@ -49,6 +50,8 @@ public class MainController {
     BlogTopicService blogTopicService;
     @Autowired
     BlogTopicMapper blogTopicMapper;
+    @Autowired
+    LoadBlogListTask loadBlogListTask;
 
     @RequestMapping("/blogEditor")
     public String blogEditor(@RequestParam(required = false) String xx
@@ -132,16 +135,16 @@ public class MainController {
 
     @RequestMapping("/blog")
     public String blog(HttpServletRequest request, Model model, HttpServletResponse response) {
-        String content="";
-        List<Blog> list= blogService.getBlogList(60,0);
+        String content=loadBlogListTask.getOutLine();
+        /*List<Blog> list= blogService.getBlogList(60,0);
         Collections.shuffle(list);
         for(int i=0;i<11;i++){
               content += list.get(i).getOutLine();
-        }
-        model.addAttribute("cover",configMapper.getValue("cover"));
+        }*/
+        //model.addAttribute("cover",configMapper.getValue("cover"));
         model.addAttribute("content",content);
-        model.addAttribute("ititle",configMapper.getValue("index_title"));
-        model.addAttribute("icontent",configMapper.getValue("index_content"));
+        //model.addAttribute("ititle",configMapper.getValue("index_title"));
+        //model.addAttribute("icontent",configMapper.getValue("index_content"));
         model.addAttribute("page",1);
         model.addAttribute("pageD","");
         model.addAttribute("blogTopics",blogTopicService.getAllTopics());
