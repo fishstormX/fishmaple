@@ -60,8 +60,9 @@
         <el-breadcrumb-item><a class="nav_link" href="/index">首页</a></el-breadcrumb-item>
         <el-breadcrumb-item><a class="nav_link" href="/blog">博客</a></el-breadcrumb-item>
         <el-breadcrumb-item v-if="tagtap">{{screen}}</el-breadcrumb-item>
+        <el-breadcrumb-item>第 {{page}} 页</el-breadcrumb-item>
     </el-breadcrumb>
-    <div style="position: relative;bottom: 54px;left: 300px;width:100px;">
+    <div style="position: relative;bottom: 54px;left: 400px;width:100px;">
         <a class="nav_link" href="/blog/index">博客索引</a>
     </div>
     <el-row class="blog-list">
@@ -215,14 +216,21 @@
         },
         methods: {
             handleCurrentChange(page) {
+
+                blog.items=[{avatar:"",cover:"/pics/timg.gif"}]
+                blog.page=page
+                blog.loaded=false
+                window.scrollTo(0,0);
                 this.$http.get('/api/blog?page=' + page + (blog.tagtap ? ('&tag=' + blog.screen  ): '')
                     ).then(function (res) {
+
                     blog.items = JSON.parse(res.bodyText);
                     for (let i in blog.items) {
                         let date = new Date(blog.items[i].timeline * 1000);
                         blog.items[i].timeline = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" +
                             date.getDate() + "日"
                     }
+                    blog.loaded=true
                     if (blog.items.length === 0) {
                         blog.isNull = true;
                     } else {
@@ -238,6 +246,7 @@
     let blog = new Vue({
         el: '#blog_main',
         data: {
+            page:1,
             tagtap: false,
             loaded:false,
             screen: "",
@@ -324,14 +333,19 @@
             tagScreen(e) {
                 this.tagtap = true
                 this.screen = e.target.innerText
+                window.scrollTo(0,0);
+                this.items=[{avatar:"",cover:"/pics/timg.gif"}]
+                this.loaded=false
                 this.$http.get('/api/blog?tag=' + e.target.innerText +
                     "&page=" + 1).then(function (res) {
                     this.items = JSON.parse(res.bodyText);
+                    this.page=1
                     for (let i in this.items) {
                         let date = new Date(this.items[i].timeline * 1000);
                         this.items[i].timeline = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" +
                             date.getDate() + "日"
                     }
+                    this.loaded=true
                     if (this.items.length === 0) {
                         this.isNull = true
                     } else {
