@@ -21,7 +21,7 @@ Vue.component('top-component', {
         '        <ul id="nav">' +
        // '            <li><a href="/idea/" class="nav_link">idea</a></li> ' +
         '            <li><a href="/blog" class="nav_link">博客</a></li>' +
-        '            <li><a href="/tool" class="nav_link">工具箱</a></li>' +
+        //'            <li><a href="/tool" class="nav_link">工具箱</a></li>' +
         '           <li><a href="/issues" class="nav_link">issues</a></li>' +
         //'            <li><a href="/document" class="nav_link">文件托管</a></li>' +
         '            <li><a href="/lab" class="nav_link">实验室</a></li>' +
@@ -82,6 +82,7 @@ Vue.component('foot-component', {
         ' <div><ul class="foot_nav">' +
         '            <li><a href="/aboutMe.html">关于我</a></li>' +
         '            <li><a href="/version.html">版本迭代</a></li>' +
+        '            <li><a href="/tool">工具箱</a></li>' +
         '            <li><a href="/friendLinks">友情链接</a></li>' +
         '            <li><a href="/restart.html">重启服务器</a></li>' +
         '            <li><a href="/log.html">日志查看</a></li>' +

@@ -27,9 +27,9 @@
     min-height: 1000px;
 }
 
-.fixed-text{
+.fixed-editButton{
     position:fixed;
-    right:2px;
+    right:20px;
     top:120px;
     cursor:pointer;
 }
