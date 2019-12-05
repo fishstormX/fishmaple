@@ -96,7 +96,7 @@
             title="编辑"
             trigger="hover"
             content="编辑博客">
-        <a slot="reference" href="/blogEditor">
+        <a slot="reference">
             <el-button @Click="editor"  icon="el-icon-edit" circle></el-button>
         </a>
     </el-popover>
@@ -246,7 +246,7 @@
         },
         methods:{
             editor() {
-                window.location.href = "/blogEditor?bid=" + this.blog.id;
+                window.location.href = "/blogEditor?bid=" + blog.blog.id;
             },
             getDic(){
                 this.$http.get('/api/dictionary/all').then(function (res) {

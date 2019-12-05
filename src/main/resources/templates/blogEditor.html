@@ -113,7 +113,7 @@
                 </el-col>
             </el-row>
             <el-container>
-                <el-header  height="200px">上传封面
+                <el-aside style="padding:0;width: 204px;" height="200px">上传封面
                     <el-upload
                             drag="true"
                             class="avatar-uploader"
@@ -124,13 +124,13 @@
                         <img v-if="imageUrl" :src="imageUrl" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
-                </el-header>
+                </el-aside>
                 <el-main>
                 <el-container>
-                    <el-main>
+                    <el-main style="padding: 20px 1px;">
                         <el-button @click="uploadBlog">上传博客</el-button>
                     </el-main>
-                    <el-footer>
+                    <el-footer  style="padding: 20px 1px;">
                         <el-button v-if="shown" @click="dialogVisible = true" type="danger">删除博客</el-button>
                     </el-footer>
                 </el-container>
