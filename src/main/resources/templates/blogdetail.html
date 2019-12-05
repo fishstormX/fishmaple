@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="description" th:attr="content=${describe}" />
-    <title th:text="${blog.title}+'-鱼鱼的博客'"></title>
+    <title th:text="${blog.title}+'-鱼鱼的Java小站'"></title>
     <link type="text/css" rel="stylesheet" href="/css/main.css"/>
     <link type="text/css" rel="stylesheet" href="/css/blog.css"/>
     <link type="text/css" rel="stylesheet" href="/font/iconfont.css"/>
@@ -38,12 +38,12 @@
     </style>
 </head>
 
-<div id="header" class="header">
+<div id="header" v-bind:style="{display:loaded?'block':'none'}" class="hider header">
 
     <div id="component">
         <top-component :user="user" ></top-component>
     </div>
-    <el-breadcrumb v-show="loaded" separator-class="el-icon-arrow-right">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item><a class="nav_link" href="/">首页</a></el-breadcrumb-item>
         <el-breadcrumb-item><a class="nav_link" href="/blog">blog</a></el-breadcrumb-item>
         <el-breadcrumb-item th:text="${blog.title}"></el-breadcrumb-item>
@@ -60,16 +60,17 @@
 
         <div class="blog-right">
             <div class="blog-title"><h1 th:text="${blog.title}"></h1></div>
-           </span>&nbsp;&nbsp;created &nbsp;by&nbsp;
+            <span>&nbsp;&nbsp;created &nbsp;by&nbsp;</span>
             <span  th:text="${blog.author}" class="blog-author"> </span>
 
-            <el-tag v-for="tag in blog.tags" class="blog-tags">{{tag}}</el-tag>
-            <br>
+            <el-tag v-bind:style="{display:loaded?'inline-block':'none'}" v-for="tag in blog.tags" class="hider blog-tags">{{tag}}</el-tag>
+            <div style="float: right;margin:10px">
             创建于
-            <span th:text="${blog.createTimeStr}" class="blog-time">
+            <span th:text="${blog.createTimeStr}" class="blog-time"></span>
             最后修改于
             <span class="blog-time" th:text="${blog.timelineStr}" ></span>
-            <div v-if="blog.isOriginal==1" class="blog-license">
+            </div>
+                <div v-if="blog.isOriginal==1" class="blog-license">
                 <el-tag type="success" style="font-size:14px;">
                     <a target="_blank" rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img style="border-width:0; position: relative;top: 3px;"
                         alt="知识共享许可协议"  src="https://i.creativecommons.org/l/by-nc-nd/4.0/80x15.png" /></a>
@@ -80,17 +81,16 @@
             <div id="main-blog" class="blog-content dicAdd" v-html="blog.content"></div>
         </div>
 
-    <div class="fixed-text"><a @Click="editor">修改文档</a>
-        </div>
+
 </div>
 
-<div id="fish-bind-blogD" th:utext="${blog.outLine}"></div>
+<div id="fish-bind" th:utext="${blog.outLine}"></div>
 <div id="fixed" v-if="seen"  v-bind:class="{animated:isClicked,fadeOutDown:isClicked}"
 
      @click="toTop">
     <i class="el-icon-arrow-up"></i>
 </div>
-<div id="back" v-show="loaded"  class="my-btns">
+<div id="back" v-bind:style="{display:loaded?'block':'none'}" class="hider my-btns">
     <el-popover  class="fixed-editButton"
             placement="right"
             title="编辑"
@@ -237,7 +237,81 @@
 
         }
     });
+    let dictionaryAdd= new Vue({
+        el:"#back",
+        data: {
+            dictionary:[],
+            isDictionaryOn:true,
+            loaded:false
+        },
+        methods:{
+            editor() {
+                window.location.href = "/blogEditor?bid=" + this.blog.id;
+            },
+            getDic(){
+                this.$http.get('/api/dictionary/all').then(function (res) {
+                    this.dictionary=JSON.parse(res.bodyText)
+                    setTimeout(this.openDic(),2000)
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            },
+            openDic() {
+                nodes = document.getElementsByClassName("dicAdd")
+                nodes = this.getChildNodes(nodes[0])
+                for (let i = 0; i < nodes.length; i++) {
+                    if (nodes[i].tagName == "PRE" || nodes[i].tagName == "CODE") {
+                        continue
+                    }
+                    str=nodes[i].innerHTML;
+                    for (let j = 0; j < this.dictionary.length; j++) {
+                        reg = new RegExp(this.dictionary[j].key, "g"); //创建正则RegExp对象
+                        //str=str.substring(str.indexOf("<"));
+                        if(str.indexOf(this.dictionary[j].key)>str.indexOf("dic-on")&&str.indexOf(this.dictionary[j].key)<str.indexOf("</span"))
+                            continue
 
+                        str = str.replace(reg,
+                            '<span class="dic-on dic" title="' + this.dictionary[j].value + '">'
+                            + this.dictionary[j].key + '</span>');
+                    }
+                    nodes[i].innerHTML = nodes[i].innerHTML.substring(0, nodes[i].innerHTML.indexOf(">")) + str
+                }
+            },
+            closeDic(){
+                dics=document.getElementsByClassName("dic")
+                for(let i=0;i<dics.length;i++){
+                    removeClass(dics[i],"dic-on")
+                    dics[i].title=""
+                }
+            },
+            getChildNodes(node){
+                var nodes = node.childNodes;
+                var arr = [];
+                for (var i = 0; i < nodes.length; i++) {
+                    var childNode = nodes[i];
+                    if(childNode.nodeType == 1){
+                        arr.push(childNode);
+                        var temp = this.getChildNodes(childNode);//递归调用getChildNodes方法，查看当前子节点下是否还有子节点
+                        arr = arr.concat(temp);//将递归获取的子节点数组与之前的数组拼接成一个数组
+                    }
+                }
+                return arr;
+            },
+            dicHandle(e){
+                this.isDictionaryOn=!this.isDictionaryOn
+                if(this.isDictionaryOn) {
+                    this.openDic()
+                    addClass(document.getElementsByClassName("dictionary-btn")[0], "my-btn-orange-cl")
+                }else{
+                    this.closeDic()
+                    removeClass(document.getElementsByClassName("dictionary-btn")[0], "my-btn-orange-cl")
+                }
+            }
+        },
+        mounted(){
+            setTimeout(this.getDic(),1000)
+        }
+    })
     let blog = new Vue({
         el: '#blog_main',
         data: {
@@ -363,81 +437,7 @@
             setTimeout(this.afterLoad,1000)
         }
     })
-    let dictionaryAdd= new Vue({
-        el:"#back",
-        data: {
-            dictionary:[],
-            isDictionaryOn:true,
-            loaded:false
-        },
-        methods:{
-            editor() {
-                window.location.href = "/blogEditor?bid=" + this.blog.id;
-            },
-            getDic(){
-                this.$http.get('/api/dictionary/all').then(function (res) {
-                    this.dictionary=JSON.parse(res.bodyText)
-                    setTimeout(this.openDic(),2000)
-                }, function () {
-                    console.log('获取回话失败')
-                });
-            },
-            openDic() {
-                nodes = document.getElementsByClassName("dicAdd")
-                nodes = this.getChildNodes(nodes[0])
-                for (let i = 0; i < nodes.length; i++) {
-                    if (nodes[i].tagName == "PRE" || nodes[i].tagName == "CODE") {
-                        continue
-                    }
-                   str=nodes[i].innerHTML;
-                    for (let j = 0; j < this.dictionary.length; j++) {
-                        reg = new RegExp(this.dictionary[j].key, "g"); //创建正则RegExp对象
-                        //str=str.substring(str.indexOf("<"));
-                        if(str.indexOf(this.dictionary[j].key)>str.indexOf("dic-on")&&str.indexOf(this.dictionary[j].key)<str.indexOf("</span"))
-                            continue
 
-                            str = str.replace(reg,
-                                '<span class="dic-on dic" title="' + this.dictionary[j].value + '">'
-                                + this.dictionary[j].key + '</span>');
-                    }
-                    nodes[i].innerHTML = nodes[i].innerHTML.substring(0, nodes[i].innerHTML.indexOf(">")) + str
-                }
-            },
-            closeDic(){
-                dics=document.getElementsByClassName("dic")
-                for(let i=0;i<dics.length;i++){
-                    removeClass(dics[i],"dic-on")
-                    dics[i].title=""
-                }
-            },
-            getChildNodes(node){
-                var nodes = node.childNodes;
-                var arr = [];
-                for (var i = 0; i < nodes.length; i++) {
-                    var childNode = nodes[i];
-                    if(childNode.nodeType == 1){
-                        arr.push(childNode);
-                        var temp = this.getChildNodes(childNode);//递归调用getChildNodes方法，查看当前子节点下是否还有子节点
-                        arr = arr.concat(temp);//将递归获取的子节点数组与之前的数组拼接成一个数组
-                    }
-                }
-                return arr;
-            },
-            dicHandle(e){
-                this.isDictionaryOn=!this.isDictionaryOn
-                if(this.isDictionaryOn) {
-                    this.openDic()
-                    addClass(document.getElementsByClassName("dictionary-btn")[0], "my-btn-orange-cl")
-                }else{
-                    this.closeDic()
-                    removeClass(document.getElementsByClassName("dictionary-btn")[0], "my-btn-orange-cl")
-                }
-            }
-        },
-        mounted(){
-            setTimeout(this.getDic(),1000)
-        }
-    })
 </script>
 </body>
 </html>

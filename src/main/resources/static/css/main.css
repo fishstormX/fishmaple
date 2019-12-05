@@ -246,16 +246,13 @@
     border-bottom: 1.5px blue dotted;
 }
 #fish-bind{
-    position: absolute;
-    z-index: 5;
-    width: 94%;
-    background-color: white;
-    padding-top: 1300px;
     font-size: 20px;
     margin: 2%;
 }
-#fish-bind-blogD{
-    font-size: 20px;
-    margin: 2%;
+.hider{
+    display: none;
 }
-
+#loading-gif{
+    text-align: center;
+    height: 1200px;
+}

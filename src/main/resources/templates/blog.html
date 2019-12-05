@@ -4,13 +4,13 @@
     <meta name="description" content="web灵魂开发工程师鱼鱼的技术博客" />
     <link rel="canonical" href="https://www.fishmaple.cn/" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta property="og:site_name" content="鱼鱼的博客" />
+    <meta property="og:site_name" content="鱼鱼的Java小站" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="twitter:image:src" content="https://www.fishmaple.cn/pics/logo-fish.png" />
     <meta charset="UTF-8">
 
     <meta name="keywords" content="技术博客,后台学习,灵魂web开发,java开发,程序开发">
-    <title th:text="${pageD}+'鱼鱼的博客'"></title>
+    <title th:text="${pageD}+'鱼鱼的Java小站'"></title>
     <link type="text/css" rel="stylesheet" href="/css/main.css"/>
     <link type="text/css" rel="stylesheet" href="/css/blog.css"/>
     <link type="text/css" rel="stylesheet" href="/font/iconfont.css"/>
@@ -42,8 +42,8 @@
 </head>
 <!-- 当你真心渴望某样东西时，日月星辰也会连成一线来帮你完成。-->
 <body class="background" >
-    <div th:utext="${content}" id="fish-bind">
-</div>
+<div id="loading-gif"  v-show="!loading"><img height="650px" src="/pics/timg.gif"></div>
+    <div th:utext="${content}" id="fish-bind"></div>
 <div id="sitemap">
     <a href="https://www.fishmaple.cn/sitemap.html">网站地图</a>
     <div th:text="${page}" id="cur_page">
@@ -177,6 +177,8 @@
     <copyright></copyright>
 </div>
 <script>
+
+
 
     let index = new Vue({
         el: '#index',
@@ -502,6 +504,7 @@
             onLoad() {
                 //隐藏
                 document.getElementById("fish-bind").style.display="none"
+                document.getElementById("loading-gif").style.display="none"
                 document.getElementById("sitemap").style.display="none"
                 window.addEventListener('scroll', this.handleScroll)
             },

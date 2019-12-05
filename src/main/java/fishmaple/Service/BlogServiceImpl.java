@@ -291,7 +291,7 @@ public class BlogServiceImpl implements BlogService{
     }
     //自动添加段落锚点
     private List<String> setAnchor(String content){
-        content =content.replaceAll("<br/>"," ");
+        content =content.replaceAll("<br/>","<br>");
         Document doc=Jsoup.parseBodyFragment(content);
 
         Elements elements = doc.getElementsByTag("h2");
