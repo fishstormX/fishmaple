@@ -11,7 +11,7 @@ import java.util.Set;
  * 用户表 user
  * */
 public interface UserMapper {
-    @Select("SELECT `user`.id,`user`.name,`user`.pswd,`user`.registertime,`user`.auth " +
+    @Select("SELECT `user`.id,`user`.email,`user`.name,`user`.pswd,`user`.registertime,`user`.auth " +
             "FROM user " +
             "WHERE `user`.name=#{name}")
     @Results({ @Result(id=true,property="id",column="id"),

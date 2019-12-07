@@ -134,7 +134,10 @@ textarea{
     text-align:center;
     line-height:70px;
 }
-
+.blog_comment{
+    min-height:60px;
+    padding:0 10px;
+}
 .blog-time{
     color: #9EABB3;
     margin-right:40px;

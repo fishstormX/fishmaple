@@ -9,11 +9,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 public interface CommentMapper {
-    @Insert("Insert comment(related_id,content,creator,create_time,type,root_id) values(#{relatedId},#{content}，" +
-            "#{creator},#{createTime},#{type},#{rootId})")
+    @Insert("<script>Insert comment(email,related_id,content,creator,create_time,type<if test='rootId!=null'>,root_id</if>) " +
+            "values(#{email},#{relatedId},#{content}," +
+            "#{creator},#{createTime},#{type}<if test='rootId!=null'>,#{rootId}</if>)</script>")
     public void addComment(Comment comment);
-    @Select("Select * From comment where related_id=#{relatedId} and type = #{type} orderBy create_time" +
-            "limit #{start},#{count}")
+    @Select("<script>Select * From comment where related_id=#{relatedId} and type = #{type} order by create_time " +
+            "limit #{start},#{count}<if test='ordered==2'>order by id desc</if></script>")
     public List<Comment> getCommentsByRelatedId(@Param("relatedId") String relatedId, @Param("type") int type,
-                                                @Param("start") int start, @Param("count") int count);
+                                                @Param("start") int start, @Param("count") int count,@Param("ordered")int ordered);
+
+    @Select("Select COUNT(*) From comment where related_id=#{relatedId} and type = #{type} ")
+    public int getCommentsNumByRelatedId(@Param("relatedId") String relatedId, @Param("type") int type);
 }

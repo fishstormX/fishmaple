@@ -19,8 +19,10 @@ public class AuthController {
         if(null!=shiroService.getCurrentUser()){
             user.put("name",shiroService.getCurrentUser().getName());
             user.put("id",shiroService.getCurrentUser().getId());
+            user.put("email",shiroService.getCurrentUser().getEmail());
         }else{
             user.put("name","");
+            user.put("email","");
         }
         return user;
     }

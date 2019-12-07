@@ -7,15 +7,15 @@
     <link type="text/css" rel="stylesheet" href="/css/main.css"/>
     <link type="text/css" rel="stylesheet" href="/css/blog.css"/>
     <link type="text/css" rel="stylesheet" href="/font/iconfont.css"/>
-    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.6/lib/theme-chalk/index.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.2/vue.min.js"></script>
     <script src="/js/index.js"></script>
     <script src="/js/tool/setDictionary.js"></script>
     <script src="/font/iconfontAdapter.js"></script>
     <script src="/js/baidu.js"></script>
     <script src="/js/util.js"></script>
     <script src="/font/iconfont.js"></script>
-    <script src="https://unpkg.com/element-ui@2.4.6/lib/index.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
     <link type="text/css" rel="stylesheet" href="/ueditor/third-party/SyntaxHighlighter/shCoreDefault.css">
@@ -34,6 +34,16 @@
         }
         .on{
             height: 100%;
+        }
+        #comment-form .el-form-item__content{
+            width: 470px;
+        }
+        #comment-form .el-form-item{
+            width: 532px;
+            display: inline-block;
+        }
+        .blog_comment .el-divider--horizontal {
+            margin: 16px 0;
         }
     </style>
 </head>
@@ -79,14 +89,33 @@
             </div>
             <div id="loading-gif" v-show="!loading"><img src="/pics/timg.gif"></div>
             <div id="main-blog" class="blog-content dicAdd" v-html="blog.content"></div>
+            <el-divider id="divider" content-position="center">评论<i class="el-icon-s-comment" style="margin-right:20px"></i>
+                时间顺序
+            </el-divider>
+            <div  v-for="comment in comments"  class="blog_comment">
+                    <el-card style="margin: 10px 0" >
+                        <el-row :gutter="20">
+                            <el-col :span="6" style="text-align: center">
+                                <el-row><div class="comment-creator">{{comment.creator}}</div></el-row>
+                                <el-row><img style="margin:30px" v-bind:src="comment.randAvatar" width="50px" height="50px"> </el-row>
+                                <el-row><div style="text-align: center;font-size:15px;">
+                                    {{comment.email}}</div></el-row>
+                            </el-col>
+                            <el-col :span="16">
+                                <el-row ><span style="color: grey;font-size: 15px;">{{comment.createTime}}</span></el-row>
+                                <el-divider></el-divider>
+                                <el-row ><div style="min-height:100px">{{comment.content}}</div>
+                                </el-row>
+                            </el-col>
+                        </el-row>
+                    </el-card>
+            </div>
         </div>
-
 
 </div>
 
 <div id="fish-bind" th:utext="${blog.outLine}"></div>
 <div id="fixed" v-if="seen"  v-bind:class="{animated:isClicked,fadeOutDown:isClicked}"
-
      @click="toTop">
     <i class="el-icon-arrow-up"></i>
 </div>
@@ -101,16 +130,55 @@
         </a>
     </el-popover>
     <el-popover
+            placement="right"
+            title="评论"
+            trigger="hover"
+            content="发表评论">
+            <el-button style="position:fixed;right:20px;bottom:200px;" @Click="showCommentWindow"  icon="el-icon-chat-dot-square" slot="reference" circle></el-button>
+    </el-popover>
+    <el-popover
             placement="left"
             title="词典"
             trigger="hover"
             content="词典渲染">
         <button style="position:fixed;right:20px;top:200px;" @click="dicHandle" class="is-circle my-btn my-btn-orange-cl dictionary-btn"  slot="reference" circle>
-            <svg class="icon" aria-hidden="true">' +
+            <svg class="icon" aria-hidden="true">
                 <use xlink:href="#icon-shujuzidian"></use>
             </svg>　
         </button>
     </el-popover>
+    <el-drawer
+            title="发表评论"
+            :visible.sync="drawer"
+            :with-header="false" @keyup.ctrl.enter.native="pushComment"
+    direction="btt" style="text-align: center">
+        <h3 style="margin-top:10px;">
+            添加评论
+        </h3>
+        <el-form style="margin-top:7px;text-align: center" :inline="true" :rules="rules1"  :model="form1" label-width="50px">
+            <el-form-item prop="email" label="邮箱" >
+                <el-input v-model="form1.email"  ></el-input>
+            </el-form-item>
+            <el-form-item prop="name" label="昵称" >
+                <el-input v-model="form1.name" ></el-input>
+            </el-form-item>
+        </el-form>
+        <el-form id="comment-form" style="text-align: center" :model="commentForm"  label-width="50px">
+            <el-form-item prop="comment" label="评论" style="text-align: center">
+                <el-input
+                        type="textarea"
+                        placeholder="请输入评论"
+                        v-model="commentForm.text"
+                        maxlength="500"
+                        style="width: 470px;height: 90px;"
+                        show-word-limit
+                >
+                </el-input>
+            </el-form-item>
+        </el-form>
+        <el-button @click="pushComment">评论</el-button>&nbsp;&nbsp;&nbsp;ctrl+Enter 发送评论
+    </el-drawer>
+
 </div>
 <div v-bind:style="{height:show?'100%':'0'}"
         style="
@@ -140,6 +208,8 @@
             getUser(){
                 this.$http.get('/api/who').then(function (res) {
                     this.user=JSON.parse(res.bodyText)
+                    flowFix.form1.name=this.user.name
+                    flowFix.form1.email=this.user.email
                 }, function () {
                     console.log('获取回话失败')
                 });
@@ -237,14 +307,53 @@
 
         }
     });
-    let dictionaryAdd= new Vue({
+    let flowFix= new Vue({
         el:"#back",
         data: {
             dictionary:[],
             isDictionaryOn:true,
-            loaded:false
+            loaded:false,
+            drawer:false,
+            dheight:0,
+            commentForm: {
+                text:''
+            },
+            form1:{
+                email:'',
+                name:''
+            },
+            rules1:{
+                email: [
+                    { required: true, message: '请输入邮箱', trigger: 'blur' },
+                    { type: 'email', message: '邮箱格式不正确', trigger: 'change' }
+                ]
+            }
         },
         methods:{
+            showCommentWindow(){
+                window.location.href = "#divider";
+                this.drawer=true;
+            },
+            pushComment(){
+                this.$http.put('/api/comment', {
+                    name: this.form1.name,
+                    email: this.form1.email,
+                    text: this.commentForm.text,
+                    relatedId: blog.blog.id,
+                    rid: null
+                }).then(function (res) {
+                    if (res.bodyText === 'success') {
+                        loginDialog.dialogVisible = res.bodyText
+                        this.drawer=false
+                        this.$message.success("评论成功");
+                    }else{
+                        this.$message.error(res.bodyText);
+                    }
+                }, function () {
+
+                    console.log('请求失败')
+                });
+            },
             editor() {
                 window.location.href = "/blogEditor?bid=" + blog.blog.id;
             },
@@ -320,7 +429,8 @@
             positions:[],
             top:150,
             loading:true,
-            loaded:false
+            loaded:false,
+            comments:[{}]
         },
         methods: {
             loginDialog() {
@@ -339,11 +449,17 @@
                 window.addEventListener('scroll', this.handleScroll)
                 this.mleft = document.getElementById("cleft")
                 head.loaded=true
-                dictionaryAdd.loaded=true
+                flowFix.loaded=true
                 this.loaded=true
+                this.$http.get('/api/comment/1/'+this.blog.id+"?pn=0&pz=20&od=1").then(function (res) {
+                    this.comments=JSON.parse(res.bodyText).list
+                }, function () {
+                    console.log('获取回话失败')
+                });
             },
             afterLoad(){
                 SyntaxHighlighter.highlight()
+                flowFix.dheight=document.getElementById("divider").offsetTop-1
                 let eles = document.getElementById("blog_main").getElementsByClassName("thinkInside");
                 for(let index in eles){
                     if(typeof(eles[index])=="object") {
