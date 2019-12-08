@@ -9,6 +9,15 @@ public class Comment {
     private Long createTime;
     private Long rootId;
     private int type;
+    private boolean hideEmail;
+
+    public boolean isHideEmail() {
+        return hideEmail;
+    }
+
+    public void setHideEmail(boolean hideEmail) {
+        this.hideEmail = hideEmail;
+    }
 
     public String getEmail() {
         return email;

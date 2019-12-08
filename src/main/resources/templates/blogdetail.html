@@ -36,14 +36,19 @@
             height: 100%;
         }
         #comment-form .el-form-item__content{
-            width: 470px;
+            width: 500px;
         }
         #comment-form .el-form-item{
-            width: 532px;
+            width: 426px;
             display: inline-block;
         }
         .blog_comment .el-divider--horizontal {
             margin: 16px 0;
+        }
+        #back .el-drawer__body{
+            background: url(https://file.fishmaple.cn/timg.jpg);
+            background-repeat: no-repeat;
+            background-size: contain;
         }
     </style>
 </head>
@@ -89,20 +94,37 @@
             </div>
             <div id="loading-gif" v-show="!loading"><img src="/pics/timg.gif"></div>
             <div id="main-blog" class="blog-content dicAdd" v-html="blog.content"></div>
-            <el-divider id="divider" content-position="center">评论<i class="el-icon-s-comment" style="margin-right:20px"></i>
-                时间顺序
+            <div id="评论区"></div>
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <!-- inline-blog -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-3833610662771337"
+                 data-ad-slot="9655226453"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+            <el-divider id="divider" content-position="center">评论区<i class="el-icon-s-comment" style="margin-right:40px"></i>
+                <el-link @click="reSort"  :underline="false"><span v-text="sort?'时间正序':'时间倒序'"></span>
+                <i class="el-icon-sort"></i></el-link>
             </el-divider>
-            <div  v-for="comment in comments"  class="blog_comment">
-                    <el-card style="margin: 10px 0" >
+            <div  v-for="(comment,index) in comments"  class="blog_comment">
+                    <el-card v-bind:class="true?'left-comment':'right-comment'" style="margin-top:25px" >
                         <el-row :gutter="20">
                             <el-col :span="6" style="text-align: center">
                                 <el-row><div class="comment-creator">{{comment.creator}}</div></el-row>
-                                <el-row><img style="margin:30px" v-bind:src="comment.randAvatar" width="50px" height="50px"> </el-row>
-                                <el-row><div style="text-align: center;font-size:15px;">
-                                    {{comment.email}}</div></el-row>
+                                <el-row><img style="border-radius: 20px;border: 1px solid lightgrey;margin:20px" v-bind:src="comment.randAvatar" width="60px" height="60px"> </el-row>
+                                <el-row><i v-if="comment.email==''" class="el-icon-lock"></i>
+                                    <span v-text="comment.email==''?'隐藏':comment.email" style="font-size:16px;color:grey;text-align: center;font-size:15px;">
+                                    </span>
+                                </el-row>
                             </el-col>
                             <el-col :span="16">
-                                <el-row ><span style="color: grey;font-size: 15px;">{{comment.createTime}}</span></el-row>
+                                <el-row ><span style="color: grey;font-size: 15px;">{{comment.createTime}}</span>
+                                    <span style="color: grey;font-size: 15px;float: right">{{comment.index}}楼</span>
+                                </el-row>
                                 <el-divider></el-divider>
                                 <el-row ><div style="min-height:100px">{{comment.content}}</div>
                                 </el-row>
@@ -148,11 +170,13 @@
         </button>
     </el-popover>
     <el-drawer
+            size="395"
+            modal="false"
             title="发表评论"
             :visible.sync="drawer"
             :with-header="false" @keyup.ctrl.enter.native="pushComment"
     direction="btt" style="text-align: center">
-        <h3 style="margin-top:10px;">
+        <h3 style="height: 60px;margin-top:10px;">
             添加评论
         </h3>
         <el-form style="margin-top:7px;text-align: center" :inline="true" :rules="rules1"  :model="form1" label-width="50px">
@@ -162,9 +186,15 @@
             <el-form-item prop="name" label="昵称" >
                 <el-input v-model="form1.name" ></el-input>
             </el-form-item>
+            <el-form-item label-width="120px" prop="hideEmail" label="隐藏邮箱" >
+                <el-switch
+                        v-model="form1.hideEmail" active-value="1" inactive-value="0"
+                        active-text="评论内容隐藏邮箱">
+                </el-switch>
+            </el-form-item>
         </el-form>
         <el-form id="comment-form" style="text-align: center" :model="commentForm"  label-width="50px">
-            <el-form-item prop="comment" label="评论" style="text-align: center">
+            <el-form-item prop="comment"  label="评论" style="margin: 20px 0;text-align: center">
                 <el-input
                         type="textarea"
                         placeholder="请输入评论"
@@ -175,8 +205,10 @@
                 >
                 </el-input>
             </el-form-item>
+            <el-form-item>
+                <el-button v-loading="commenting" @click="pushComment">评论</el-button>&nbsp;&nbsp;&nbsp;ctrl+Enter 发送评论
+            </el-form-item>
         </el-form>
-        <el-button @click="pushComment">评论</el-button>&nbsp;&nbsp;&nbsp;ctrl+Enter 发送评论
     </el-drawer>
 
 </div>
@@ -320,39 +352,47 @@
             },
             form1:{
                 email:'',
-                name:''
+                name:'',
+                hideEmail:0
             },
             rules1:{
                 email: [
                     { required: true, message: '请输入邮箱', trigger: 'blur' },
                     { type: 'email', message: '邮箱格式不正确', trigger: 'change' }
                 ]
-            }
+            },
+            commenting:false
         },
         methods:{
             showCommentWindow(){
-                window.location.href = "#divider";
+                window.location.href = "#评论区";
                 this.drawer=true;
             },
             pushComment(){
+                this.commenting=true
                 this.$http.put('/api/comment', {
                     name: this.form1.name,
                     email: this.form1.email,
                     text: this.commentForm.text,
                     relatedId: blog.blog.id,
-                    rid: null
+                    rid: null,
+                    hide: this.form1.hideEmail
                 }).then(function (res) {
                     if (res.bodyText === 'success') {
                         loginDialog.dialogVisible = res.bodyText
+                        this.commenting=true
                         this.drawer=false
                         this.$message.success("评论成功");
+                        this.commentForm.text=''
                     }else{
                         this.$message.error(res.bodyText);
+                        this.commenting=false
                     }
                 }, function () {
 
                     console.log('请求失败')
                 });
+                setTimeout(blog.getComments,1200)
             },
             editor() {
                 window.location.href = "/blogEditor?bid=" + blog.blog.id;
@@ -430,9 +470,21 @@
             top:150,
             loading:true,
             loaded:false,
-            comments:[{}]
+            comments:[{}],
+            sort:false
         },
         methods: {
+            getComments(){
+                this.$http.get('/api/comment/1/'+this.blog.id+"?pn=0&pz=20&od="+(this.sort?"1":"2")).then(function (res) {
+                    this.comments=JSON.parse(res.bodyText).list
+                }, function () {
+                    console.log('获取回话失败')
+                });
+            },
+            reSort(){
+                this.sort=!this.sort
+                this.getComments()
+            },
             loginDialog() {
                 loginDialog.dialogVisible = true;
             },
@@ -445,21 +497,18 @@
                 let tm=[[${blog}]]
                 document.getElementById("fish-bind").style.display="none"
                 this.blog = tm.valueOf()
+
                 this.blog.anchors=JSON.parse(this.blog.anchors)
+                this.blog.anchors.push("评论区")
                 window.addEventListener('scroll', this.handleScroll)
                 this.mleft = document.getElementById("cleft")
                 head.loaded=true
                 flowFix.loaded=true
                 this.loaded=true
-                this.$http.get('/api/comment/1/'+this.blog.id+"?pn=0&pz=20&od=1").then(function (res) {
-                    this.comments=JSON.parse(res.bodyText).list
-                }, function () {
-                    console.log('获取回话失败')
-                });
+                this.getComments()
             },
             afterLoad(){
                 SyntaxHighlighter.highlight()
-                flowFix.dheight=document.getElementById("divider").offsetTop-1
                 let eles = document.getElementById("blog_main").getElementsByClassName("thinkInside");
                 for(let index in eles){
                     if(typeof(eles[index])=="object") {
@@ -497,6 +546,7 @@
                     }
                     document.getElementById("blog-left").style.opacity="1"
                 }
+                flowFix.dheight=document.getElementById("评论区").offsetTop-1
                 eleps = document.getElementById("main-blog").getElementsByTagName("p");
                 for(i in eleps){
                     if(eleps[i].innerHTML=="<br<br></br<br>"){
@@ -520,12 +570,9 @@
 
                 if(this.positions.length>0) {
                     if (scrollTop < this.positions[0].setTop) {
-
                         this.activeName = this.positions[0].name
-
                     } else if (scrollTop > this.positions[this.positions.length - 1].setTop) {
                         this.activeName = this.positions[this.positions.length - 1].name
-
                     } else {
                         for (let index = 0; index < this.positions.length - 1; index++) {
                             if (scrollTop < this.positions[index + 1].setTop && scrollTop > this.positions[index].setTop) {
@@ -534,6 +581,9 @@
                                 break
                             }
                         }
+                    }
+                    if(scrollTop > flowFix.dheight){
+                        this.activeName = "评论区"
                     }
                 }
                 if(scrollTop<150){

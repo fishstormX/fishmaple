@@ -24,14 +24,31 @@ public class CommentService {
         List<Comment> list = commentMapper.getCommentsByRelatedId(relatedId,type,page*pageSize,pageSize,od);
         List<CommentObject> newList = new ArrayList<>();
         Map<String,String> map=new HashMap<>();
+        PageResult pageResult = new PageResult<CommentObject>();
+        pageResult.setTotalNum(commentMapper.getCommentsNumByRelatedId(relatedId,type));
         List<Integer> list2=new ArrayList<Integer>(22);
         for(int i=1;i<23;i++){
             list2.add(i);
         }
         Collections.shuffle(list2);
+        int index=pageResult.getTotalNum();
+        boolean flag=false;
+        if(od==1){
+            index=page*pageSize+1;
+            flag=true;
+        }
         for(Comment comment:list){
             CommentObject commentObject=new CommentObject();
+
+            if(flag){
+                commentObject.setIndex(index++);
+            }else{
+                commentObject.setIndex(index--);
+            }
             BeanUtils.copyProperties(comment,commentObject);
+            if(comment.isHideEmail()){
+                commentObject.setEmail("");
+            }
             if(map.containsKey(comment.getEmail())){
                 commentObject.setRandAvatar(map.get(comment.getEmail()));
             }else{
@@ -42,9 +59,9 @@ public class CommentService {
             commentObject.setCreateTime(TimeDate.timestamp2time(comment.getCreateTime()*1000,0));
             newList.add(commentObject);
         }
-        PageResult pageResult = new PageResult<CommentObject>();
+
         pageResult.setList(newList);
-        pageResult.setTotalNum(commentMapper.getCommentsNumByRelatedId(relatedId,type));
+
         return pageResult;
     }
 }

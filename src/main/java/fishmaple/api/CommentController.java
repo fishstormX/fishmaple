@@ -41,6 +41,9 @@ public class CommentController {
         }else if(text.length()>500){
             return "评论字数过多";
         }
+        if(map.get("hide").equals("1")&&map.get("name").isEmpty()){
+            return "隐藏邮箱的评论昵称不能为空";
+        }
         Comment comment = new Comment();
         comment.setContent(text);
         comment.setCreateTime(System.currentTimeMillis()/1000);
@@ -48,11 +51,14 @@ public class CommentController {
             comment.setRootId(Long.parseLong(map.get("rId")));
         }
         comment.setCreator(map.get("name"));
+        comment.setHideEmail(map.get("hide").equals("1"));
         comment.setEmail(email);
         comment.setType(1);
         comment.setRelatedId(map.get("relatedId"));
         commentMapper.addComment(comment);
-        String content = "感谢评论，我会及时处理并给予反馈，敬请关注邮件。<br>　　感谢您对本博客的关注<br>　　祝：生活愉快<br><br>" +
+        String content = "感谢评论，我会及时处理并给予反馈，敬请关注邮件。<br>　　感谢您对本博客的关注<br>　　祝：生活愉快<br>" +
+                "ps:想要删除或是编辑评论可以使用邮箱发送邮件或者用发送评论的邮箱注册账号并登录" +
+                "<br><br>" +
                 "                 <a href=\"https://www.fishmaple.cn\"><img src=\"https://www.fishmaple.cn/pics/logo_m_m.png\" class=\"logo middle_pic\"> <img src=\"https://www.fishmaple.cn/pics/logo-fish-small.png\" class=\"logo middle_fish\"></a>"+
                 "                 <br><br><br><span style='float:right'>from　</strong>鱼鱼的小站</strong></span>" +
                 "                  <br><br><span style='float:right;color:darkgrey'>Copyright ©  fishmaple. </span>";
@@ -66,7 +72,7 @@ public class CommentController {
                                                 @RequestParam("pn")int page, @RequestParam("pz")int pageSize,
                                                 @RequestParam("od")int od){
 
-        return commentService.getCommentsByRelatedId(type,relatedId,page*pageSize,pageSize,od);
+        return commentService.getCommentsByRelatedId(type,relatedId,page,pageSize,od);
     }
 
 }

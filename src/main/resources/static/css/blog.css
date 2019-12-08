@@ -138,6 +138,14 @@ textarea{
     min-height:60px;
     padding:0 10px;
 }
+.left-comment{
+    margin-right: 400px;
+    min-width:600px;
+}
+.right-comment{
+    margin-left: 400px;
+    min-width:600px;
+}
 .blog-time{
     color: #9EABB3;
     margin-right:40px;
@@ -152,7 +160,7 @@ textarea{
 }
 .blog-license{
     text-align: center;
-    margin-top:20px;
+    margin-top: 45px;
 }
 .blog-right{
     margin: 0 180px 0 300px;
