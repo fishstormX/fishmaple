@@ -28,6 +28,25 @@ public class Blog implements Serializable {
     private Integer todo;
     //topic_id
     private Integer topicId;
+    private Integer commentCount;
+    private Integer likeCount;
+
+    public Integer getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(Integer likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public Integer getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(Integer commentCount) {
+        this.commentCount = commentCount;
+    }
+
     /************不属于库中的字段*********/
     private String code;
     private String tagTemp;

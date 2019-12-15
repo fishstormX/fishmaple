@@ -8,6 +8,7 @@ import fishmaple.Service.BlogService;
 import fishmaple.Service.BlogTopicService;
 import fishmaple.Service.UploadService;
 import fishmaple.shiro.ShiroService;
+import fishmaple.utils.HttpClientUtil;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -51,6 +52,19 @@ public class BlogController {
                 if(blogService.update(blog.getId(),blog.getContent(),blog.getTitle(),
                     shiroService.getUserName(),blog.getTags(),blog.getUseDictionary(),blog.getCover(),
                     blog.getIsOriginal(),blog.getTopicId())){
+
+                    String id=blog.getId();
+                    new Thread(
+                            ()-> {
+                                try {
+                                    Thread.sleep(2000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                HttpClientUtil.pushBlog(id);
+                            }
+                    ).start();
+
                 return "success";
                 }else{
                     return "您不能编辑别人的博文";
@@ -59,12 +73,30 @@ public class BlogController {
                blogService.save(blog.getContent(), blog.getTitle(),
                         shiroService.getCurrentUser().getName(), blog.getTags(),
                        blog.getUseDictionary(),blog.getCover(),blog.getIsOriginal(),blog.getTopicId());
+                //推送消息
+                    new Thread(
+                            ()-> {
+                                try {
+                                    Thread.sleep(2000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                HttpClientUtil.pushBlog(blogService.getLastBlog());
+                            }
+                ).start();
             }
             return "success";
         }else{
             return "用户无权限";
         }
     }
+
+    @PostMapping("/{bid}/like")
+    public String blogLike(@PathVariable String bid,HttpServletRequest request){
+        blogService.addLike(bid,request.getRemoteAddr());
+        return "success";
+    }
+
 
     @DeleteMapping("/{bid}")
     public String deleteBlog (@PathVariable String bid){

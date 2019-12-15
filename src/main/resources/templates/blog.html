@@ -49,6 +49,10 @@
     <div th:text="${page}" id="cur_page">
     </div>
 </div>
+<div id="bgM" th:attr="style=${cover}">
+
+
+</div>
 <div id="header" class="header" @mouseover="hover" @mouseout="mouseout">
     <div id="component" >
         <top-component :user="user" ></top-component>
@@ -67,7 +71,7 @@
     </div>
     <el-row class="blog-list">
         <el-col :span="15" class="blog-left">
-            <div v-for="blog in items" class="bloglist-block">
+            <div v-for="(blog,bindex) in items" class="bloglist-block">
                 <div class="bloglist-title">
                     <a target="_blank" v-bind:href="'/blog/d?bid='+blog.id">{{blog.title}}</a>
                 </div>
@@ -75,17 +79,28 @@
                     <a target="_blank" v-bind:href="'/blog/d?bid='+blog.id">
                         <img v-bind:src="(blog.cover==''||blog.cover==null)?'https://file.fishmaple.cn/timg2.jpg':blog.cover">
                     </a>
-                </div>
+                </div>icon-xinaixin
                 <div class="bloglist-content"><a v-bind:href="'/blog/d?bid='+blog.id">{{blog.content}}</a></div>
+                <el-row style="display:flex"> <el-col :span="20" >
                 <span class="bloglist-date">{{blog.timeline}}</span>
                 <img class="icon-avatar" v-show="blog.avatar!=''" v-bind:src="'/font/icon_avatar/'+blog.avatar+'.png'">
                 <span class="bloglist-author">{{blog.author}}</span>
                <span class="bloglist-tags">
                             <el-tag @click.native="tagScreen" size="small" v-bind:class="blog.tagTypes[index]"
                                     v-for="(tag,index) in blog.tags">{{tag}}</el-tag>
+                   <i class="icon iconfont icon-yuanchuang bloglist-original" title="原创文章" v-if="blog.isOriginal==1"></i>
+                    <i class="icon iconfont icon-todo bloglist-todo" title="//TODO" v-if="blog.todo==1"></i>
                 </span>
-                <i class="icon iconfont icon-yuanchuang bloglist-original" title="原创文章" v-if="blog.isOriginal==1"></i>
-                <i class="icon iconfont icon-todo bloglist-todo" title="//TODO" v-if="blog.todo==1"></i>
+                </el-col>
+                    <el-col :span="4" style="min-width:120px;float:right;margin:auto">
+                        <span style="line-height: 25px;float: right" ><el-link v-bind:class="{animated:liN==bindex,tada:liN==bindex}" @click="likeBlog(blog.id,bindex)" :underline="false">
+                    <svg class="icon" style="font-size:25px" aria-hidden="true">
+                    <use href="#icon-iconfont-favoriteoutline">
+                    </use>
+                </svg></el-link><span style="font-size: 16px;margin-right: 30px;margin-left: 3px;">{{blog.likeCount}}</span><i style="font-size: 22px;line-height: 27px;top: 3px;position: relative;" class="icon el-icon-chat-line-square" ></i><span style="font-size: 16px;
+    margin: 3px;">{{blog.commentCount}}</span></span>
+                    </el-col>
+            </el-row>
             </div>
             <div v-if="isNull" class="bloglist-block">
                 分类下暂时没有文章哦！
@@ -248,6 +263,7 @@
     let blog = new Vue({
         el: '#blog_main',
         data: {
+            liN:0,
             page:1,
             tagtap: false,
             loaded:false,
@@ -285,6 +301,46 @@
             ]
         },
         methods: {
+            likeBlog(id,index){
+                let qr=''
+                let ql=''
+                let flag=false
+                lstart = document.cookie.indexOf("qblikes=")
+                if (lstart!=-1) {
+                    lstart=lstart + 9
+                    lend=document.cookie.indexOf(";",lstart)
+                    if (lend==-1) {
+                        lend=document.cookie.length
+                    }
+                    qr=document.cookie.substring(lstart,lend)
+                    if(qr.indexOf(id)!=-1){
+                        flag==true
+                    }
+                }
+                if(!flag){
+                    ql=localStorage.getItem("qblikes");
+                    if(ql!=null&&ql.indexOf(id)!=-1){
+                        flag=true
+                    }
+                }
+                if(flag){
+
+                    this.$alert('这篇博客您已经点过赞了', '提示', {
+                        confirmButtonText: '确定'
+                });
+                }else{
+                    this.liN=index
+                    this.$http.post('/api/blog/'+id+'/like').then(function (res) {
+
+                    }, function () {
+                        console.log('请求失败');
+                    });
+                        document.cookie="qblikes="+qr+","+id+"; path=/"
+                    localStorage.setItem("qblikes",ql+","+id)
+                    this.items[index].likeCount=this.items[index].likeCount+1
+                }
+
+            },
             onLoad() {
                 this.$http.get('/api/blog/tag').then(function (res) {
                     let ts = JSON.parse(res.bodyText);

@@ -87,6 +87,12 @@ public class BlogServiceImpl implements BlogService{
         blogHandler(blogs);
         return blogs;
     }
+    @Override
+    public void addLike(String bid,String ip) {
+        blogMapper.addLike(bid);
+        blogMapper.addLikeLog(bid,TimeDate.getTimeNowToDb(),ip);
+    }
+
 
     @Override
     public List<Blog> getBlogList() {
@@ -186,6 +192,9 @@ public class BlogServiceImpl implements BlogService{
         }
     }
 
+    public String getLastBlog(){
+        return blogMapper.getLast();
+    }
     //blog 获取摘要,添加tag的摘要
     @Override
     public String blogLine(Blog blog) {

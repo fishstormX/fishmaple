@@ -67,7 +67,7 @@
                     <el-input v-model="website"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button v-loading="loading" type="primary" icon="el-icon-message" @click="onSubmit">寄件</el-button>
+                    <el-button v-loading="loading" :disabled="loading" type="primary" icon="el-icon-message" @click="onSubmit">寄件</el-button>
                 </el-form-item>
             </el-form>
         </div>

@@ -158,17 +158,20 @@
 }
 #fixed{
     position:fixed;
-    right:20px;
+    right: 49px;
     bottom:100px;
     height:20px;
     width:40px;
     box-shadow: 0 0 6px rgba(0,0,0,.12);
-
     border-radius: 40px;
     text-align: center;
     cursor:pointer;
 }
-
+#bgM{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
 #left-fixed{
     position:fixed;
     left:30px;

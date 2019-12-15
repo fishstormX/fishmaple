@@ -2,9 +2,9 @@
     margin:10px 0 0 150px;
 }
 .bloglist-block{
-  /* transition: box-shadow .3s ease-in-out,-webkit-box-shadow .3s ease-in-out;*/
+  /* transition: box-shadow .3s ease-in-out,-webkit-box-shadow .3s ease-in-out;
     background: #fff;
-   /* -webkit-box-shadow: 0 0 0 0 rgba(0,0,0,.1);
+    -webkit-box-shadow: 0 0 0 0 rgba(0,0,0,.1);
     box-shadow: 0 0 0 0 rgba(0,0,0,.1);
     margin: 0px 0 26px 0;*/
     padding: 15px 22px 15px 30px;
@@ -60,7 +60,7 @@ textarea{
     width: 35px;
     height: 35px;
     position: relative;
-    left: 72px;
+    left: 12px;
     top: 11px;
 }
 .right-bar .el-tag{
@@ -113,6 +113,10 @@ textarea{
     margin-left: 80px;
     font-size: 16px;
 }
+.w-e-item img{
+    width:22px;
+    height:22px;
+}
 #blog_main .bloglist-todo{
     font-size:24px;
     color:#8a2be2;
@@ -139,7 +143,7 @@ textarea{
     padding:0 10px;
 }
 .left-comment{
-    margin-right: 400px;
+    margin-right: 300px;
     min-width:600px;
 }
 .right-comment{
@@ -192,7 +196,9 @@ textarea{
     text-align: center;
 }
 
-
+code{
+    border-radius: 10px;
+}
 p{
     line-height:33px;
 }

@@ -13,6 +13,12 @@ public interface BlogMapper{
     @Delete("delete from blog where id=#{bid}")
     void deleteOneBlog(String bid);
 
+    @Update("update blog set like_count = (like_count+1)where blog.id=#{bid}")
+    void addLike(String bid);
+
+    @Insert("insert into blog_like_log(bid,timestamp,ip) values(#{bid},#{timestamp},#{ip})")
+    void addLikeLog(@Param("bid")String bid,@Param("timestamp")Long timestamp,@Param("ip")String ip);
+
     @Insert("insert into blog_recycle(`id`, `content`,`title`,`timeline`,`author`,`tags`,`anchors`) " +
             "values (#{id},#{content},#{title},#{timeline},#{author},#{tags},#{anchors})")
     void addRecycle(@Param("id") String id, @Param("content") String content,
@@ -63,6 +69,8 @@ public interface BlogMapper{
     Integer updateBak(@Param("bid") String bid, @Param("uid") String uid,
                      @Param("content")String content,@Param("timestamp")Long timestamp);
 
+    @Update("update blog SET comment_count=#{count} WHERE id = #{id} ")
+    void updateCommentCount(@Param("id") String id,@Param("count")Integer count);
 
     @Insert("insert into blog_bak(`author_id`,`content`,`timeline`) " +
             "values (#{uid},#{content},#{timestamp})")
@@ -86,7 +94,7 @@ public interface BlogMapper{
     List<Blog> getAll();
 
 
-    @Select("select blog.id AS id, `content`,`title`,`timeline`,`author`,`anchors`,`useDictionary`,`cover`," +
+    @Select("select blog.id AS id,`comment_count`,`like_count`, `content`,`title`,`timeline`,`author`,`anchors`,`useDictionary`,`cover`," +
             "`isOriginal`,`todo`,`topic_id`,priority,user.avatar AS avatar from blog JOIN user ON blog.author=user.name " +
             "ORDER BY  priority DESC" +
             ",timeline DESC LIMIT #{start},#{count}")
@@ -100,7 +108,7 @@ public interface BlogMapper{
     @Select("select `id`,title,timeline,author,isOriginal,todo from blog WHERE topic_id = #{topicId} ORDER BY timeline DESC")
     List<Blog> fastGetByTopicId(@Param("topicId")Integer topicId);
 
-    @Select("select blog.id AS id, `content`,`title`,`timeline`,`author`,`anchors`,`useDictionary`,`cover`,`isOriginal`,`todo`,priority,user.avatar AS avatar from blog_tag " +
+    @Select("select blog.id AS id,`comment_count`,`like_count`, `content`,`title`,`timeline`,`author`,`anchors`,`useDictionary`,`cover`,`isOriginal`,`todo`,priority,user.avatar AS avatar from blog_tag " +
             "left join blog on blog.id=blog_tag.blog_id JOIN user ON blog.author=user.name " +
             "where tag = #{tag} ORDER BY timeline DESC LIMIT #{start},#{count}")
     @Results({@Result(id=true,property="id",column="id"),
@@ -129,5 +137,6 @@ public interface BlogMapper{
             "GROUP BY blog.id ORDER BY timeline DESC")
     LinkedHashSet<Blog> searchBlog(String content);
 
-
+    @Select("select id from blog order by id desc limit 1")
+    String getLast();
 }

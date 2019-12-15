@@ -21,4 +21,6 @@ public interface BlogService{
     String deleteBlog(String bid);
     boolean autoSave(String bid,String uid,String content);
     public String blogLine(Blog blog);
+    String getLastBlog();
+    void addLike(String bid,String ip);
 }
