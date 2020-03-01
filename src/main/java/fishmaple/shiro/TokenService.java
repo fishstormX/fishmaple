@@ -11,12 +11,15 @@ import fishmaple.utils.*;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +36,8 @@ public class TokenService {
     private UserMapper userMapper;
     @Autowired
     LoginLogMapper loginLogMapper;
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
     private Logger logger = LoggerFactory.getLogger(TokenService.class);
 
     /**
@@ -45,9 +50,8 @@ public class TokenService {
             loginLogMapper.insertLog(EncoderUtil.getUUID(1),name,
                     TimeDate.timestamp2time(0L,0),map.get("browser"),map.get("os"),
                     "login-app-qr",request.getRemoteAddr());
-            Jedis jedis = JedisUtil.getJedis();
-            jedis.setex("qrid-"+uuid,600 ,token);
-            jedis.close();
+
+            stringRedisTemplate.opsForValue().set("qrid-"+uuid ,token,600, TimeUnit.SECONDS);
             return true;
         }else{
             return false;
@@ -57,9 +61,7 @@ public class TokenService {
      * 查看二维码对应的token
      * */
     public String getToken(String uuid){
-        Jedis jedis = JedisUtil.getJedis();
-        String s=jedis.get("qrid-"+uuid);
-        jedis.close();
+        String s=stringRedisTemplate.opsForValue().get("qrid-"+uuid);
         return s;
     }
 

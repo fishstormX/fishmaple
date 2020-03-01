@@ -133,6 +133,11 @@ public class MainController {
         return "sideWall";
     }
 
+    @RequestMapping("/reveal")
+    public String reveal(HttpServletRequest request, Model model, HttpServletResponse response) {
+        return "reveal";
+    }
+
     @RequestMapping("/blog")
     public String blog(HttpServletRequest request, Model model, HttpServletResponse response) {
         String content=loadBlogListTask.getOutLine();
@@ -226,7 +231,7 @@ public class MainController {
 
   @RequestMapping("/")
   public String index2Blog(HttpServletRequest request,Model model,HttpServletResponse response){
-      return blog(request,model,response);
+     return blog(request,model,response);
   }
     @RequestMapping("/friendLinks")
     public String friendLinks(HttpServletRequest request,Model model,HttpServletResponse response){

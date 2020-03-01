@@ -9,10 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class BaiduTongjiService {
@@ -20,6 +21,8 @@ public class BaiduTongjiService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     TongjiMapper tongjiMapper;
+    @Autowired
+    RedisTemplate redisTemplate;
 
     @Value("${localConfig.baidu.tongji.name}")
     String name;
@@ -46,15 +49,13 @@ public class BaiduTongjiService {
 
 
     public Tongji getResult(){
-        Jedis jedis= JedisUtil.getJedis();
-        try{
             Tongji total = new Tongji();
             total.setDate(TimeDate.getTimeStampNow());
             //继承2019.3.4-2019.7.9误删的数据 心痛~ _~
             total.setUv(604);
             total.setPv(5629);
             total.setIp(482);
-            if(null == jedis.get("tongji")){
+            if(null == redisTemplate.opsForValue().get("tongji")){
                 Map<String,Tongji> map = getJsonResult("20190710",TimeDate.getTimeStampNow());
                 String index = tongjiMapper.getIndex();
 
@@ -72,21 +73,11 @@ public class BaiduTongjiService {
                     total.setPv(total.getPv()+entry.getValue().getPv());
                     total.setIp(total.getIp()+entry.getValue().getIp());
                 }
-                jedis.set("tongji", SerializeUtil.serialize(total),"NX","EX",3600);
-
+                redisTemplate.opsForValue().set("tongji", total,3600, TimeUnit.MINUTES);
                 return total;
             }else{
-                Object obj= SerializeUtil.unserialize(jedis.get("tongji"));
-                if(obj instanceof Tongji){
-                    return (Tongji) obj;
-                }
+                return (Tongji)redisTemplate.opsForValue().get("tongji");
             }
-        }catch(Exception e){
-
-        }finally{
-            jedis.close();
-        }
-        return null;
     }
 
     private String  getJson(String start,String end){

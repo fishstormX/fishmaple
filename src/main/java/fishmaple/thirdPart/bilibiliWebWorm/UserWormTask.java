@@ -1,11 +1,11 @@
 package fishmaple.thirdPart.bilibiliWebWorm;
 
 import fishmaple.DAO.BlMapper;
-import fishmaple.utils.JedisUtil;
-import fishmaple.utils.SerializeUtil;
+import fishmaple.conf.ApplicationContextHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import redis.clients.jedis.Jedis;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 
 public class UserWormTask implements Runnable {
@@ -60,18 +60,17 @@ public class UserWormTask implements Runnable {
     @Override
     public void run() {
         BlUserObject blUserObject = null;
-        Jedis jedis = JedisUtil.getJedis();
         Long i = blMapper.getCount() + 1;
-        jedis.set("bl-user-worm-open", "true");
+        getStringRedisTemplate().opsForValue().set("bl-user-worm-open", "true");
         while (true) {
             synchronized(this) {
             blUserObject = blWormService.getBlUser(i);
-            jedis.set("bl-user", SerializeUtil.serialize(blUserObject));
+            getRedisTemplate().opsForValue().set("bl-user", blUserObject);
             blMapper.save(i++, blUserObject.getSex(), blUserObject.getFans()
                     , blUserObject.getName(), blUserObject.getFace(), blUserObject.getRank());
             try {
                 Thread.sleep(300);
-                    while(jedis.get("bl-user-worm-open").equals("false")) {
+                    while(getStringRedisTemplate().opsForValue().get("bl-user-worm-open").equals("false")) {
                         userWormTask.wait();
                     }
                 }
@@ -83,5 +82,16 @@ public class UserWormTask implements Runnable {
             }
             }
         }
+    }
+
+    private RedisTemplate<String,String> getStringRedisTemplate() {
+        RedisTemplate<String,String> redisTemplate =  ApplicationContextHandler.getBean("stringRedisTemplate",RedisTemplate.class);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        return  redisTemplate;
+    }
+    private  RedisTemplate<String,Object> getRedisTemplate() {
+        RedisTemplate redisTemplate =  ApplicationContextHandler.getBean("redisTemplate",RedisTemplate.class);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        return  redisTemplate;
     }
 }

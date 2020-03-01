@@ -3,13 +3,13 @@ package fishmaple.task;
 import fishmaple.DAO.AnonymousMapper;
 import fishmaple.utils.FileUtil;
 import fishmaple.utils.HttpClientUtil;
-import fishmaple.utils.JedisUtil;
 import fishmaple.utils.PublicConst;
 import org.omg.CORBA.PUBLIC_MEMBER;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -28,7 +28,8 @@ public class ClearDataService{
     String APP_SECRET;
     private static final String path="/home/uftp/log.out";
     private static final String paths="/home/uftp/logt.out";
-
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
     Logger log= LoggerFactory.getLogger(ClearDataService.class);
     @Autowired
     private AnonymousMapper anonymousMapper;
@@ -40,15 +41,13 @@ public class ClearDataService{
     }
     @Scheduled(cron="0 0 0/2 * * ?")
     public void getWxToken() throws IOException {
-        Jedis jedis = JedisUtil.getJedis();
         String temp = HttpClientUtil.getHttpreturnMap("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="
                 + APP_ID + "&secret=" + APP_SECRET).get("access_token");
         if (temp == null) {
             log.error("获取微信授权错误");
             return;
         }
-        jedis.set(PublicConst.WX_TOKEN_KEY,temp);
-        jedis.close();
+        stringRedisTemplate.opsForValue().set(PublicConst.WX_TOKEN_KEY,temp);
     }
 
    @Scheduled(cron="0 0/5 * * * ?")

@@ -1,27 +1,26 @@
 package fishmaple.Service;
 
 import fishmaple.utils.IdentifyingCodeUtil;
-import fishmaple.utils.JedisUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
+
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class IdentifyingService {
-
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
     public String getIdentifyingCode(String email){
-        Jedis jedis = JedisUtil.getJedis();
-        String code=jedis.get("email-"+email);
+        String code=stringRedisTemplate.opsForValue().get("email-"+email);
         if(code==null){
             code= IdentifyingCodeUtil.getIdentifyingCodeUtil();
-            jedis.set("email-"+email,code,"nx","ex",1200);
+            stringRedisTemplate.opsForValue().set("email-"+email,code,1200, TimeUnit.SECONDS);
         }
-        jedis.close();
         return code;
     }
     public boolean checkCode(String code,String email){
-        Jedis jedis = JedisUtil.getJedis();
-        String codeE=jedis.get("email-"+email);
-        jedis.close();
+        String codeE=stringRedisTemplate.opsForValue().get("email-"+email);
         if(codeE!=null) {
             return codeE.equals(code);
         }else{

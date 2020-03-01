@@ -16,6 +16,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.support.DelegatingSubject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import redis.clients.jedis.Jedis;
 
@@ -47,8 +48,11 @@ public class LoginController {
     LoginLogMapper loginLogMapper;
     @Autowired
     IdentifyingService identifyingService;
+    @Autowired
+    RedisTemplate redisTemplate;
     @RequestMapping("/registerCheck")
     public String registerCheck(@RequestBody User user) {
+
         if(userMapper.selectNameCount(user.getName())>0) {
             return "用户名重复";
         }else if(userMapper.selectNameCount(user.getEmail())>0){
@@ -163,15 +167,13 @@ public class LoginController {
         UsernamePasswordToken userToken=new UsernamePasswordToken(user.getName(),user.getPswd());
         userToken.setRememberMe(user.getRememberMe());
         try{
-            Jedis jedis= JedisUtil.getJedis();
             subject.login(userToken);
             Map<String,String> map=RequestUtil.getInfo(request);
             loginLogMapper.insertLog(EncoderUtil.getUUID(1),user.getName(),
                     TimeDate.timestamp2time(System.currentTimeMillis(),0),map.get("browser"),map.get("os"),
                     "login",request.getRemoteAddr());
-            if(!jedis.sismember("currentUsers", user.getName())) {
-                jedis.sadd("currentUsers", user.getName());
-                jedis.close();
+            if(redisTemplate.opsForSet().isMember("currentUsers", user.getName())){
+                redisTemplate.opsForSet().add("currentUsers", user.getName());
             }
             return "SUCCESS";
         }catch(UnknownAccountException e){
@@ -184,25 +186,16 @@ public class LoginController {
     }
     @RequestMapping("/online")
     public Long getCurrentUserCount(){
-        Jedis jedis= JedisUtil.getJedis();
-        Long count=jedis.scard("currentUsers");
-        jedis.close();
-        return count;
+        return redisTemplate.opsForSet().size("currentUsers");
     }
     @RequestMapping("/online/d")
     public Set<String> getCurrentUser(){
-        Jedis jedis= JedisUtil.getJedis();
-        Set<String> setValues = jedis.smembers("currentUsers");
-        jedis.close();
-        return setValues;
+        return redisTemplate.opsForSet().members("currentUsers");
     }
     @RequestMapping("/logout")
     public void logout(HttpServletResponse response) throws IOException {
-        Jedis jedis= JedisUtil.getJedis();
-        jedis.srem("currentUsers",shiroService.getUserName());
-        jedis.close();
+        redisTemplate.opsForSet().remove("currentUsers",shiroService.getUserName());
         response.sendRedirect("/logout");
-
     }
     /**
      * 根据随机码生成登录用的随机二维码
@@ -226,12 +219,10 @@ public class LoginController {
             Subject subject= SecurityUtils.getSubject();
 
             try {
-                Jedis jedis = JedisUtil.getJedis();
-                subject.login(userToken);
 
-                if (!jedis.sismember("currentUsers", user.getName())) {
-                    jedis.sadd("currentUsers", user.getName());
-                    jedis.close();
+                subject.login(userToken);
+                if(!redisTemplate.opsForSet().isMember("currentUsers", user.getName())){
+                    redisTemplate.opsForSet().add("currentUsers", user.getName());
                 }
             }catch(AuthenticationException e){
                 return "业务异常";

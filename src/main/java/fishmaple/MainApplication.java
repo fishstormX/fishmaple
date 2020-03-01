@@ -3,7 +3,6 @@ package fishmaple;
 
 import fishmaple.DAO.IssueMapper;
 import fishmaple.thirdPart.bilibiliWebWorm.Const;
-import fishmaple.utils.JedisUtil;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
@@ -21,10 +20,14 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import redis.clients.jedis.Jedis;
 
+import javax.annotation.Resource;
 import java.nio.charset.Charset;
 
 @SpringBootApplication
@@ -35,22 +38,16 @@ import java.nio.charset.Charset;
 public class MainApplication {
     @Autowired
     IssueMapper issueMapper;
+    @Resource
+    StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    RedisTemplate redisTemplate;
 
     private static Logger log= LoggerFactory.getLogger(MainApplication.class);
 
 
     public static void main(String[] args)
     {
-
-            Jedis jedis=JedisUtil.getJedis();
-            jedis.del("currentUsers");
-            for(int i=0;i<100;i++){
-                jedis.del(Const.redisIndexName+i);
-                jedis.del(Const.redisTaskName+i);
-            }
-            log.info("清除用户记录存档");
-            log.info("系统编码："+Charset.defaultCharset().name());
-            jedis.close();
           SpringApplication.run(MainApplication.class, args);
     }
 
@@ -60,8 +57,25 @@ public class MainApplication {
     @Value("${server.http-port}")
     Integer httpPort;
 
+    /*@Bean
+    public RedisTemplate<String,String> stringRedisTemplate(){
+        RedisTemplate<String,String> redisTemplateTmp = redisTemplate;
+        redisTemplateTmp.setKeySerializer(new StringRedisSerializer());
+        redisTemplateTmp.setValueSerializer(new StringRedisSerializer());
+        redisTemplateTmp.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplateTmp.setHashValueSerializer(new StringRedisSerializer());
+        return  redisTemplateTmp;
+    }*/
+
     @Bean
     public ServletWebServerFactory servletContainer2() {
+        stringRedisTemplate.delete("currentUsers");
+        for(int i=0;i<100;i++){
+            stringRedisTemplate.delete(Const.redisIndexName+i);
+            stringRedisTemplate.delete(Const.redisTaskName+i);
+        }
+        log.info("清除用户记录存档");
+        log.info("系统编码："+Charset.defaultCharset().name());
         TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
         tomcat.addAdditionalTomcatConnectors(createStandardConnector()); // 添加http
         return tomcat;

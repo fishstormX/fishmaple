@@ -1,24 +1,23 @@
 package fishmaple.conf;
 
-import fishmaple.utils.JedisUtil;
-import fishmaple.utils.SerializeUtil;
+
 import org.apache.ibatis.cache.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.data.redis.core.RedisTemplate;
-import redis.clients.jedis.Jedis;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 
-
-public class RedisCache4BlogConf implements Cache{
-    private final long EXPIRE_TIME = 6000L;
+public class RedisCache4BlogConf  extends ApplicationObjectSupport implements Cache{
     private final String COMMON_CACHE_KEY = "COM:";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private String id;
+
+    private String id="COMMON:";
 
     public RedisCache4BlogConf(final String id){
         this.id=id;
@@ -31,72 +30,42 @@ public class RedisCache4BlogConf implements Cache{
 
     @Override
     public void putObject(Object key, Object value) {
-        RedisTemplate redisTemplate=new RedisTemplate();
-        redisTemplate.opsForValue().set(key,value);
-        Jedis jedis=JedisUtil.getJedis();
-        try{
-            jedis.set(id+key.toString(),new String(SerializeUtil.serialize(value)));
-        }catch(Exception e){
-            logger.error(e.getMessage()+id);
-        }finally{
-            jedis.close();
-        }
+        getRedisTemplate().opsForValue().set(id+key.toString(),value);
     }
 
     @Override
     public Object getObject(Object key) {
-        RedisTemplate redisTemplate=new RedisTemplate();
-        redisTemplate.opsForValue().get(key);
-        redisTemplate.delete(redisTemplate.keys(""))
-        Jedis jedis=JedisUtil.getJedis();
-        String s=jedis.get(id+key.toString());
-        jedis.close();
-        Object x=null;
-        if(s!=null) {
-                x= SerializeUtil.unserialize(s);
-        }
-        return x;
+        return getRedisTemplate().opsForValue().get(id+key.toString());
     }
 
     @Override
     public Object removeObject(Object key) {
-        Jedis jedis=JedisUtil.getJedis();
-        jedis.del(key.toString());
-        jedis.close();
+        getRedisTemplate().delete(id+key.toString());
         return null;
     }
 
     private String getKeys() {
-        return COMMON_CACHE_KEY + this.id + ":*";
+        return  this.id + ":*";
     }
 
     @Override
     public void clear() {
-        Jedis jedis=JedisUtil.getJedis();
-        int result=0;
-        //jedis.select(DB_INDEX);
-        Set<byte[]> keys = jedis.keys((id+"*").getBytes());
-        for (byte[] key : keys) {
-            jedis.del(key);
-        }
-        jedis.close();
+        getRedisTemplate().delete( getRedisTemplate().keys(getKeys()));
     }
 
     @Override
     public int getSize() {
-        Jedis jedis=JedisUtil.getJedis();
-        int result=0;
-        //jedis.select(DB_INDEX);
-        Set<byte[]> keys = jedis.keys((id+"*").getBytes());
-        jedis.close();
-        if (null != keys && !keys.isEmpty()) {
-            result = keys.size();
-        }
-        return result;
+        return  getRedisTemplate().keys(getKeys()).size();
     }
 
     @Override
     public ReadWriteLock getReadWriteLock() {
         return null;
+    }
+
+    private  RedisTemplate<String,Object> getRedisTemplate() {
+        RedisTemplate redisTemplate =  ApplicationContextHandler.getBean("redisTemplate",RedisTemplate.class);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        return  redisTemplate;
     }
 }

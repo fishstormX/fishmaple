@@ -1,10 +1,13 @@
 package fishmaple.thirdPart.bilibiliWebWorm;
 
 import fishmaple.DAO.BlMapper;
-import fishmaple.utils.JedisUtil;
+import fishmaple.conf.ApplicationContextHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import redis.clients.jedis.Jedis;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 public class mutilThreadWormTask implements Runnable{
     //线程的开关 false的时候break该线程
@@ -22,29 +25,32 @@ public class mutilThreadWormTask implements Runnable{
         this.threadIndex=i;
     }
     public void close(){
-        Jedis jedis=JedisUtil.getJedis();
-        jedis.set(Const.redisTaskName+threadIndex,"close");
+        getStringRedisTemplate().opsForValue().set(Const.redisTaskName+threadIndex,"close");
     }
     @Override
     public void run() {
-        Jedis jedis=JedisUtil.getJedis();
-        jedis.set(Const.redisTaskName+threadIndex,"open");
-        midIndex=(jedis.get(Const.redisIndexName+threadIndex)==null?0L:new Long(jedis.get(Const.redisIndexName+threadIndex)));
+        getStringRedisTemplate().opsForValue().set(Const.redisTaskName+threadIndex,"open");
+        midIndex=(getStringRedisTemplate().opsForValue().get(Const.redisIndexName+threadIndex)==null?0L:new Long(getStringRedisTemplate().opsForValue().get(Const.redisIndexName+threadIndex)));
         while(true){
             synchronized ("String") {
                 blMapper.updateHandle(threadIndex, midIndex++);
-                jedis.set(Const.redisIndexName+threadIndex,midIndex.toString());
+                getStringRedisTemplate().opsForValue().set(Const.redisIndexName+threadIndex,midIndex.toString());
             }
            /* try {
                     Thread.sleep(200);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }*/
-            if(jedis.get(Const.redisTaskName+threadIndex)==null||jedis.get(Const.redisTaskName+threadIndex).equals("close")){
-                jedis.close();
+            if(getStringRedisTemplate().opsForValue().get(Const.redisTaskName+threadIndex)==null||getStringRedisTemplate().opsForValue().get(Const.redisTaskName+threadIndex).equals("close")){
                 break;
            }
         }
+    }
+
+    private RedisTemplate<String,String> getStringRedisTemplate() {
+        RedisTemplate<String,String> redisTemplate =  ApplicationContextHandler.getBean("stringRedisTemplate",RedisTemplate.class);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        return  redisTemplate;
     }
 
 }
