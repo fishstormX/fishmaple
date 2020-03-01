@@ -29,6 +29,12 @@ public class TimeDate {
         return df.format(new Date());
     }
 
+    public static String getTimeStampNow2(int offday){
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+        // 输出字符串
+        return df.format(new Date(System.currentTimeMillis()-(offday* 24*60*60*1000L)));
+    }
+
     public static Long getTimeNowToDb(){
         return System.currentTimeMillis()/1000;
     }

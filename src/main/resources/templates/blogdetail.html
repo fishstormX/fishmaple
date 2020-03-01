@@ -11,7 +11,6 @@
     <link rel="stylesheet" type="text/css" href="/css/codeTopic/zenburn.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.2/vue.min.js"></script>
     <script src="/js/index.js"></script>
-    <script src="/js/tool/setDictionary.js"></script>
     <script src="/font/iconfontAdapter.js"></script>
     <script src="/js/baidu.js"></script>
     <script src="/js/util.js"></script>
@@ -20,9 +19,7 @@
     <script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
-    <link type="text/css" rel="stylesheet" href="/ueditor/third-party/SyntaxHighlighter/shCoreDefault.css">
 
-    <script src="/ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
 
     <style>
         *{
@@ -52,7 +49,35 @@
             background-repeat: no-repeat;
             background-size: contain;
         }
-
+        #main-blog a{
+            text-decoration:none;
+            color:#52a6ff;
+        }
+        #main-blog a:hover{
+            text-decoration:none;
+            color:blue;
+        }
+        #main-blog .hljs{
+            padding: 20px;
+            background: #3f3f3f;
+            color: #dcdcdc;
+            border-radius: 20px;
+            letter-spacing:0.5px;
+        }
+        .blog_comment .hljs{
+            padding: 5px;
+            border-radius: 10px;
+            letter-spacing:0.5px;
+        }
+        .hljs-meta{
+            color: thistle;
+            font-weight: 600;
+        }
+        .hljs-commont{
+            font-weight: 600;
+            font-family: SimSun;
+            font-size: 18px;
+        }
     </style>
 </head>
 
@@ -181,7 +206,7 @@
             content="跳转到评论区并发表纯文字的简短的评论">
             <el-button style="position:fixed;right:20px;bottom:200px;" @Click="showCommentWindow"  icon="el-icon-chat-dot-square" slot="reference" circle></el-button>
     </el-popover>
-    <el-popover
+    <!--<el-popover
             placement="left"
             title="词典"
             trigger="hover"
@@ -191,7 +216,7 @@
                 <use xlink:href="#icon-shujuzidian"></use>
             </svg>　
         </button>
-    </el-popover>
+    </el-popover>-->
     <el-drawer
             size="395"
             modal="false"
@@ -423,7 +448,7 @@
             editor() {
                 window.location.href = "/blogEditor?bid=" + blog.blog.id;
             },
-            getDic(){
+            /*getDic(){
                 this.$http.get('/api/dictionary/all').then(function (res) {
                     this.dictionary=JSON.parse(res.bodyText)
                     setTimeout(this.openDic(),2000)
@@ -458,7 +483,16 @@
                     removeClass(dics[i],"dic-on")
                     dics[i].title=""
                 }
-            },
+            }, dicHandle(e){
+                this.isDictionaryOn=!this.isDictionaryOn
+                if(this.isDictionaryOn) {
+                    this.openDic()
+                    addClass(document.getElementsByClassName("dictionary-btn")[0], "my-btn-orange-cl")
+                }else{
+                    this.closeDic()
+                    removeClass(document.getElementsByClassName("dictionary-btn")[0], "my-btn-orange-cl")
+                }
+            }*/
             getChildNodes(node){
                 var nodes = node.childNodes;
                 var arr = [];
@@ -471,21 +505,13 @@
                     }
                 }
                 return arr;
-            },
-            dicHandle(e){
-                this.isDictionaryOn=!this.isDictionaryOn
-                if(this.isDictionaryOn) {
-                    this.openDic()
-                    addClass(document.getElementsByClassName("dictionary-btn")[0], "my-btn-orange-cl")
-                }else{
-                    this.closeDic()
-                    removeClass(document.getElementsByClassName("dictionary-btn")[0], "my-btn-orange-cl")
-                }
             }
-        },
-        mounted(){
-            setTimeout(this.getDic(),1000)
+
         }
+        // ,
+        // mounted(){
+        //     setTimeout(this.getDic(),1000)
+        // }1000
     })
     let blog = new Vue({
         el: '#blog_main',
@@ -543,8 +569,9 @@
                 this.$http.get('/api/comment/1/'+this.blog.id+"?pn=0&pz=20&od="+(this.sort?"1":"2")).then(function (res) {
                     this.comments=JSON.parse(res.bodyText).list
 
-                    setTimeout(function(){ document.querySelectorAll('.blog_comment code').forEach((block) => {
-                        hljs.highlightBlock(block);
+                    setTimeout(function(){
+                        document.querySelectorAll('.blog_comment code').forEach((block) => {
+                            hljs.highlightBlock(block);
                     }); },1000)
 
                 }, function () {
@@ -578,7 +605,12 @@
                 this.getComments()
             },
             afterLoad(){
-                SyntaxHighlighter.highlight()
+                document.querySelectorAll('pre').forEach((block) => {
+                    codeType=block.className.substring(6,block.className.indexOf(";"))
+                    block.className=(codeType=='groovy')?'yaml':codeType;
+                    hljs.highlightBlock(block);
+                    })
+                //SyntaxHighlighter.highlight()
                 let eles = document.getElementById("blog_main").getElementsByClassName("thinkInside");
                 for(let index in eles){
                     if(typeof(eles[index])=="object") {

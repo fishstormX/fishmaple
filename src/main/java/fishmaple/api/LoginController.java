@@ -64,7 +64,7 @@ public class LoginController {
         }else  if(user.getEmail()==null){
             return "邮箱不可为空";
         }else {
-            String check = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+            String check = "^([a-z0-9A-Z]+[_-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
             Pattern regex = Pattern.compile(check);
             Matcher matcher = regex.matcher(user.getEmail());
             boolean isMatched = matcher.matches();
@@ -80,7 +80,7 @@ public class LoginController {
         if(registerCheck(user).equals("ok")) {
             String code=identifyingService.getIdentifyingCode(user.getEmail());
             String content = "你好 ,"+user.getName()+"你的注册验证码为<br>　　"+ code +"　　感谢您对本博客的关注<br>　　<br>" +
-                    "                 <a href=\"https://www.fishmaple.cn\"><img src=\"https://www.fishmaple.cn/pics/logo_m_m.png\" class=\"logo middle_pic\"> <img src=\"https://www.fishmaple.cn/pics/logo-fish-small.png\" class=\"logo middle_fish\"></a>"+
+                    "                 <a href=\"https://www.fishmaple.cn\"><img alt=\"鱼鱼文字logo\" src=\"https://www.fishmaple.cn/pics/logo_m_m.png\" class=\"logo middle_pic\"> <img alt=\"鱼鱼logom\" src=\"https://www.fishmaple.cn/pics/logo-fish-small.png\" class=\"logo middle_fish\"></a>"+
                     "                 <br><br><br><span style='float:right'>from　</strong>鱼鱼的博客</strong></span>" +
                     "                  <br><br><span style='float:right;color:darkgrey'>Copyright ©  fishmaple. </span>";
             SendEmail.send("注册验证码-鱼鱼的博客", content,

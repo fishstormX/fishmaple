@@ -16,8 +16,8 @@ Vue.component('top-component', {
         '<el-row class="top_bar" style="margin-right:110px" id="top-bar">' +
 
         '   <el-col  class="head-nav" :span="17">' +
-       '        <a href="/index" class="nav_link"><img class="logo middle_pic" src="/pics/logo_m_m.png">' +
-        '     <img class="logo middle_fish" src="/pics/logo-fish-small.png"></a>' +
+       '        <a href="/index" class="nav_link"><img class="logo middle_pic" alt="鱼鱼logo" src="/pics/logo_m_m.png">' +
+        '     <img alt="鱼鱼logom" class="logo middle_fish" src="/pics/logo-fish-small.png"></a>' +
         '        <ul id="nav">' +
        // '            <li><a href="/idea/" class="nav_link">idea</a></li> ' +
         '            <li><a href="/blog" class="nav_link">博客</a></li>' +
@@ -27,6 +27,8 @@ Vue.component('top-component', {
         '            <li><a href="/lab" class="nav_link">实验室</a></li>' +
        // '            <li><a href="/fishchat" class="nav_link">聊天室</a></li>' +
         '            <li><a href="/dictionary" class="nav_link">Dwiki</a></li>' +
+        '            <li><a href="/fishapp.html" class="nav_link">App</a></li>' +
+        //'            <li><a href="/reveal" class="nav_link">ppt online</a></li>' +
         '            <li><a href="/friendLinks" class="nav_link">源星球(友情链接)</a></li>' +
        // '            <li><a href="/fishchat" class="nav_link">射线(beta)</a></li>' +
         '        </ul>' +
@@ -89,7 +91,7 @@ Vue.component('foot-component', {
         '            <li><a href="/sideWall">给我留言/友链申请</a></li>' +
         '            <li><a href="/druid">druid监控</a></li>' +
         '            <li><a href="/sitemap.html">网站地图</a></li>' +
-        '            <li><a href="https://github.com/fishstormX"><img class="icons" src="/img/giticon.png" height="17px">github</a></li>' +
+        '            <li><a href="https://github.com/fishstormX"><img alt="github" class="icons" src="/img/giticon.png" height="17px">github</a></li>' +
         ' </ul>'+
         ' <ul style="font-size:14px" class="foot_nav">' +
         '            <li>统计自 2019.3.4</li>' +
@@ -97,7 +99,7 @@ Vue.component('foot-component', {
         '            <li>访客数(UV):<span style="color:blue">{{tongji.uv}}</span></li>' +
         '            <li>IP数:<span style="color:blue">{{tongji.ip}}</span></li>' +
         '            <li>数据来源：<a href="https://tongji.baidu.com"><img style="position:relative;top:3px" ' +
-        'src="https://tongji.baidu.com/sc-web/image/icon/31.gif"></a></li>' +
+        'alt="百度统计"  src="https://tongji.baidu.com/sc-web/image/icon/31.gif"></a></li>' +
        ' </ul></div>'
   ,mounted(){
         this.$http.get('/api/tongji').then(function(res){
@@ -119,13 +121,13 @@ Vue.component('contact-component',{
     template:
         '<div id="contact">'+
         '    <div><a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=809789268&menu=yes">' +
-        '       <img class="contact-s" src="/img/qq_s.png"></a></div>' +
+        '       <img class="contact-s" alt="qq" src="/img/qq_s.png"></a></div>' +
         '    <div><a target="_blank" href="https://weibo.com/2605516155">' +
-        '       <img class="contact-s" src="/img/weibo_s.png"></a></div>' +
-        '    <div><a target="_blank" href="">' +
-        '       <img class="contact-s" src="/img/wechat_s.png"></a></div>' +
+        '       <img class="contact-s" alt="微博" src="/img/weibo_s.png"></a></div>' +
+        //'    <div><a target="_blank" href="">' +
+        //'       <img class="contact-s" alt="qq" src="/img/wechat_s.png"></a></div>' +
         '    <div><a target="_blank" href="https://github.com/fishstormX">' +
-        '       <img class="contact-s"src="/img/github_s.png"></a></div>'+
+        '       <img class="contact-s" alt="github" src="/img/github_s.png"></a></div>'+
         '</div>'
 })
 

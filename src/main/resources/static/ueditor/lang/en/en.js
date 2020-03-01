@@ -111,6 +111,7 @@ UE.I18N['en'] = {
         'diff':'Diff',
         'erlang':'Erlang',
         'groovy':'Groovy',
+        'yaml':'Yaml',
         'html':'HTML',
         'java':'Java',
         'jfx':'JavaFX',

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import fishmaple.DAO.BlogMapper;
 import fishmaple.DAO.TagMapper;
 import fishmaple.DTO.Blog;
+import fishmaple.conf.RedisCache4BlogConf;
 import fishmaple.shiro.ShiroService;
 import fishmaple.utils.EncoderUtil;
 import fishmaple.utils.TimeDate;
@@ -11,6 +12,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -30,6 +35,10 @@ public class BlogServiceImpl implements BlogService{
     TagMapper tagMapper;
     @Autowired
     ShiroService shiroService;
+    @Autowired
+    Redis4CacheService redis4CacheService;
+    Logger logger  = LoggerFactory.getLogger(this.getClass());
+
 
     @Override
     public void save(String content, String title,String author,List<String> tags,
@@ -73,6 +82,7 @@ public class BlogServiceImpl implements BlogService{
         if(content.indexOf("//TODO")>0){
             todo=1;
         }
+        redis4CacheService.flushCache(Redis4CacheService.BLOG_CONTENT_CACHE,id);
         blogMapper.updateOne(id,temp.get(1),title,timenow,author,temp.get(0),useDictionary,cover,isOriginal,todo,topicId);
         blogMapper.deleteBlogTags(id);
         for(String tag: tags){
@@ -148,48 +158,67 @@ public class BlogServiceImpl implements BlogService{
     //标签样式 置顶 获取摘要
     private void blogHandler(List<Blog> blogs) {
         for(Blog blog:blogs){
-            if(blog.getPriority()>0){
-                blog=this.setPriTags(blog);
-             }
-             List<String> tags=blog.getTags();
-            List<String> tagtypes=new ArrayList<String>();
-            boolean isPri=false;
-            for(int i=0;i<tags.size();i++){
-                if(tags.get(i).equals("置顶")){
-                    tagtypes.add("el-tag--danger");
-                    isPri=true;
-                }else if(tagMapper.getTagTypeByName(tags.get(i))==null?false:tagMapper.getTagTypeByName(tags.get(i))==1){
-                    if(isPri) {
-                        tags.add(1,tags.get(i));
-                        tags.remove(i+1);
-                        tagtypes.add(1, "el-tag--success");
-                    }else{
-                        tags.add(0,tags.get(i));
-                        tags.remove(i+1);
-                        tagtypes.add(0, "el-tag--success");
-                    }
-                }else{
-                    tagtypes.add("");
+            Blog tmp=redis4CacheService.getCache(Redis4CacheService.BLOG_CONTENT_CACHE,blog.getId(),Blog.class);
+            if(null==tmp) {
+                if (blog.getPriority() > 0) {
+                    blog = this.setPriTags(blog);
                 }
-            }
-            blog.setTagTypes(tagtypes);
-            blog.setTags(tags);
-
-            Document doc= Jsoup.parseBodyFragment(blog.getContent());
-            Elements es = doc.getElementsByTag("p");
-            StringBuffer content=new StringBuffer("");
-            for(Element e:es){
-                String[] strs=e.text().trim().split("。");
-                for(String str:strs) {
-                    if ((content.length() < 130 && str.length() < 120) || content.length() < 100){
-                    content.append(str).append("  ");}
-                    else{
-                        break;
+                List<String> tags = blog.getTags();
+                List<String> tagtypes = new ArrayList<String>();
+                boolean isPri = false;
+                for (int i = 0; i < tags.size(); i++) {
+                    if (tags.get(i).equals("置顶")) {
+                        tagtypes.add("el-tag--danger");
+                        isPri = true;
+                    } else if (tagMapper.getTagTypeByName(tags.get(i)) == null ? false : tagMapper.getTagTypeByName(tags.get(i)) == 1) {
+                        if (isPri) {
+                            tags.add(1, tags.get(i));
+                            tags.remove(i + 1);
+                            tagtypes.add(1, "el-tag--success");
+                        } else {
+                            tags.add(0, tags.get(i));
+                            tags.remove(i + 1);
+                            tagtypes.add(0, "el-tag--success");
+                        }
+                    } else {
+                        tagtypes.add("");
                     }
                 }
+                blog.setTagTypes(tagtypes);
+                blog.setTags(tags);
+                Document doc = Jsoup.parseBodyFragment(blog.getContent());
+                Elements es = doc.getElementsByTag("p");
+                StringBuffer content = new StringBuffer("");
+                for (Element e : es) {
+                    String[] strs = e.text().trim().split("。");
+                    for (String str : strs) {
+                        if ((content.length() < 130 && str.length() < 120) || content.length() < 100) {
+                            content.append(str).append("  ");
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                blog.setContent(content.toString());
+                redis4CacheService.saveCache(Redis4CacheService.BLOG_CONTENT_CACHE,blog.getId(),blog);
+            }else{
+                BeanUtils.copyProperties(tmp,blog);
             }
-            blog.setContent(content.toString());
         }
+    }
+
+    @Test
+    public void test() {
+        List<StringBuilder> stringBuilders = new ArrayList<>();
+
+        stringBuilders.add(new StringBuilder("1"));
+        stringBuilders.add(new StringBuilder("2"));
+        StringBuilder stringBuilder1 = stringBuilders.get(0);
+        stringBuilder1.append("1");
+        System.out.println(stringBuilder1.toString());
+        stringBuilder1 = new StringBuilder("2");
+        System.out.println(stringBuilder1.toString());
+        System.out.println(stringBuilders.get(0));
     }
 
     public String getLastBlog(){

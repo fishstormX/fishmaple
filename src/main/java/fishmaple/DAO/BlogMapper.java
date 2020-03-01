@@ -3,15 +3,18 @@ package fishmaple.DAO;
 import fishmaple.DTO.Blog;
 import fishmaple.conf.RedisCache4BlogConf;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.cache.decorators.LruCache;
 
 import java.util.LinkedHashSet;
 import java.util.List;
 
-@CacheNamespace(size=5,implementation = RedisCache4BlogConf.class)
+@CacheNamespace(blocking = false,size=50,implementation = RedisCache4BlogConf.class,eviction =  LruCache.class)
 public interface BlogMapper{
+
 
     @Delete("delete from blog where id=#{bid}")
     void deleteOneBlog(String bid);
+
 
     @Update("update blog set like_count = (like_count+1)where blog.id=#{bid}")
     void addLike(String bid);

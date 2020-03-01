@@ -5,6 +5,7 @@ import fishmaple.utils.SerializeUtil;
 import org.apache.ibatis.cache.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 
 
 public class RedisCache4BlogConf implements Cache{
-    private final long EXPIRE_TIME = 600L;
+    private final long EXPIRE_TIME = 6000L;
     private final String COMMON_CACHE_KEY = "COM:";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -30,7 +31,8 @@ public class RedisCache4BlogConf implements Cache{
 
     @Override
     public void putObject(Object key, Object value) {
-
+        RedisTemplate redisTemplate=new RedisTemplate();
+        redisTemplate.opsForValue().set(key,value);
         Jedis jedis=JedisUtil.getJedis();
         try{
             jedis.set(id+key.toString(),new String(SerializeUtil.serialize(value)));
@@ -43,7 +45,9 @@ public class RedisCache4BlogConf implements Cache{
 
     @Override
     public Object getObject(Object key) {
-
+        RedisTemplate redisTemplate=new RedisTemplate();
+        redisTemplate.opsForValue().get(key);
+        redisTemplate.delete(redisTemplate.keys(""))
         Jedis jedis=JedisUtil.getJedis();
         String s=jedis.get(id+key.toString());
         jedis.close();

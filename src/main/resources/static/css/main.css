@@ -120,6 +120,7 @@
     height:65px;
 }
 .foot_nav {
+    letter-spacing: 1px;
     list-style-type: none;
     text-align: center;
     font-size: 16px;

@@ -62,8 +62,7 @@ public class BaiduTongjiService {
                     for(Map.Entry<String,Tongji> entry:map.entrySet()) {
                         if (new Integer(entry.getKey().replaceAll("/", "")) > new Integer(index.replaceAll("/", ""))) {
                             tongjiMapper.add(entry.getValue());
-                        } else //if(entry.getKey().equals(TimeDate.getTimeStampNow())&&TimeDate.getTimeStampNow().equals(index))
-                        {
+                        } else if(new Integer(TimeDate.getTimeStampNow2(3))<new Integer(entry.getKey().replaceAll("/", ""))) {
                             tongjiMapper.update(entry.getValue());
                         }
                     }
@@ -73,7 +72,7 @@ public class BaiduTongjiService {
                     total.setPv(total.getPv()+entry.getValue().getPv());
                     total.setIp(total.getIp()+entry.getValue().getIp());
                 }
-                jedis.set("tongji", SerializeUtil.serialize(total),"NX","EX",1800);
+                jedis.set("tongji", SerializeUtil.serialize(total),"NX","EX",3600);
 
                 return total;
             }else{

@@ -19,11 +19,13 @@ import redis.clients.jedis.JedisPoolConfig;
 @EnableCaching
 public class JedisUtil {
         //最多总连接数 超过数量会无法获取连接
-        private static Integer maxTotal=100;
+        private static Integer maxTotal=900;
         private static String host="localhost";
-        //活跃连接
-        private static Integer maxIdle=40;
-        private static Integer port=6379;
+        private static String pswd="mumu123456";
+
+    //活跃连接
+        private static Integer maxIdle=50;
+        private static Integer port=6376;
         private static Integer maxWaitMillis=0;
         private static Integer timeout=10000;
 
@@ -40,13 +42,13 @@ public class JedisUtil {
 
         static {
             if(null==jedisPool){
-
-                log.debug("加载jedisPool");
+                log.info("加载jedisPool");
                 JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
                 jedisPoolConfig.setMaxIdle(maxIdle);
                 jedisPoolConfig.setMaxWaitMillis(maxWaitMillis);
                 jedisPoolConfig.setMaxTotal(maxTotal);
-                jedisPool=new JedisPool(jedisPoolConfig,host,port,timeout);
+                jedisPool=new JedisPool(jedisPoolConfig,host,port,timeout,pswd);
+                log.info("加载jedisPool okay");
             }
         }
 

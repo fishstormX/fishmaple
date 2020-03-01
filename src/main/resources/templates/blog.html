@@ -8,24 +8,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="twitter:image:src" content="https://www.fishmaple.cn/pics/logo-fish.png" />
     <meta charset="UTF-8">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=0" />
     <meta name="keywords" content="技术博客,后台学习,灵魂web开发,java开发,程序开发">
+    <link rel="preload" as="style" onload="this.rel='stylesheet'" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
     <title th:text="${pageD}+'鱼鱼的Java小站'"></title>
-    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
-    <link type="text/css" rel="stylesheet" href="/css/blog.css"/>
-    <link type="text/css" rel="stylesheet" href="/font/iconfont.css"/>
-    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.8.2/lib/theme-chalk/index.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
-    <script src="/js/index.js"></script>
-    <link type="text/css" rel="stylesheet" href="/properties.css"/>
-    <script src="/js/util.js"></script>
-    <script src="/js/baidu.js"></script>
-    <script src="/font/iconfontAdapter.js"></script>
     <script src="/font/iconfont.js"></script>
-    <script src="https://unpkg.com/element-ui@2.8.2/lib/index.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
+    <link rel="preload" as="style" onload="this.rel='stylesheet'" href="/properties.css"/>
+    <link rel="preload" as="style" onload="this.rel='stylesheet'"  href="/css/main.css"/>
+    <link rel="preload" as="style" onload="this.rel='stylesheet'" href="/css/blog.css"/>
+    <link rel="preload" as="style" onload="this.rel='stylesheet'" href="/font/iconfont.css"/>
+    <link rel="preload" as="style" onload="this.rel='stylesheet'"href="https://unpkg.com/element-ui@2.8.2/lib/theme-chalk/index.css">
+
     <style>
+        @font-face {
+            font-family: 'Pacifico';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Pacifico Regular'), local('Pacifico-Regular'), url(https://fonts.gstatic.com/s/pacifico/v12/FwZY7-Qmy14u9lezJ-6H6MmBp0u-.woff2) format('woff2');
+            font-display: swap;
+        }
         .header{
             position: fixed;
             width: 100%;
@@ -77,13 +78,13 @@
                 </div>
                 <div v-bind:class="loaded?'bloglist-cover':'bloglist-cover-loading'">
                     <a target="_blank" v-bind:href="'/blog/d?bid='+blog.id">
-                        <img v-bind:src="(blog.cover==''||blog.cover==null)?'https://file.fishmaple.cn/timg2.jpg':blog.cover">
+                        <img alt="背景图片" v-bind:src="(blog.cover==''||blog.cover==null)?'https://file.fishmaple.cn/timg2.jpg':blog.cover">
                     </a>
-                </div>icon-xinaixin
+                </div>
                 <div class="bloglist-content"><a v-bind:href="'/blog/d?bid='+blog.id">{{blog.content}}</a></div>
                 <el-row style="display:flex"> <el-col :span="20" >
                 <span class="bloglist-date">{{blog.timeline}}</span>
-                <img class="icon-avatar" v-show="blog.avatar!=''" v-bind:src="'/font/icon_avatar/'+blog.avatar+'.png'">
+                <img alt="小头像" class="icon-avatar" v-bind:alt="blog.title" v-show="blog.avatar!=''" v-bind:src="'/font/icon_avatar/'+blog.avatar+'.png'">
                 <span class="bloglist-author">{{blog.author}}</span>
                <span class="bloglist-tags">
                             <el-tag @click.native="tagScreen" size="small" v-bind:class="blog.tagTypes[index]"
@@ -191,6 +192,14 @@
     <foot-component></foot-component>
     <copyright></copyright>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+<script src="/js/index.js"></script>
+
+<script src="/js/util.js"></script>
+<script src="/js/baidu.js"></script>
+<script src="/font/iconfontAdapter.js"></script>
+<script src="https://unpkg.com/element-ui@2.8.2/lib/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
 <script>
 
 
@@ -234,7 +243,7 @@
         methods: {
             handleCurrentChange(page) {
 
-                blog.items=[{avatar:"",cover:"/pics/timg.gif"}]
+                blog.items=[{avatar:"nanhaizi",cover:"/pics/timg.gif"}]
                 blog.page=page
                 blog.loaded=false
                 window.scrollTo(0,0);

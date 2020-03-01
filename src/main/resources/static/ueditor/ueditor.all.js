@@ -13185,6 +13185,7 @@ UE.plugins['insertcode'] = function() {
             'diff':'Diff',
             'erlang':'Erlang',
             'groovy':'Groovy',
+            'yaml':'Yaml',
             'html':'Html',
             'java':'Java',
             'jfx':'JavaFx',

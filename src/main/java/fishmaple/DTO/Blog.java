@@ -108,7 +108,7 @@ public class Blog implements Serializable {
         String contentTmp=content.replaceAll("id=\"","id=\"tmp");
 
         return "<h2>"+title+"</h2><a href='/blog/d?bid="+id+"' >"+title+"</a>"+contentTmp+"<br>"+
-                "<img src='"+cover+"'>"+ TimeDate.timestamp2time(timeline*1000,1)+author+"<br>";
+                "<img alt='"+title+"' src='"+cover+"'>"+ TimeDate.timestamp2time(timeline*1000,1)+author+"<br>";
     }
     public String getCover() {
         return cover;

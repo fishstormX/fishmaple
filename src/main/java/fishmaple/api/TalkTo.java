@@ -21,7 +21,7 @@ public class TalkTo {
         if(map.get("content").equals("")||map.get("email").equals("")||map.get("name").equals("")){
             return "请完善必填项";
         }
-        String check = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+        String check = "^([a-z0-9A-Z]+[_-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
         Pattern regex = Pattern.compile(check);
         Matcher matcher = regex.matcher(map.get("email"));
         boolean isMatched = matcher.matches();
@@ -34,7 +34,7 @@ public class TalkTo {
                         "admin@fishmaple.cn", SendEmail.REDIRECT);
 
                 String content = "你好 ,我已经收到你在我网站的留言噜，我会及时处理并给予反馈，敬请关注邮件。<br>　　感谢您对本博客的关注<br>　　祝：生活愉快<br><br>" +
-                        "                 <a href=\"https://www.fishmaple.cn\"><img src=\"https://www.fishmaple.cn/pics/logo_m_m.png\" class=\"logo middle_pic\"> <img src=\"https://www.fishmaple.cn/pics/logo-fish-small.png\" class=\"logo middle_fish\"></a>"+
+                        "                 <a href=\"https://www.fishmaple.cn\"><img alt=\"鱼鱼文字logo\" src=\"https://www.fishmaple.cn/pics/logo_m_m.png\" class=\"logo middle_pic\"> <img alt=\"鱼鱼logom\" src=\"https://www.fishmaple.cn/pics/logo-fish-small.png\" class=\"logo middle_fish\"></a>"+
                         "                 <br><br><br><span style='float:right'>from　</strong>鱼鱼的博客</strong></span>" +
                         "                  <br><br><span style='float:right;color:darkgrey'>Copyright ©  fishmaple. </span>";
 

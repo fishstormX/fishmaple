@@ -15,6 +15,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -43,7 +44,19 @@ public class HttpClientUtil {
     }
 
 
-
+    public  static void pushBlog(String id){
+        try {
+            Thread.sleep(4000);
+            RestTemplate restTemplate = new RestTemplate();
+            org.springframework.http.HttpEntity<String> formEntity = new org.springframework.http.HttpEntity<String>("https://www.fishmaple.cn/blog/d?bid=" + id);
+            String a = restTemplate.postForObject("http://data.zz.baidu.com/urls?site=www.fishmaple.cn&token=-",
+                    formEntity, String.class);
+            System.out.println("推送" + a + id);
+        }catch (Exception e){
+            e.printStackTrace();
+            pushBlog(id);
+        }
+    }
     /**
      * post请求（用于请求json格式的参数）
      * @param url

@@ -14,10 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 //改为使用redis 维护会话信息 不再同一拦截
-//@Component
+@Component
 public class NFHandler implements HandlerInterceptor {
-    @Autowired
-    ShiroService shiroService;
     Logger logger = LoggerFactory.getLogger(NFHandler.class);
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -26,10 +24,7 @@ public class NFHandler implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        request.getSession().setMaxInactiveInterval(12 * 60 * 60);
-        //毫秒
-        shiroService.getCurrentSubject().getSession().setTimeout(12 * 60 * 60 * 1000);
-        logger.error("拦截器：修正用户session过时时间");
+        response.addHeader("Cache-Control","max-age=31536000");
 
     }
 
