@@ -11,16 +11,23 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.locks.ReadWriteLock;
-
+@Component
 public class RedisCache4BlogConf  extends ApplicationObjectSupport implements Cache{
     private final String COMMON_CACHE_KEY = "COM:";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private boolean inited=false;
+    RedisTemplate redisTemplate;
+    @Autowired
+    ApplicationContextHandler applicationContextHandler;
 
 
     private String id="COMMON:";
 
     public RedisCache4BlogConf(final String id){
         this.id=id;
+    }
+    public RedisCache4BlogConf(){
+        this.id="";
     }
 
     @Override
@@ -45,7 +52,7 @@ public class RedisCache4BlogConf  extends ApplicationObjectSupport implements Ca
     }
 
     private String getKeys() {
-        return  this.id + ":*";
+        return  this.id + "*";
     }
 
     @Override
@@ -64,8 +71,12 @@ public class RedisCache4BlogConf  extends ApplicationObjectSupport implements Ca
     }
 
     private  RedisTemplate<String,Object> getRedisTemplate() {
-        RedisTemplate redisTemplate =  ApplicationContextHandler.getBean("redisTemplate",RedisTemplate.class);
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        if(!inited) {
+            redisTemplate = ApplicationContextHandler.getBean("redisTemplate",RedisTemplate.class);
+            logger.info("-=-==-=-="+redisTemplate);
+            redisTemplate.setKeySerializer(new StringRedisSerializer());
+            inited=true;
+        }
         return  redisTemplate;
     }
 }
