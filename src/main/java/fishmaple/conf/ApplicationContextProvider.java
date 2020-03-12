@@ -18,7 +18,6 @@ public class ApplicationContextProvider
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
-        printAllBeans(applicationContext);
     }
 
     /**
@@ -66,7 +65,8 @@ public class ApplicationContextProvider
     public static void printAllBeans(ApplicationContext applicationContext) {
         applicationContext=(applicationContext==null?getApplicationContext():applicationContext);
         String[] beans = applicationContext
-                .getBeanDefinitionNames();  System.out.println("***********************包检查开始******************************");
+                .getBeanDefinitionNames();
+        System.out.println("***********************包加载开始******************************");
         for (String beanName : beans) {
             Class<?> beanType = applicationContext
                     .getType(beanName);
@@ -74,6 +74,6 @@ public class ApplicationContextProvider
             System.out.println("BeanName:" + beanName+//"     Bean的类型：" + beanType+
                     "     Bean所在的包：" + beanType.getPackage());
 
-        }System.out.println("***********************包检查完毕******************************");
+        }System.out.println("***********************包加载完毕******************************");
     }
 }
