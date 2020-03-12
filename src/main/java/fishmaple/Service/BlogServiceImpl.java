@@ -82,7 +82,7 @@ public class BlogServiceImpl implements BlogService{
         if(content.indexOf("//TODO")>0){
             todo=1;
         }
-        redis4CacheService.flushCache(Redis4CacheService.BLOG_CONTENT_CACHE,id);
+        redis4CacheService.flushCache(Redis4CacheService.BLOG_CONTENT_CACHE,"");
         blogMapper.updateOne(id,temp.get(1),title,timenow,author,temp.get(0),useDictionary,cover,isOriginal,todo,topicId);
         blogMapper.deleteBlogTags(id);
         for(String tag: tags){
