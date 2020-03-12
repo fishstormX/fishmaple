@@ -52,6 +52,8 @@ public class MainController {
     BlogTopicMapper blogTopicMapper;
     @Autowired
     LoadBlogListTask loadBlogListTask;
+    @Autowired
+    DocMapper docMapper;
 
     @RequestMapping("/blogEditor")
     public String blogEditor(@RequestParam(required = false) String xx
@@ -133,6 +135,12 @@ public class MainController {
         return "sideWall";
     }
 
+    @RequestMapping("/doc")
+    public String doc(Model model){
+        model.addAttribute("respository",docMapper.getRespositories());
+        return "doc";
+    }
+
     @RequestMapping("/reveal")
     public String reveal(HttpServletRequest request, Model model, HttpServletResponse response) {
         return "reveal";
@@ -141,15 +149,8 @@ public class MainController {
     @RequestMapping("/blog")
     public String blog(HttpServletRequest request, Model model, HttpServletResponse response) {
         String content=loadBlogListTask.getOutLine();
-        /*List<Blog> list= blogService.getBlogList(60,0);
-        Collections.shuffle(list);
-        for(int i=0;i<11;i++){
-              content += list.get(i).getOutLine();
-        }*/
         model.addAttribute("cover",configMapper.getValue("cover"));
         model.addAttribute("content",content);
-        //model.addAttribute("ititle",configMapper.getValue("index_title"));
-        //model.addAttribute("icontent",configMapper.getValue("index_content"));
         model.addAttribute("page",1);
         model.addAttribute("pageD","");
         model.addAttribute("blogTopics",blogTopicService.getAllTopics());
@@ -205,11 +206,6 @@ public class MainController {
         log.info(request.getRemoteAddr()+" "+request.getRequestURI()+" "+"访问wiki");
         return "dictionary";
     }
-  @RequestMapping("/markdown")
-  public String markdown(){
-      log.info("访问马克党");
-      return "markdown";
-  }
 
     @RequestMapping("/lab")
     public String lab(){

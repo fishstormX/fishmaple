@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>文档仓库-鱼鱼的小站</title>
+    <link type="text/css" rel="stylesheet" href="/css/main.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/blog.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/document.css"/>
+    <link type="text/css" rel="stylesheet" href="/font/iconfont.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/link.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui@2.13.0/lib/theme-chalk/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.2.2/vue.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/baidu.js"></script>
+    <script src="/font/iconfontAdapter.js"></script>
+    <script src="/font/iconfont.js"></script>
+    <script src="https://unpkg.com/element-ui@2.13.0/lib/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
+</head>
+<style>
+    #main .el-card__body {
+        padding: 13px;
+    }
+    .linkcard-describe {
+        font-size: 14px;
+        border-top: 1px #e4e4e4 solid;
+    }
+    .linkcard-image{
+        margin-top: 10px;
+
+    }
+    .linkcard-link{
+        top: -63px;
+        font-size: 20px;
+        left: 10px;
+    }
+    .imgbk{
+        display: inline-flex;
+    }
+</style>
+<body>
+    <header>
+        <div id="component" >
+            <top-component :user="user" ></top-component>
+        </div>
+    </header>
+    <main id="main">
+        <div class="fLink" >
+            <div class="fLink-block">
+                <div th:each="res : ${respository}">
+                    <h2 th:text="${res.name}"></h2>
+                    <el-card  th:each="mem : ${res.docMembers}" class="linkcard" shadow="hover">
+                        <img  th:if="${not #strings.isEmpty(mem.imgUrl)}" th:attr="src=${mem.imgUrl},alt=${mem.name}"  class="linkcard-image">
+                        <div class="imgbk linkcard-image" th:if="${not #strings.isEmpty(mem.imgStyle)}" th:attr="style=${mem.imgStyle}"></div>
+                        <el-popover th:if="${not #strings.isEmpty(mem.enUrl)}"
+                                content="英文文档"
+                                placement="top"
+                                title=""
+                                trigger="hover">
+                                <el-tag th:attr="ahref=${mem.enUrl}" @click="opendoc($event)" size="mini"
+                                        slot="reference" style="cursor:pointer;float: right;margin-left:5px">en</el-tag>
+                        </el-popover>
+
+                        <el-popover th:if="${not #strings.isEmpty(mem.zhUrl)}"
+                                content="中文文档"
+                                placement="top"
+                                title=""
+                                trigger="hover">
+                            <el-tag th:attr="ahref=${mem.zhUrl}" @click="opendoc($event)" size="mini"
+                                    slot="reference" style="cursor:pointer;float: right;">zh</el-tag>
+                        </el-popover>
+                        <!--<el-divider></el-divider>-->
+                        <a target="_blank" class="linkcard-link" th:text="${mem.name}" th:attr="href=${mem.enUrl==null?mem.zhUrl:mem.enUrl}"></a><br>
+                        <a target="_blank" th:attr="href=${mem.zhUrl==null?mem.enUrl:mem.zhUrl}" class="linkcard-describe" th:text="${mem.describe}"></a>
+                    </el-card>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div id="footer" class="foot">
+        <foot-component></foot-component>
+        <copyright></copyright>
+    </div>
+</body>
+    <script>
+        let foot = new Vue({
+            el: '#footer'
+        })
+        let main = new Vue({
+            el:'#main',
+            methods: {
+                opendoc: function( event) {
+                    //获取点击对象
+                    window.open(event.target.getAttribute("ahref"),"_blank");
+                }
+            }
+        })
+        let nav_bar = new Vue({
+            el:'#nav_bar',
+            data: {
+                items:["","///"]
+            },
+        })
+        let head = new Vue({
+            el: '#component',
+            data: {
+                user:{}
+            },
+            methods:{
+                getUser(){
+                    this.$http.get('/api/who').then(function (res) {
+                        this.user=JSON.parse(res.bodyText)
+
+                    }, function () {
+                        console.log('获取回话失败')
+                    });
+                }
+            },
+            mounted(){
+                this.getUser()
+            }
+        })
+    </script>
+</html>
