@@ -22,14 +22,15 @@ Vue.component('top-component', {
        // '            <li><a href="/idea/" class="nav_link">idea</a></li> ' +
         '            <li><a href="/blog" class="nav_link">博客</a></li>' +
         //'            <li><a href="/tool" class="nav_link">工具箱</a></li>' +
-        '           <li><a href="/issues" class="nav_link">issues</a></li>' +
+        '           <li><a href="/issues" class="nav_link">Issue</a></li>' +
         //'            <li><a href="/document" class="nav_link">文件托管</a></li>' +
         '            <li><a href="/lab" class="nav_link">实验室</a></li>' +
        // '            <li><a href="/fishchat" class="nav_link">聊天室</a></li>' +
         '            <li><a href="/dictionary" class="nav_link">Dwiki</a></li>' +
         '            <li><a href="/fishapp.html" class="nav_link">App</a></li>' +
+        '           <li><a href="/doc" class="nav_link">文档仓库</a></li>' +
         //'            <li><a href="/reveal" class="nav_link">ppt online</a></li>' +
-        '            <li><a href="/friendLinks" class="nav_link">源星球(友情链接)</a></li>' +
+        '            <li><a href="/friendLinks" class="nav_link">友情链接</a></li>' +
        // '            <li><a href="/fishchat" class="nav_link">射线(beta)</a></li>' +
         '        </ul>' +
         '   </el-col>' +
