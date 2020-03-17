@@ -2,14 +2,16 @@
     margin:10px 0 0 150px;
 }
 .bloglist-block{
+
   /* transition: box-shadow .3s ease-in-out,-webkit-box-shadow .3s ease-in-out;
     background: #fff;
     -webkit-box-shadow: 0 0 0 0 rgba(0,0,0,.1);
     box-shadow: 0 0 0 0 rgba(0,0,0,.1);
+    padding: 10px 15px 0px 25px;
     margin: 0px 0 26px 0;*/
-    padding: 15px 22px 15px 30px;
-    letter-spacing: 1px;
-    border-top:1.3px solid darkgrey;
+    margin: 0 10px;
+    padding: 10px 20px 5px 20px;
+    border-top:1px solid lightgrey;
 }
 .bloglist-block:hover{
    /* transition: box-shadow .3s ease-in-out,-webkit-box-shadow .3s ease-in-out;
@@ -57,11 +59,11 @@ textarea{
     cursor:pointer;
 }
 .icon-avatar{
-    width: 35px;
-    height: 35px;
+    width: 26px;
+    height: 26px;
     position: relative;
-    left: 12px;
-    top: 11px;
+    left: 11px;
+    top: 8px;
 }
 .right-bar .el-tag{
     margin:5px;
@@ -78,13 +80,14 @@ textarea{
 
 
 .bloglist-content{
+    letter-spacing: 1px;
     text-decoration:none;
     color:#333;
-    line-height: 30px;
-    margin:10px;
-    font-size:16px;
+    line-height: 28px;
+    margin:0 10px;
+    font-size:15px;
     margin-left: 200px;
-    min-height: 150px;
+    min-height: 170px;
    /* border-bottom: #ebeef5 1.3px solid;*/
 }
 .bloglist-content a{
@@ -107,25 +110,27 @@ textarea{
 .bloglist-date{
     color:#9EABB3;
     margin-left:10px;
+    min-width: 120px;
 }
 .bloglist-author{
     color: #8d9191;
-    margin-left: 80px;
+    margin-left: 25px;
     font-size: 16px;
+    min-width: 120px;
 }
 .w-e-item img{
     width:22px;
     height:22px;
 }
 #blog_main .bloglist-todo{
-    font-size:24px;
+    font-size:26px;
     color:#8a2be2;
     margin-left:50px;
     position: relative;
     bottom: 3px;
 }
 #blog_main .bloglist-original{
-    font-size: 24px;
+    font-size: 26px;
     color:#008000;
     margin-left:50px;
     position: relative;
@@ -195,6 +200,7 @@ textarea{
     bottom: 0;
     width: 100%;
     text-align: center;
+    margin-bottom:15px;
 }
 
 code{

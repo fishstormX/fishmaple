@@ -241,9 +241,7 @@
     height:35px;
 }
 .background{
-    background: url(https://file.fishmaple.cn/bk1.jpg) no-repeat;
-    background-position-x: 90%;
-    background-position-y: bottom;
+    background: #fafafb;
 }
 .dic-on{
     cursor:pointer;

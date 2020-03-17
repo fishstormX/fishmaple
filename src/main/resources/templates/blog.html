@@ -41,6 +41,12 @@
             width: 100%;
             background: #fff;
         }
+        .blog-container:hover {
+            background: #eeeeee36;
+        }
+        .blog-left{
+            background: #ffffff;
+        }
     </style>
 </head>
 <!-- 当你真心渴望某样东西时，日月星辰也会连成一线来帮你完成。-->
@@ -57,7 +63,7 @@
 
 </div>
 <div id="header" class="header" @mouseover="hover" @mouseout="mouseout">
-    <div id="component" >
+    <div id="component" style="background: #fafafb;">
         <top-component :user="user" ></top-component>
     </div>
 </div>
@@ -72,11 +78,15 @@
     <div style="position: relative;bottom: 54px;left: 400px;width:100px;">
         <a class="nav_link" href="/blog/index">博客索引</a>
     </div>
+
     <el-row class="blog-list">
         <el-col :span="15" class="blog-left">
-            <div v-for="(blog,bindex) in items" class="bloglist-block">
+            <div v-for="(blog,bindex) in items" class="blog-container">
+            <div  class="bloglist-block">
                 <div class="bloglist-title">
                     <a target="_blank" v-bind:href="'/blog/d?bid='+blog.id">{{blog.title}}</a>
+                    <i class="icon iconfont icon-yuanchuang bloglist-original" title="原创文章" v-if="blog.isOriginal==1"></i>
+                    <i class="icon iconfont icon-todo bloglist-todo" title="//TODO" v-if="blog.todo==1"></i>
                 </div>
                 <div v-bind:class="loaded?'bloglist-cover':'bloglist-cover-loading'">
                     <a target="_blank" v-bind:href="'/blog/d?bid='+blog.id">
@@ -84,29 +94,36 @@
                     </a>
                 </div>
                 <div class="bloglist-content"><a v-bind:href="'/blog/d?bid='+blog.id">{{blog.content}}</a></div>
-                <el-row style="display:flex"> <el-col :span="20" >
+                <el-row>
                 <span class="bloglist-date">{{blog.timeline}}</span>
                 <img alt="小头像" class="icon-avatar" v-bind:alt="blog.title" v-show="blog.avatar!=''" v-bind:src="'/font/icon_avatar/'+blog.avatar+'.png'">
                 <span class="bloglist-author">{{blog.author}}</span>
                <span class="bloglist-tags">
                             <el-tag @click.native="tagScreen" size="small" v-bind:class="blog.tagTypes[index]"
                                     v-for="(tag,index) in blog.tags">{{tag}}</el-tag>
-                   <i class="icon iconfont icon-yuanchuang bloglist-original" title="原创文章" v-if="blog.isOriginal==1"></i>
-                    <i class="icon iconfont icon-todo bloglist-todo" title="//TODO" v-if="blog.todo==1"></i>
                 </span>
-                </el-col>
-                    <el-col :span="4" style="min-width:120px;float:right;margin:auto">
+                    <div style="min-width:120px;float:right;margin:auto">
                         <span style="line-height: 25px;float: right" ><el-link v-bind:class="{animated:liN==bindex,tada:liN==bindex}" @click="likeBlog(blog.id,bindex)" :underline="false">
                     <svg class="icon" style="font-size:25px" aria-hidden="true">
                     <use href="#icon-iconfont-favoriteoutline">
                     </use>
-                </svg></el-link><span style="font-size: 16px;margin-right: 30px;margin-left: 3px;">{{blog.likeCount}}</span><i style="font-size: 22px;line-height: 27px;top: 3px;position: relative;" class="icon el-icon-chat-line-square" ></i><span style="font-size: 16px;
+                </svg></el-link><span style="font-size: 16px;margin-right: 20px;margin-left: 3px;">{{blog.likeCount}}</span><i style="font-size: 22px;line-height: 27px;top: 3px;position: relative;" class="icon el-icon-chat-line-square" ></i><span style="font-size: 16px;
     margin: 3px;">{{blog.commentCount}}</span></span>
-                    </el-col>
-            </el-row>
+                    </div>
+                </el-row>
+            </div>
             </div>
             <div v-if="isNull" class="bloglist-block">
                 分类下暂时没有文章哦！
+            </div>
+            <div id="page_block" class="page-block">
+                <el-pagination
+                        @current-change="handleCurrentChange"
+                        :current-page.sync="currentPage"
+                        :page-size="7"
+                        layout="prev, pager, next, jumper"
+                        :total="total">
+                </el-pagination>
             </div>
         </el-col>
         <el-col class="right-bar" :span="6">
@@ -152,16 +169,6 @@
 
         </el-col>
     </el-row>
-</div>
-
-<div id="page_block" class="page-block">
-    <el-pagination
-            @current-change="handleCurrentChange"
-            :current-page.sync="currentPage"
-            :page-size="7"
-            layout="prev, pager, next, jumper"
-            :total="total">
-    </el-pagination>
 </div>
 <div id="fixed-all">
 
