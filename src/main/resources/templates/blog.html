@@ -41,11 +41,11 @@
             width: 100%;
             background: #fff;
         }
-        .blog-container:hover {
-            background: #eeeeee36;
-        }
-        .blog-left{
-            background: #ffffff;
+        .bloglist-divider{
+            border-bottom: 1px grey solid;
+            width: 20%;
+            margin-left: 40%;
+            transition: width 1s cubic-bezier(1, -0.43, 0.65, 0.68),margin-left 1s cubic-bezier(0, 0.65, 0.4, 0.87);
         }
     </style>
 </head>
@@ -63,7 +63,7 @@
 
 </div>
 <div id="header" class="header" @mouseover="hover" @mouseout="mouseout">
-    <div id="component" style="background: #fafafb;">
+    <div id="component">
         <top-component :user="user" ></top-component>
     </div>
 </div>
@@ -81,7 +81,7 @@
 
     <el-row class="blog-list">
         <el-col :span="15" class="blog-left">
-            <div v-for="(blog,bindex) in items" class="blog-container">
+            <div v-for="(blog,bindex) in items" @mouseover="overBlock(bindex)" @mouseout="overBlock(12)" class="bloglist-container">
             <div  class="bloglist-block">
                 <div class="bloglist-title">
                     <a target="_blank" v-bind:href="'/blog/d?bid='+blog.id">{{blog.title}}</a>
@@ -111,19 +111,11 @@
     margin: 3px;">{{blog.commentCount}}</span></span>
                     </div>
                 </el-row>
+            </div><div v-bind:id="'divider-'+bindex" class="bloglist-divider"></div>
             </div>
-            </div>
+
             <div v-if="isNull" class="bloglist-block">
                 分类下暂时没有文章哦！
-            </div>
-            <div id="page_block" class="page-block">
-                <el-pagination
-                        @current-change="handleCurrentChange"
-                        :current-page.sync="currentPage"
-                        :page-size="7"
-                        layout="prev, pager, next, jumper"
-                        :total="total">
-                </el-pagination>
             </div>
         </el-col>
         <el-col class="right-bar" :span="6">
@@ -161,7 +153,7 @@
                 <div class="taglist-title">
                     主题分类
                 </div>
-                <el-divider></el-divider>
+                <el-divider style="border-top:1px solid grey"></el-divider>
                 <div class="taglist-block" style="margin-top: 20px" th:each="topic:${blogTopics}">
                     <a style="font-weight: 500;" class="nav_link"  th:text="${topic.topic}" th:href="${topic.url}"></a>
                 </div>
@@ -169,6 +161,15 @@
 
         </el-col>
     </el-row>
+</div>
+<div id="page_block" class="page-block">
+    <el-pagination
+            @current-change="handleCurrentChange"
+            :current-page.sync="currentPage"
+            :page-size="7"
+            layout="prev, pager, next, jumper"
+            :total="total">
+    </el-pagination>
 </div>
 <div id="fixed-all">
 
@@ -211,7 +212,6 @@
 <script>
 
 
-
     let index = new Vue({
         el: '#index',
         data:{
@@ -250,7 +250,6 @@
         },
         methods: {
             handleCurrentChange(page) {
-
                 blog.items=[{avatar:"nanhaizi",cover:"/pics/timg.gif"}]
                 blog.page=page
                 blog.loaded=false
@@ -318,6 +317,20 @@
             ]
         },
         methods: {
+            overBlock(i){
+                for (let q = 0; q < 7; q++) {
+                    if(document.getElementById("divider-"+q)!=null&&q!=i){
+                        document.getElementById("divider-"+q).style.width="20%"
+                        document.getElementById("divider-"+q).style.marginLeft="40%"
+                    }else{
+                        break
+                    }
+                }
+                if(i<10) {
+                    document.getElementById("divider-" + i).style.width = "100%"
+                    document.getElementById("divider-" + i).style.marginLeft = "0"
+                }
+            },
             likeBlog(id,index){
                 let qr=''
                 let ql=''
