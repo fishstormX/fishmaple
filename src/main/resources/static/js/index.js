@@ -87,10 +87,10 @@ Vue.component('foot-component', {
         '            <li><a href="/version.html">版本迭代</a></li>' +
         '            <li><a href="/tool">工具箱</a></li>' +
         '            <li><a href="/friendLinks">友情链接</a></li>' +
-        '            <li><a href="/restart.html">重启服务器</a></li>' +
-        '            <li><a href="/log.html">日志查看</a></li>' +
+        //'            <li><a href="/restart.html">重启服务器</a></li>' +
+       // '            <li><a href="/log.html">日志查看</a></li>' +
         '            <li><a href="/sideWall">给我留言/友链申请</a></li>' +
-        '            <li><a href="/druid">druid监控</a></li>' +
+        '            <li><a href="/druid">druid</a></li>' +
         '            <li><a href="/sitemap.html">网站地图</a></li>' +
         '            <li><a href="https://github.com/fishstormX"><img alt="github" class="icons" src="/img/giticon.png" height="17px">github</a></li>' +
         ' </ul>'+
