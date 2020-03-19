@@ -42,10 +42,30 @@
             background: #fff;
         }
         .bloglist-divider{
-            border-bottom: 1px grey solid;
+            border: 1px grey solid;
             width: 20%;
             margin-left: 40%;
-            transition: width 1s cubic-bezier(1, -0.43, 0.65, 0.68),margin-left 1s cubic-bezier(0, 0.65, 0.4, 0.87);
+            transition: width 1s ease-in-out,margin-left 1s ease-in-out;
+        }
+        .bloglist-container{
+            transition: background-color 1s ease-in-out;
+        }
+        .bloglist-container:hover {
+            background-color: aliceblue;
+        }
+        .bloglist-divider-left{
+            border-left: 1.5px grey solid;
+            height: 0;
+            float:left;
+            margin-top:100px;
+            transition: height 1s cubic-bezier(1, -0.43, 0.65, 0.68),margin-top 1s cubic-bezier(0, 0.65, 0.4, 0.87);
+        }
+        .bloglist-divider-right{
+            border-left: 1.5px grey solid;
+            height: 0;
+            float:right;
+            margin-top:0;
+            transition: height 1s cubic-bezier(1, -0.43, 0.65, 0.68),margin-top 1s cubic-bezier(1, -0.43, 0.65, 0.68);
         }
     </style>
 </head>
@@ -81,8 +101,13 @@
 
     <el-row class="blog-list">
         <el-col :span="15" class="blog-left">
-            <div v-for="(blog,bindex) in items" @mouseover="overBlock(bindex)" @mouseout="overBlock(12)" class="bloglist-container">
-            <div  class="bloglist-block">
+
+            <div v-for="(blog,bindex) in items" @mouseover="overBlock(bindex)" @mouseout="overBlock(12)"
+                 class="bloglist-container" v-bind:id="'container-'+bindex">
+                <div style="width:0;" v-if="bindex==0" id="divider--1" class="bloglist-divider"></div>
+            <div v-bind:id="'divider-l-'+bindex" class="bloglist-divider-left"></div>
+            <div v-bind:id="'divider-r-'+bindex" class="bloglist-divider-right"></div>
+                <div  class="bloglist-block">
                 <div class="bloglist-title">
                     <a target="_blank" v-bind:href="'/blog/d?bid='+blog.id">{{blog.title}}</a>
                     <i class="icon iconfont icon-yuanchuang bloglist-original" title="原创文章" v-if="blog.isOriginal==1"></i>
@@ -314,21 +339,44 @@
                     icoColor: "#ffad14",
                     options: []
                 },
-            ]
+            ],
         },
         methods: {
             overBlock(i){
-                for (let q = 0; q < 7; q++) {
+                for (let q = -1; q < 7; q++) {
                     if(document.getElementById("divider-"+q)!=null&&q!=i){
-                        document.getElementById("divider-"+q).style.width="20%"
-                        document.getElementById("divider-"+q).style.marginLeft="40%"
+
+                        if(q==i-1&&q!=-1){
+                            document.getElementById('divider-r-'+q).style.height=0
+                            document.getElementById('divider-r-'+q).style.marginTop="200px"
+                            document.getElementById('divider-l-'+q).style.height=0
+                            document.getElementById('divider-l-'+q).style.marginTop="100px"
+                        }else{
+                            if(q==-1){
+                                document.getElementById("divider-"+q).style.width="0"
+                                document.getElementById("divider-"+q).style.marginLeft="40%"
+                            }else {
+                                document.getElementById("divider-" + q).style.width = "20%"
+                                document.getElementById("divider-" + q).style.marginLeft = "40%"
+                                document.getElementById('divider-r-' + q).style.height = 0
+                                document.getElementById('divider-r-' + q).style.marginTop = "200px"
+                                document.getElementById('divider-l-' + q).style.height = 0
+                                document.getElementById('divider-l-' + q).style.marginTop = "100px"
+                            }
+                        }
                     }else{
                         break
                     }
                 }
                 if(i<10) {
-                    document.getElementById("divider-" + i).style.width = "100%"
-                    document.getElementById("divider-" + i).style.marginLeft = "0"
+                     document.getElementById('divider-r-'+i).style.height="120px"
+                     document.getElementById('divider-r-'+i).style.marginTop="120px"
+                     document.getElementById('divider-l-'+i).style.height="120px"
+                     document.getElementById('divider-l-'+i).style.marginTop="20px"
+                    document.getElementById("divider-" + i).style.width = "50%"
+                    document.getElementById("divider-" + i).style.marginLeft = "10%"
+                    document.getElementById("divider-" + (i-1)).style.width = "50%"
+                    document.getElementById("divider-" + (i-1)).style.marginLeft = "40%"
                 }
             },
             likeBlog(id,index){

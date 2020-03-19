@@ -32,7 +32,7 @@ public class LoadBlogListTask {
        outLine=setBlogs();
     }
 
-    //@Scheduled(cron="0 0/20 * * * ?")
+    @Scheduled(cron="0 0/20 * * * ?")
     public void loadRandomBlogs(){
 
         outLine =setBlogs();

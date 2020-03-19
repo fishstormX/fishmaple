@@ -50,7 +50,7 @@ public class ClearDataService{
         stringRedisTemplate.opsForValue().set(PublicConst.WX_TOKEN_KEY,temp);
     }
 
-   @Scheduled(cron="0 0/5 * * * ?")
+   //@Scheduled(cron="0 0/5 * * * ?")
     public void logTask() throws FileNotFoundException {
             String logComment= FileUtil.getStr(path)
                     .replaceAll(" ","&ensp;")
