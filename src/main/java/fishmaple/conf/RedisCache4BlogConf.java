@@ -5,6 +5,7 @@ import org.apache.ibatis.cache.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.support.ApplicationObjectSupport;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.locks.ReadWriteLock;
 @Component
+@DependsOn("redisTemplate")
 public class RedisCache4BlogConf  extends ApplicationObjectSupport implements Cache{
     private final String COMMON_CACHE_KEY = "COM:";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
