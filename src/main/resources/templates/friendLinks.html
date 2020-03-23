@@ -45,8 +45,8 @@
                 <div class="fLink-block">
                     <el-card v-for="link in links" class="linkcard" shadow="hover">
                         <img @click="open(link.url)" v-bind:src="link.avatar" v-bind:id="link.url" class="linkcard-image" v-bind:class="{circled:link.circled==1}">
-                        <a target="_blank" class="linkcard-link" v-bind:href="link.url">{{link.name}}</a><br>
-                            <a  target="_blank"v-bind:href="link.url" class="linkcard-describe">{{link.describe}}</a>
+                        <a  class="linkcard-link" v-bind:href="link.url">{{link.name}}</a><br>
+                            <a  v-bind:href="link.url" class="linkcard-describe">{{link.describe}}</a>
                     </el-card>
                     <div style="letter-spacing: 1px;margin-top:20px">
                         <p style="color:#a1a1a1">交换友链请发送邮件到admin@fishmaple.cn或点击"
@@ -76,7 +76,7 @@
         },
         methods:{
             open(url){
-                window.open(url)
+                window.location.href=url
             },
             getLinks(){
                 this.height = window.innerHeight-115;
