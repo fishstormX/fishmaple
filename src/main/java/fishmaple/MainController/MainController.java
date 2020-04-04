@@ -4,10 +4,12 @@ package fishmaple.MainController;
 import com.alibaba.fastjson.JSON;
 import fishmaple.DAO.*;
 import fishmaple.DTO.*;
+import fishmaple.DTO.Dictionary;
 import fishmaple.Service.*;
 import fishmaple.shiro.ShiroService;
 import fishmaple.task.LoadBlogListTask;
 import fishmaple.utils.PublicConst;
+import fishmaple.utils.ThreadPoolUtil;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ThreadPoolExecutor;
 
 
 @Controller
@@ -54,6 +54,8 @@ public class MainController {
     LoadBlogListTask loadBlogListTask;
     @Autowired
     DocMapper docMapper;
+    @Autowired
+    EventLogMapper eventLogMapper;
 
     @RequestMapping("/blogEditor")
     public String blogEditor(@RequestParam(required = false) String xx
@@ -67,11 +69,22 @@ public class MainController {
         return "userCenter";
     }
     @RequestMapping("/search")
-    public String blogEditor(){
+    public String blogEditor(HttpServletRequest request){
+        String ip = request.getRemoteAddr();
+        log.info("{} 访问搜索页",ip);
+        ThreadPoolUtil.addTask(()->{
+            eventLogMapper.insert("搜索页",ip,6,
+                    null==request.getHeader("referer")?"-":request.getHeader("referer"));
+        });
         return "search";
     }
     @RequestMapping("/issues")
-    public String issues(){
+    public String issues(HttpServletRequest request){
+        String ip = request.getRemoteAddr();
+        log.info("{} 访问issues",ip);
+        ThreadPoolUtil.addTask(()->{
+            eventLogMapper.insert("Issues页",ip,2,null==request.getHeader("referer")?"-":request.getHeader("referer"));
+        });
         return "issues";
     }
     @RequestMapping("/issues/new")
@@ -82,6 +95,12 @@ public class MainController {
     public String issuesDetail(@RequestParam String id,HttpServletRequest request, Model model){
         Issue issue= issueService.getDetail(id);
         model.addAttribute("issue",issue);
+        String ip = request.getRemoteAddr();
+        log.info("{} 访问issue {}",ip,id);
+        ThreadPoolUtil.addTask(()->{
+            eventLogMapper.insert("Issue页 "+id,ip,3,
+                    null==request.getHeader("referer")?"-":request.getHeader("referer"));
+        });
         return "issue/issueDetail";
     }
 
@@ -90,6 +109,13 @@ public class MainController {
         Blog blog=blogService.getBlogById(bid,false);
         model.addAttribute("describe",blogService.blogLine(blog));
         model.addAttribute("blog",blog);
+        String ip = request.getRemoteAddr();
+        log.info("{} 访问博客{} {}",ip,bid,blog.getTitle());
+        ThreadPoolUtil.addTask(()->{
+            eventLogMapper.insert("博客详情页"+blog.getTitle(),ip,1,
+                    null==request.getHeader("referer")?"-":request.getHeader("referer"));
+
+        });
         return mobileHandler(request,"blogdetail");
     }
 
@@ -97,7 +123,6 @@ public class MainController {
     public String blogIndex(HttpServletRequest request, Model model, HttpServletResponse response) {
         String content="";
         List<Blog> list= blogService.getBlogList();
-
         model.addAttribute("blog",list);
         return mobileHandler(request,"blogIndex");
     }
@@ -132,11 +157,23 @@ public class MainController {
 
     @RequestMapping("/sideWall")
     public String sideWall(HttpServletRequest request, Model model, HttpServletResponse response) {
+        String ip = request.getRemoteAddr();
+        log.info("{} 访问留言页",ip);
+        ThreadPoolUtil.addTask(()->{
+            eventLogMapper.insert("留言页",ip,7,
+                    null==request.getHeader("referer")?"-":request.getHeader("referer"));
+        });
         return "sideWall";
     }
 
     @RequestMapping("/doc")
-    public String doc(Model model){
+    public String doc(HttpServletRequest request,Model model){
+        String ip = request.getRemoteAddr();
+        log.info("{} 访问文档仓库页",ip);
+        ThreadPoolUtil.addTask(()->{
+            eventLogMapper.insert("文档页",ip,8,
+                    null==request.getHeader("referer")?"-":request.getHeader("referer"));
+        });
         model.addAttribute("respository",docMapper.getRespositories());
         return "doc";
     }
@@ -153,8 +190,14 @@ public class MainController {
         model.addAttribute("content",content);
         model.addAttribute("page",1);
         model.addAttribute("pageD","");
+        model.addAttribute("bgcss",configMapper.getValue("bg"));
         model.addAttribute("blogTopics",blogTopicService.getAllTopics());
-        log.info(request.getRemoteAddr()+" "+request.getRequestURI()+" "+"访问博客");
+        String ip = request.getRemoteAddr();
+        log.info("{} 访问首页",ip);
+        ThreadPoolUtil.addTask(()->{
+            eventLogMapper.insert("首页",ip,0,
+                    null==request.getHeader("referer")?"-":request.getHeader("referer"));
+        });
         return mobileHandler(request,"blog");
     }
 
@@ -231,6 +274,12 @@ public class MainController {
   }
     @RequestMapping("/friendLinks")
     public String friendLinks(HttpServletRequest request,Model model,HttpServletResponse response){
+        String ip = request.getRemoteAddr();
+        log.info("{} 访问友链页",ip);
+        ThreadPoolUtil.addTask(()->{
+            eventLogMapper.insert("友链页",ip,8,
+                    null==request.getHeader("referer")?"-":request.getHeader("referer"));
+        });
         model.addAttribute("outLine",friendLinksMapper.getAll());
         return "friendLinks";
     }

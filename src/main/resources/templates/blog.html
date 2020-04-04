@@ -70,7 +70,7 @@
     </style>
 </head>
 <!-- 当你真心渴望某样东西时，日月星辰也会连成一线来帮你完成。-->
-<body class="background" >
+<body class="background" th:style="${bgcss}">
 <div id="loading-gif"  v-show="!loading"><img height="650px" src="/pics/timg.gif"></div>
     <div th:utext="${content}" id="fish-bind"></div>
 <div id="sitemap">
