@@ -1,4 +1,6 @@
 # fishmaple
+[![License](https://img.shields.io/badge/license-MIT-db5149.svg)](https://github.com/fishstormX/fishmaple/blob/master/LICENSE)
+
 [个人网站](https://www.fishmaple.cn) https://www.fishmaple.cn
 io:https://fishstormx.github.io/fishmaple/
 本站点技术栈：Spring SpringBoot Mybatis Shiro前端使用Vue+Element UI
