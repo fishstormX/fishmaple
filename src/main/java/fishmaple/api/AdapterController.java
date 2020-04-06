@@ -3,6 +3,7 @@ package fishmaple.api;
 
 import fishmaple.DAO.BlMapper;
 
+import fishmaple.DAO.EventLogMapper;
 import fishmaple.DTO.Tongji;
 import fishmaple.Objects.SearchResult;
 import fishmaple.Service.BaiduTongjiService;
@@ -12,6 +13,7 @@ import fishmaple.thirdPart.bilibiliWebWorm.BlWormService;
 import fishmaple.thirdPart.bilibiliWebWorm.Const;
 import fishmaple.thirdPart.bilibiliWebWorm.TaskState;
 import fishmaple.utils.FileUtil;
+import fishmaple.utils.ThreadPoolUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +23,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -46,18 +52,38 @@ public class AdapterController {
     StringRedisTemplate stringRedisTemplate;
     @Autowired
     RedisTemplate redisTemplate;
+    @Autowired
+    EventLogMapper eventLogMapper;
     Logger log= LoggerFactory.getLogger(AdapterController.class);
 
+
+
+
     @RequestMapping("/dosearch")
-    public SearchResult doSearch(@RequestParam(value="content",required=false) String content){
+    public SearchResult doSearch(HttpServletRequest request, @RequestParam(value="content",required=false) String content){
+        String ip = request.getRemoteAddr();
+        log.info("{} 基本搜索 {}",ip,content);
+        ThreadPoolUtil.addTask(()->{
+            eventLogMapper.insert2("搜索:-"+content,ip,11);
+        });
         return searchService.doSearch(content);
     }
     @RequestMapping("/doNormalSearch")
-    public SearchResult doMSearch(@RequestParam(value="content",required=false) String content){
+    public SearchResult doMSearch(HttpServletRequest request,@RequestParam(value="content",required=false) String content){
+        String ip = request.getRemoteAddr();
+        log.info("{} normal搜索 {}",ip,content);
+        ThreadPoolUtil.addTask(()->{
+            eventLogMapper.insert2("normal搜索:"+content,ip,11);
+        });
         return searchService.doMSearch(content);
     }
     @RequestMapping("/doHighSearch")
-    public SearchResult doHighSearch(@RequestParam(value="content",required=false) String content){
+    public SearchResult doHighSearch(HttpServletRequest request,@RequestParam(value="content",required=false) String content){
+        String ip = request.getRemoteAddr();
+        log.info("{} high搜索 {}",ip,content);
+        ThreadPoolUtil.addTask(()->{
+            eventLogMapper.insert2("high搜索:"+content,ip,11);
+        });
         return searchService.doHSearch(content);
     }
     @RequestMapping("/log")

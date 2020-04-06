@@ -58,27 +58,23 @@ public class RedisCacheManager4Shiro implements CacheManager {
         @SuppressWarnings("unchecked")
         @Override
         public V get(K k) throws CacheException {
-            logger.info("get field:{}", toString(k));
             return (V)redisTemplate.boundHashOps(CACHE_KEY).get(k);
         }
 
         @SuppressWarnings("unchecked")
         @Override
         public Set<K> keys() {
-            logger.info("keys");
             return (Set<K>)redisTemplate.boundHashOps(CACHE_KEY).keys();
         }
 
         @Override
         public V put(K k, V v) throws CacheException {
-            logger.info("put field:{}, value:{}", toString(k), toString(v));
             redisTemplate.boundHashOps(CACHE_KEY).put(k, v);
             return v;
         }
 
         @Override
         public V remove(K k) throws CacheException {
-            logger.info("remove field:{}", toString(k));
             V v = get(k);
             redisTemplate.boundHashOps(CACHE_KEY).delete(k);
             return v;
@@ -87,14 +83,12 @@ public class RedisCacheManager4Shiro implements CacheManager {
         @Override
         public int size() {
             int size = redisTemplate.boundHashOps(CACHE_KEY).size().intValue();
-            logger.info("size:{}", size);
             return size;
         }
 
         @SuppressWarnings("unchecked")
         @Override
         public Collection<V> values() {
-            logger.info("values");
             return (Collection<V>)redisTemplate.boundHashOps(CACHE_KEY).values();
         }
 

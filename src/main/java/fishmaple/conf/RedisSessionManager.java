@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RedisSessionManager extends DefaultWebSessionManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RedisSessionManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(RedisSessionManager.class);
 
     @Override
     protected Session retrieveSession(SessionKey sessionKey) throws UnknownSessionException {
@@ -38,7 +38,7 @@ public class RedisSessionManager extends DefaultWebSessionManager {
         try{
             session = super.retrieveSession(sessionKey);
         }catch(UnknownSessionException e){
-            LOGGER.info(e.getMessage());
+            logger.debug(e.getMessage());
         }
         if(request != null && sessionId != null && session != null){
             request.setAttribute(sessionId.toString(), session);

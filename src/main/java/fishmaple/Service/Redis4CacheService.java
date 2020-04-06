@@ -16,21 +16,19 @@ public class Redis4CacheService {
     @Autowired
     RedisTemplate redisTemplate;
     public void saveCache(String key,Object value){
-        logger.info("setCache"+key);
         redisTemplate.opsForValue().set(key,value);
     }
     public void saveCache(String cacheKey,String key,Object value){
-        logger.info("setCache"+cacheKey);
         redisTemplate.opsForValue().set(cacheKey+key,value);
     }
     public <T> T  getCache(String key,Class<T> clazz){
         return clazz.cast(redisTemplate.opsForValue().get(key));
     }
     public <T> T getCache(String cacheKey,String key,Class<T> clazz){
-        logger.info("getCache"+cacheKey);
         return clazz.cast(redisTemplate.opsForValue().get(cacheKey+key));
     }
     public void flushCache(String cacheKey,String key){
+        logger.debug("flushCache:{},{}",cacheKey,key);
         Set<String> keys = redisTemplate.keys(cacheKey+key+"*");
         redisTemplate.delete(keys);
     }
