@@ -100,6 +100,7 @@ public class BlogServiceImpl implements BlogService{
     @Override
     public void addLike(String bid,String ip) {
         blogMapper.addLike(bid);
+        redis4CacheService.flushCache(Redis4CacheService.BLOG_CONTENT_CACHE,bid);
         blogMapper.addLikeLog(bid,TimeDate.getTimeNowToDb(),ip);
     }
 

@@ -1,12 +1,17 @@
 package fishmaple.api;
 
+import fishmaple.DAO.EventLogMapper;
 import fishmaple.Objects.FileObject;
 import fishmaple.utils.SendEmail;
+import fishmaple.utils.ThreadPoolUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.GeneralSecurityException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -15,9 +20,11 @@ import java.util.regex.Pattern;
 @RestController
 @RequestMapping("/api")
 public class TalkTo {
-
+    @Autowired
+    EventLogMapper eventLogMapper;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     @PostMapping("sendTalk")
-    public String sendTalk(@RequestBody Map<String,String> map) throws GeneralSecurityException {
+    public String sendTalk(HttpServletRequest request, @RequestBody Map<String, String> map) throws GeneralSecurityException {
         if(map.get("content").equals("")||map.get("email").equals("")||map.get("name").equals("")){
             return "请完善必填项";
         }
@@ -39,6 +46,11 @@ public class TalkTo {
                         "                  <br><br><span style='float:right;color:darkgrey'>Copyright ©  fishmaple. </span>";
 
                 SendEmail.send("留言已揽收(#^.^#)-鱼鱼的博客", content, map.get("email"), SendEmail.REDIRECT);
+                String ip = request.getRemoteAddr();
+                logger.info("{} 寄件 {}",ip,map.get("content"));
+                ThreadPoolUtil.addTask(()->{
+                    eventLogMapper.insert2("寄件:"+map.get("content"),ip,14);
+                });
             }catch(Exception e){
                     e.printStackTrace();
             }finally{

@@ -13,11 +13,11 @@ public interface CommentMapper {
             "values(#{email},#{relatedId},#{content}," +
             "#{creator},#{createTime},#{type},#{hideEmail}<if test='rootId!=null'>,#{rootId}</if>)</script>")
     public void addComment(Comment comment);
-    @Select("<script>Select * From comment where related_id=#{relatedId} and type = #{type} " +
+    @Select("<script>Select * From comment where related_id=#{relatedId} and type = #{type} and show_flag=1" +
             "<if test='ordered==2'>order by id desc</if> limit #{start},#{count}</script>")
     public List<Comment> getCommentsByRelatedId(@Param("relatedId") String relatedId, @Param("type") int type,
                                                 @Param("start") int start, @Param("count") int count,@Param("ordered")int ordered);
 
-    @Select("Select COUNT(*) From comment where related_id=#{relatedId} and type = #{type} ")
+    @Select("Select COUNT(*) From comment where related_id=#{relatedId} and type = #{type} and show_flag=1")
     public int getCommentsNumByRelatedId(@Param("relatedId") String relatedId, @Param("type") int type);
 }

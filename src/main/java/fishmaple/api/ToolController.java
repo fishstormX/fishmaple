@@ -7,6 +7,8 @@ import fishmaple.Objects.ToolObject;
 import fishmaple.Service.ResourceService;
 import fishmaple.Service.ToolService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +29,7 @@ public class ToolController {
     ToolMapper toolDAO;
     @Autowired
     ResourceService resourceService;
-
+    Logger logger = LoggerFactory.getLogger(this.getClass());
     @RequestMapping(value = "/tools", method = RequestMethod.GET)
     public List<Tool> tools() {
         return toolDAO.getAllTools();
@@ -41,6 +43,7 @@ public class ToolController {
     @RequestMapping(value = "/{field}/search")
     public String getSearch(@PathVariable String field,
                             @RequestParam("searchvalue") String searchvalue) {
+        logger.info("search:{}",searchvalue);
         if (field.equals("tool")&&searchvalue.equals("Heyfish")) {
                 return "getupload";
         }
