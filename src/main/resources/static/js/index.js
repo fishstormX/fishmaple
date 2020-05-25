@@ -114,7 +114,7 @@ Vue.component('foot-component', {
 Vue.component('copyright', {
     template:
         ' <ul class="foot_nav" id="copyright">' +
-        '          <li><a target="_blank" href="http://www.beian.miit.gov.cn"> 黑ICP备17006684号-1</a>　fishmaple</li>' +
+        '          <li><a target="_blank" href="http://www.beian.miit.gov.cn">京ICP备20014973号-1</a>　fishmaple</li>' +
         ' </ul>'
 
 })
