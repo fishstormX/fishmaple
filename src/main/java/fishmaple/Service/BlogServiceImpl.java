@@ -2,8 +2,10 @@ package fishmaple.Service;
 
 import com.alibaba.fastjson.JSON;
 import fishmaple.DAO.BlogMapper;
+import fishmaple.DAO.DictionaryMapper;
 import fishmaple.DAO.TagMapper;
 import fishmaple.DTO.Blog;
+import fishmaple.DTO.Dictionary;
 import fishmaple.conf.RedisCache4BlogConf;
 import fishmaple.shiro.ShiroService;
 import fishmaple.utils.EncoderUtil;
@@ -33,6 +35,8 @@ public class BlogServiceImpl implements BlogService{
     BlogMapper blogMapper;
     @Autowired
     TagMapper tagMapper;
+    @Autowired
+    DictionaryMapper dictionaryMapper;
     @Autowired
     ShiroService shiroService;
     @Autowired
@@ -70,6 +74,7 @@ public class BlogServiceImpl implements BlogService{
         }
         Long timenow=System.currentTimeMillis()/1000;
         List<String> temp=setAnchor(content);
+
         if(null==cover||cover.equals("")){
             String oldCover=blogMapper.getById(id).getCover();
             if(oldCover==null||oldCover.equals("")){
@@ -330,6 +335,7 @@ public class BlogServiceImpl implements BlogService{
     }
     //自动添加段落锚点
     private List<String> setAnchor(String content){
+
         content =content.replaceAll("<br/>","<br>");
         Document doc=Jsoup.parseBodyFragment(content);
 
@@ -354,10 +360,31 @@ public class BlogServiceImpl implements BlogService{
             element.attr("id",linkText);
             anchors.add(linkText);
         }
-
+        content = doc.body().html();
+        List<Dictionary> dictionaries = dictionaryMapper.getAll();
+        int i =0;
+        elements=doc.getElementsByClass("dictionary-word");
+        for(Element element:elements){
+            content = content.replaceFirst(element.html(),element.text());
+        }
+        StringBuilder stringBuilder = new StringBuilder(content);
+       for(Dictionary dictionary:dictionaries){
+           int index = stringBuilder.indexOf(dictionary.getKey(),0);
+           int from = 0;
+            while(index>0){
+                String newStr="<el-popover ref='popover"+i+"' placement='top' width='200'" +
+                        " trigger='hover' content='"+dictionary.getValue()+
+                        "'></el-popover>  <span v-popover:popover"+i+" class='dictionary-word'>"+dictionary.getKey()+"</span>";
+                stringBuilder.replace(index,index+dictionary.getKey().length(),newStr);
+                from=index+newStr.length();
+                index = stringBuilder.indexOf(dictionary.getKey(),from);
+                i++;
+            }
+        }
+        content = stringBuilder.toString();
         //锚点列表
         list.add(JSON.toJSONString(anchors));
-        list.add(doc.body().html());
+        list.add(content);
         return list;
     }
 

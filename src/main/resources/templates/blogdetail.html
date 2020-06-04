@@ -58,12 +58,13 @@
             color:blue;
         }
         #main-blog .hljs{
-            padding: 20px;
+            padding: 10px;
             background: #3f3f3f;
             color: #dcdcdc;
-            border-radius: 20px;
+            border-radius: 10px;
             letter-spacing:0.5px;
             line-height:21px;
+            margin: 8px 0;
             font-family: Consolas, "Courier New", monospace;
         }
         .blog_comment .hljs{
@@ -81,6 +82,10 @@
         #main-blog .hljs-comment{
             color: #a6ffa6;
             font-family: Consolas, "Courier New", monospace;
+        }
+        .dictionary-word{
+            border-bottom: 3px double #e666ff;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -125,7 +130,7 @@
                 </el-tag>
             </div>
             <div id="loading-gif" v-show="!loading"><img src="/pics/timg.gif"></div>
-            <div id="main-blog" class="blog-content dicAdd" v-html="blog.content"></div>
+            <div id="main-blog" class="blog-content dicAdd" th:utext="${blog.content}"></div>
             <div id="评论区"></div>
             <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
             <ins class="adsbygoogle"
